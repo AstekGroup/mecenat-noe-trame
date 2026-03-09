@@ -4,10 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is an MVP POC for "Semaine de l'IA pour Tous" - an interactive map application displaying 1500+ AI awareness events across France. The project is a **monorepo** with a React frontend, a NestJS backend, and shared types.
+This is an MVP POC for "Renaturons - Trame pollinisateur" - an interactive map application displaying 1500+ initiatives aimed at promoting the preservation of pollinators across France. The project is a **monorepo** with a React frontend, a NestJS backend, and shared types.
 
-**Client**: La Mednum / Semaine de l'IA pour Tous
-**Event dates**: May 18-24, 2026
+**Client**: Noe.org
 **Status**: Monorepo with backend API proxy for Airtable
 
 ## Monorepo Structure
