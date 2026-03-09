@@ -1,5 +1,5 @@
-import type { Region } from './event';
-import { REGIONS } from './event';
+import type { Region, ClusterFeature } from './event';
+import { REGIONS, isCluster } from './event';
 
 export type ProjectType =
   | 'pratiques-raisonnees'
@@ -72,30 +72,9 @@ export interface ProjectsGeoJSON {
   features: GeoJSONProject[];
 }
 
-export interface ClusterProperties {
-  cluster: boolean;
-  cluster_id: number;
-  point_count: number;
-  point_count_abbreviated: string | number;
-}
-
-export type ClusterFeature = {
-  type: 'Feature';
-  properties: ClusterProperties;
-  geometry: {
-    type: 'Point';
-    coordinates: [number, number];
-  };
-  id: number;
-};
-
 export type ProjectFeature = GeoJSONProject;
 
-export type MapFeature = ClusterFeature | ProjectFeature;
-
-export function isCluster(feature: MapFeature): feature is ClusterFeature {
-  return 'cluster' in feature.properties && feature.properties.cluster === true;
-}
+export type ProjectMapFeature = ClusterFeature | ProjectFeature;
 
 export const PROJECT_TYPE_LABELS: Record<ProjectType, string> = {
   'pratiques-raisonnees': 'Pratiques raisonnées',
@@ -118,4 +97,5 @@ export const PROJECT_TYPE_COLORS: Record<ProjectType, string> = {
 };
 
 export { REGIONS };
+
 

@@ -12,11 +12,11 @@ import { Event, EventsGeoJSON, GeoJSONEvent } from '@/types/event';
 const API_BASE = import.meta.env.VITE_API_URL ?? '';
 
 /**
- * Récupère tous les événements depuis le backend.
+ * Récupère tous les projets depuis le backend.
  */
 export async function fetchEvents(devMode = false): Promise<Event[]> {
   const params = devMode ? '?devMode=true' : '';
-  const response = await fetch(`${API_BASE}/api/events${params}`);
+  const response = await fetch(`${API_BASE}/api/projects${params}`);
   if (!response.ok) {
     throw new Error(`Erreur API: ${response.status} ${response.statusText}`);
   }
@@ -25,10 +25,10 @@ export async function fetchEvents(devMode = false): Promise<Event[]> {
 }
 
 /**
- * Récupère un événement par son ID depuis le backend.
+ * Récupère un projet par son ID depuis le backend.
  */
 export async function fetchEventById(id: string): Promise<Event> {
-  const response = await fetch(`${API_BASE}/api/events/${id}`);
+  const response = await fetch(`${API_BASE}/api/projects/${id}`);
   if (!response.ok) {
     throw new Error(`Erreur API: ${response.status} ${response.statusText}`);
   }
@@ -37,8 +37,8 @@ export async function fetchEventById(id: string): Promise<Event> {
 }
 
 /**
- * Convertit un tableau d'événements en GeoJSON FeatureCollection.
- * Exclut les événements sans coordonnées valides (distanciels, non géocodés).
+ * Convertit un tableau de projets en GeoJSON FeatureCollection.
+ * Exclut les projets sans coordonnées valides.
  */
 export function eventsToGeoJSON(events: Event[]): EventsGeoJSON {
   return {
