@@ -5,7 +5,7 @@
  * Tout passe par le backend qui sécurise le token et le cache.
  */
 
-import { Event, EventsGeoJSON, GeoJSONEvent } from '@/types/event';
+import { Project, ProjectsGeoJSON, GeoJSONProject } from '@/types/project';
 
 // En prod : VITE_API_URL vide = chemins relatifs (/api/events), proxiés par Caddy
 // En dev  : VITE_API_URL = http://localhost:3000
@@ -14,7 +14,7 @@ const API_BASE = import.meta.env.VITE_API_URL ?? '';
 /**
  * Récupère tous les projets depuis le backend.
  */
-export async function fetchEvents(devMode = false): Promise<Event[]> {
+export async function fetchProjects(devMode = false): Promise<Project[]> {
   const params = devMode ? '?devMode=true' : '';
   const response = await fetch(`${API_BASE}/api/projects${params}`);
   if (!response.ok) {
@@ -27,7 +27,7 @@ export async function fetchEvents(devMode = false): Promise<Event[]> {
 /**
  * Récupère un projet par son ID depuis le backend.
  */
-export async function fetchEventById(id: string): Promise<Event> {
+export async function fetchProjectById(id: string): Promise<Project> {
   const response = await fetch(`${API_BASE}/api/projects/${id}`);
   if (!response.ok) {
     throw new Error(`Erreur API: ${response.status} ${response.statusText}`);
@@ -40,17 +40,17 @@ export async function fetchEventById(id: string): Promise<Event> {
  * Convertit un tableau de projets en GeoJSON FeatureCollection.
  * Exclut les projets sans coordonnées valides.
  */
-export function eventsToGeoJSON(events: Event[]): EventsGeoJSON {
+export function projectsToGeoJSON(projects: Project[]): ProjectsGeoJSON {
   return {
     type: 'FeatureCollection',
-    features: events
-      .filter(event => event.latitude !== 0 && event.longitude !== 0)
-      .map((event): GeoJSONEvent => ({
+    features: projects
+      .filter(project => project.latitude !== 0 && project.longitude !== 0)
+      .map((project): GeoJSONProject => ({
         type: 'Feature',
-        properties: event,
+        properties: project,
         geometry: {
           type: 'Point',
-          coordinates: [event.longitude, event.latitude],
+          coordinates: [project.longitude, project.latitude],
         },
       })),
   };

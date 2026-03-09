@@ -1,14 +1,14 @@
-import { EventType, EVENT_TYPE_LABELS, EVENT_TYPE_COLORS } from '@/types/event';
+import { ProjectType, PROJECT_TYPE_LABELS, PROJECT_TYPE_COLORS } from '@/types/project';
 
 interface BadgeProps {
-  type: EventType;
+  type: ProjectType;
   size?: 'sm' | 'md';
   variant?: 'default' | 'highlight';
 }
 
 export function Badge({ type, size = 'md', variant = 'default' }: BadgeProps) {
-  const color = EVENT_TYPE_COLORS[type];
-  const label = EVENT_TYPE_LABELS[type];
+  const color = PROJECT_TYPE_COLORS[type] || '#cccccc';
+  const label = PROJECT_TYPE_LABELS[type] || type;
   
   const sizes = {
     sm: 'px-2 py-0.5 text-xs',

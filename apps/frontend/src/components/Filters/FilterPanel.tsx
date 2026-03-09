@@ -1,24 +1,25 @@
-import { EventFilters } from '@/hooks';
-import { EventType, EVENT_TYPE_LABELS, EVENT_TYPE_COLORS, REGIONS } from '@/types/event';
-import { Calendar, MapPin, Tag, RotateCcw, Search, X, Hash } from 'lucide-react';
+import { ProjectFilters } from '@/hooks';
+import { ProjectType, PROJECT_TYPE_LABELS, PROJECT_TYPE_COLORS, REGIONS } from '@/types/project';
+import { MapPin, Tag, RotateCcw, Search, X, Hash } from 'lucide-react';
 import { Button } from '@/components/UI';
 import { FilterAccordion } from './FilterAccordion';
-import { TYPE_ICONS } from '@/components/Map/EventMarker';
+import { TYPE_ICONS } from '@/components/Map/ProjectMarker';
 
 interface FilterPanelProps {
-  filters: EventFilters;
-  onUpdateFilters: (filters: Partial<EventFilters>) => void;
+  filters: ProjectFilters;
+  onUpdateFilters: (filters: Partial<ProjectFilters>) => void;
   onToggleRegion: (region: string) => void;
   onToggleType: (type: string) => void;
   onResetFilters: () => void;
   stats: {
     total: number;
     filtered: number;
-    duringWeek: number;
+    byType: Record<string, number>;
+    byRegion: Record<string, number>;
   };
 }
 
-const EVENT_TYPES: EventType[] = ['cafe-ia', 'atelier', 'conference', 'jeu', 'autre'];
+const PROJECT_TYPES: ProjectType[] = ['pratiques-raisonnees', 'renaturation', 'restauration', 'sensibilisation', 'formation', 'consultation', 'suivis'];
 
 export function FilterPanel({
   filters,
@@ -31,8 +32,7 @@ export function FilterPanel({
     filters.search ||
     filters.postalCode ||
     filters.regions.length > 0 ||
-    filters.types.length > 0 ||
-    filters.dateFilter !== 'all';
+    filters.types.length > 0;
 
   return (
     <div className="flex flex-col h-full">
@@ -59,53 +59,18 @@ export function FilterPanel({
         </div>
       </div>
 
-      {/* Filtres en accordéon */}
       <div className="flex-1 overflow-y-auto scrollbar-thin">
-        {/* Filtre par date */}
-        <FilterAccordion
-          title="Date"
-          icon={<Calendar className="w-4 h-4" />}
-          defaultOpen={filters.dateFilter !== 'all'}
-        >
-          <div className="space-y-2">
-            {[
-              { value: 'all', label: 'Tous les événements' },
-              { value: 'during-week', label: 'Pendant la Semaine de l\'IA (18-24 mai)' },
-              { value: 'other', label: 'Autres dates' },
-            ].map((option) => (
-              <label
-                key={option.value}
-                className="flex items-center gap-3 cursor-pointer group"
-              >
-                <input
-                  type="radio"
-                  name="dateFilter"
-                  value={option.value}
-                  checked={filters.dateFilter === option.value}
-                  onChange={() =>
-                    onUpdateFilters({ dateFilter: option.value as EventFilters['dateFilter'] })
-                  }
-                  className="w-4 h-4 text-accent-coral border-primary/30 focus:ring-accent-coral"
-                />
-                <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">
-                  {option.label}
-                </span>
-              </label>
-            ))}
-          </div>
-        </FilterAccordion>
-
         {/* Filtre par type avec pictos */}
         <FilterAccordion
-          title="Type d'événement"
+          title="Type de projet"
           icon={<Tag className="w-4 h-4" />}
           defaultOpen={filters.types.length > 0}
           badge={filters.types.length}
         >
           <div className="space-y-2">
-            {EVENT_TYPES.map((type) => {
+            {PROJECT_TYPES.map((type) => {
               const Icon = TYPE_ICONS[type];
-              const color = EVENT_TYPE_COLORS[type];
+              const color = PROJECT_TYPE_COLORS[type];
               return (
                 <label
                   key={type}
@@ -124,7 +89,7 @@ export function FilterPanel({
                     <Icon className="w-3.5 h-3.5 text-white" />
                   </div>
                   <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">
-                    {EVENT_TYPE_LABELS[type]}
+                    {PROJECT_TYPE_LABELS[type]}
                   </span>
                 </label>
               );
@@ -143,7 +108,6 @@ export function FilterPanel({
               type="text"
               value={filters.postalCode}
               onChange={(e) => {
-                // Permettre uniquement les chiffres
                 const value = e.target.value.replace(/\D/g, '').slice(0, 5);
                 onUpdateFilters({ postalCode: value });
               }}
@@ -174,7 +138,6 @@ export function FilterPanel({
           badge={filters.regions.length}
         >
           <div className="space-y-2">
-            {/* Métropole */}
             <div className="space-y-2">
               {REGIONS.filter(r => !['Guadeloupe', 'Martinique', 'Guyane', 'La Réunion', 'Mayotte'].includes(r)).map((region) => (
                 <label
@@ -194,7 +157,6 @@ export function FilterPanel({
               ))}
             </div>
             
-            {/* DOM-TOM */}
             <div className="pt-3 mt-3 border-t border-primary/10">
               <p className="text-xs text-text-secondary mb-2 font-medium uppercase tracking-wide">Outre-mer</p>
               <div className="space-y-2">
@@ -220,7 +182,6 @@ export function FilterPanel({
         </FilterAccordion>
       </div>
 
-      {/* Bouton réinitialiser */}
       {hasActiveFilters && (
         <div className="p-4 border-t border-primary/10 bg-white">
           <Button

@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { Event, EventType } from '@/types/event';
-import { useEvents } from '@/hooks';
+import { Project, ProjectType } from '@/types/project';
+import { useProjects } from '@/hooks';
 import { MapView } from '@/components/Map';
 import { Sidebar } from '@/components/Sidebar';
 import { Loader2 } from 'lucide-react';
 
 function App() {
   const {
-    events,
+    projects,
     geojson,
     loading,
     error,
@@ -17,10 +17,10 @@ function App() {
     toggleRegion,
     toggleType,
     stats,
-  } = useEvents();
+  } = useProjects();
 
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-  const [hoveredEvent, setHoveredEvent] = useState<Event | null>(null);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [hoveredProject, setHoveredProject] = useState<Project | null>(null);
 
   // État de chargement
   if (loading) {
@@ -29,10 +29,10 @@ function App() {
         <div className="text-center">
           <Loader2 className="w-12 h-12 text-accent-coral mx-auto animate-spin" />
           <p className="mt-4 font-rubik font-semibold text-primary text-lg">
-            Chargement des événements...
+            Chargement des projets...
           </p>
           <p className="text-text-secondary text-sm mt-2">
-            1500 événements à découvrir
+            1500 projets à découvrir
           </p>
         </div>
       </div>
@@ -67,24 +67,24 @@ function App() {
       {/* Carte */}
       <MapView
         geojson={geojson}
-        selectedEvent={selectedEvent}
-        onSelectEvent={setSelectedEvent}
-        hoveredEvent={hoveredEvent}
-        onHoverEvent={setHoveredEvent}
+        selectedProject={selectedProject}
+        onSelectProject={setSelectedProject}
+        hoveredProject={hoveredProject}
+        onHoverProject={setHoveredProject}
       />
 
       {/* Sidebar */}
       <Sidebar
-        events={events}
+        projects={projects}
         filters={filters}
         onUpdateFilters={updateFilters}
         onToggleRegion={toggleRegion}
-        onToggleType={(type) => toggleType(type as EventType)}
+        onToggleType={(type) => toggleType(type as ProjectType)}
         onResetFilters={resetFilters}
-        selectedEvent={selectedEvent}
-        onSelectEvent={setSelectedEvent}
-        hoveredEvent={hoveredEvent}
-        onHoverEvent={setHoveredEvent}
+        selectedProject={selectedProject}
+        onSelectProject={setSelectedProject}
+        hoveredProject={hoveredProject}
+        onHoverProject={setHoveredProject}
         stats={stats}
       />
 
@@ -93,7 +93,7 @@ function App() {
         <span className="font-rubik font-semibold text-primary">
           {stats.filtered}
         </span>
-        <span className="text-text-secondary text-sm ml-1">événements</span>
+        <span className="text-text-secondary text-sm ml-1">projets</span>
       </div>
     </div>
   );

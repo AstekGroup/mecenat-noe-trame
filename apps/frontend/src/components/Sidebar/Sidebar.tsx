@@ -1,46 +1,46 @@
 import { useState } from 'react';
-import { Event } from '@/types/event';
-import { EventFilters } from '@/hooks';
-import { EventCard } from './EventCard';
+import { Project } from '@/types/project';
+import { ProjectFilters } from '@/hooks';
+import { ProjectCard } from './ProjectCard';
 import { FilterPanel } from '@/components/Filters/FilterPanel';
 import { ChevronLeft, ChevronRight, Filter, List, MapIcon } from 'lucide-react';
 
 interface SidebarProps {
-  events: Event[];
-  filters: EventFilters;
-  onUpdateFilters: (filters: Partial<EventFilters>) => void;
+  projects: Project[];
+  filters: ProjectFilters;
+  onUpdateFilters: (filters: Partial<ProjectFilters>) => void;
   onToggleRegion: (region: string) => void;
   onToggleType: (type: string) => void;
   onResetFilters: () => void;
-  selectedEvent: Event | null;
-  onSelectEvent: (event: Event | null) => void;
-  hoveredEvent: Event | null;
-  onHoverEvent: (event: Event | null) => void;
+  selectedProject: Project | null;
+  onSelectProject: (project: Project | null) => void;
+  hoveredProject: Project | null;
+  onHoverProject: (project: Project | null) => void;
   stats: {
     total: number;
     filtered: number;
-    duringWeek: number;
+    byType: Record<string, number>;
+    byRegion: Record<string, number>;
   };
 }
 
 export function Sidebar({
-  events,
+  projects,
   filters,
   onUpdateFilters,
   onToggleRegion,
   onToggleType,
   onResetFilters,
-  selectedEvent,
-  onSelectEvent,
-  hoveredEvent,
-  onHoverEvent,
+  selectedProject,
+  onSelectProject,
+  hoveredProject,
+  onHoverProject,
   stats,
 }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [activeTab, setActiveTab] = useState<'list' | 'filters'>('list');
 
-  // Afficher les 50 premiers événements (pour performances)
-  const displayedEvents = events.slice(0, 50);
+  const displayedProjects = projects.slice(0, 50);
 
   if (isCollapsed) {
     return (
@@ -58,18 +58,16 @@ export function Sidebar({
 
   return (
     <>
-      {/* Overlay mobile */}
       <div 
         className="fixed inset-0 bg-black/30 z-10 sm:hidden"
         onClick={() => setIsCollapsed(true)}
       />
       
       <div className="absolute left-0 top-0 bottom-0 w-full sm:w-96 sm:max-w-[85vw] bg-surface-beige-light shadow-popup z-20 flex flex-col animate-slide-up">
-      {/* Header */}
       <div className="p-4 bg-primary text-white">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="font-rubik font-semibold text-lg">Assister à nos événements</h2>
+            <h2 className="font-rubik font-semibold text-lg">Découvrir les projets</h2>
           </div>
           <button
             onClick={() => setIsCollapsed(true)}
@@ -80,7 +78,6 @@ export function Sidebar({
           </button>
         </div>
 
-        {/* Onglets */}
         <div className="flex gap-2">
           <button
             onClick={() => setActiveTab('list')}
@@ -103,39 +100,38 @@ export function Sidebar({
           >
             <Filter className="w-4 h-4" />
             Filtres
-            {(filters.search || filters.postalCode || filters.regions.length > 0 || filters.types.length > 0 || filters.dateFilter !== 'all') && (
+            {(filters.search || filters.postalCode || filters.regions.length > 0 || filters.types.length > 0) && (
               <span className="w-2 h-2 bg-accent-coral rounded-full" />
             )}
           </button>
         </div>
       </div>
 
-      {/* Contenu */}
       <div className="flex-1 overflow-y-auto scrollbar-thin">
         {activeTab === 'list' ? (
           <div className="p-4 space-y-3">
-            {displayedEvents.length === 0 ? (
+            {displayedProjects.length === 0 ? (
               <div className="text-center py-8 text-text-secondary">
                 <MapIcon className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                <p className="font-medium">Aucun événement trouvé</p>
+                <p className="font-medium">Aucun projet trouvé</p>
                 <p className="text-sm mt-1">Essayez de modifier vos filtres</p>
               </div>
             ) : (
               <>
-                {displayedEvents.map((event) => (
-                  <EventCard
-                    key={event.id}
-                    event={event}
-                    isSelected={selectedEvent?.id === event.id}
-                    isHovered={hoveredEvent?.id === event.id}
-                    onClick={() => onSelectEvent(event)}
-                    onMouseEnter={() => onHoverEvent(event)}
-                    onMouseLeave={() => onHoverEvent(null)}
+                {displayedProjects.map((project) => (
+                  <ProjectCard
+                    key={project.id}
+                    project={project}
+                    isSelected={selectedProject?.id === project.id}
+                    isHovered={hoveredProject?.id === project.id}
+                    onClick={() => onSelectProject(project)}
+                    onMouseEnter={() => onHoverProject(project)}
+                    onMouseLeave={() => onHoverProject(null)}
                   />
                 ))}
-                {events.length > 50 && (
+                {projects.length > 50 && (
                   <p className="text-center text-sm text-text-secondary py-2">
-                    Affichage limité à 50 événements. Zoomez sur la carte pour voir plus de détails.
+                    Affichage limité à 50 projets. Zoomez sur la carte pour voir plus de détails.
                   </p>
                 )}
               </>
@@ -143,23 +139,22 @@ export function Sidebar({
           </div>
         ) : (
           <FilterPanel
-            filters={filters}
-            onUpdateFilters={onUpdateFilters}
+            filters={filters as any}
+            onUpdateFilters={onUpdateFilters as any}
             onToggleRegion={onToggleRegion}
             onToggleType={onToggleType}
             onResetFilters={onResetFilters}
-            stats={stats}
+            stats={stats as any}
           />
         )}
       </div>
 
-      {/* Footer */}
       <div className="p-4 bg-white border-t border-primary/10">
         <div className="flex items-center justify-between text-sm">
           <span className="text-text-secondary">
-            <span className="font-semibold text-accent-coral">{stats.duringWeek}</span> pendant la Semaine de l'IA
+            <span className="font-semibold text-accent-coral">{stats.filtered}</span> projets affichés
           </span>
-          {(filters.search || filters.postalCode || filters.regions.length > 0 || filters.types.length > 0 || filters.dateFilter !== 'all') && (
+          {(filters.search || filters.postalCode || filters.regions.length > 0 || filters.types.length > 0) && (
             <button
               onClick={onResetFilters}
               className="text-accent-magenta hover:underline font-medium"

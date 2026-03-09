@@ -4,31 +4,31 @@ import type { MapRef } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 import { useMapViewport, useClusters } from '@/hooks';
-import { EventsGeoJSON, Event, isCluster, MapFeature } from '@/types/event';
+import { ProjectsGeoJSON, Project, isProjectCluster, ProjectMapFeature } from '@/types/project';
 import { ClusterMarker } from './ClusterMarker';
-import { EventMarker } from './EventMarker';
-import { EventPopup } from './EventPopup';
+import { ProjectMarker } from './ProjectMarker';
+import { ProjectPopup } from './ProjectPopup';
 import { MAP_STYLES } from './MapStyleSelector';
 import { DOMTOMInset } from './DOMTOMInset';
 import { ZoomIn, ZoomOut, Home } from 'lucide-react';
 
 interface MapViewProps {
-  geojson: EventsGeoJSON;
-  selectedEvent: Event | null;
-  onSelectEvent: (event: Event | null) => void;
-  hoveredEvent: Event | null;
-  onHoverEvent: (event: Event | null) => void;
-  onViewEventDetails?: (eventId: string) => void;
+  geojson: ProjectsGeoJSON;
+  selectedProject: Project | null;
+  onSelectProject: (project: Project | null) => void;
+  hoveredProject: Project | null;
+  onHoverProject: (project: Project | null) => void;
+  onViewProjectDetails?: (projectId: string) => void;
   onMapFlyToReady?: (flyTo: (lng: number, lat: number, zoom?: number) => void) => void;
 }
 
 export function MapView({
   geojson,
-  selectedEvent,
-  onSelectEvent,
-  hoveredEvent,
-  onHoverEvent,
-  onViewEventDetails,
+  selectedProject,
+  onSelectProject,
+  hoveredProject,
+  onHoverProject,
+  onViewProjectDetails,
   onMapFlyToReady,
 }: MapViewProps) {
   const mapRef = useRef<MapRef>(null);
@@ -40,10 +40,8 @@ export function MapView({
     north: number;
   } | null>(null);
 
-  // Use Liberty (3D) style by default (no style selector anymore)
   const currentStyleUrl = MAP_STYLES.find(s => s.id === 'liberty')?.url || MAP_STYLES[0].url;
 
-  // Expose flyTo to parent via mapRef for smoother transitions
   const smoothFlyTo = useCallback((lng: number, lat: number, zoom?: number) => {
     const map = mapRef.current;
     if (map) {
@@ -56,19 +54,16 @@ export function MapView({
     }
   }, []);
 
-  // Expose flyTo to parent
   useEffect(() => {
     if (onMapFlyToReady) {
       onMapFlyToReady(smoothFlyTo);
     }
   }, [onMapFlyToReady, smoothFlyTo]);
 
-  // Initialisation de la carte
   const onMapLoad = useCallback(() => {
     onMoveEnd();
   }, []);
 
-  // Mise à jour des bounds
   const onMoveEnd = useCallback(() => {
     const map = mapRef.current;
     if (map) {
@@ -84,14 +79,12 @@ export function MapView({
     }
   }, []);
 
-  // Clustering
   const { clusters, getClusterExpansionZoom } = useClusters(
     geojson,
     bounds,
     viewport.zoom
   );
 
-  // Gestionnaire de clic sur cluster
   const handleClusterClick = useCallback(
     (clusterId: number, longitude: number, latitude: number) => {
       const expansionZoom = getClusterExpansionZoom(clusterId);
@@ -100,13 +93,11 @@ export function MapView({
     [getClusterExpansionZoom, smoothFlyTo]
   );
 
-  // Gestionnaire de clic sur événement
-  const handleEventClick = useCallback(
-    (feature: MapFeature) => {
-      if (!isCluster(feature)) {
-        const event = feature.properties;
-        onSelectEvent(event);
-        // Smooth fly to the event, offset slightly to center popup in view
+  const handleProjectClick = useCallback(
+    (feature: ProjectMapFeature) => {
+      if (!isProjectCluster(feature)) {
+        const project = feature.properties;
+        onSelectProject(project);
         smoothFlyTo(
           feature.geometry.coordinates[0],
           feature.geometry.coordinates[1],
@@ -114,17 +105,16 @@ export function MapView({
         );
       }
     },
-    [onSelectEvent, smoothFlyTo, viewport.zoom]
+    [onSelectProject, smoothFlyTo, viewport.zoom]
   );
 
-  // Position du popup with offset to avoid being hidden by top controls
   const popupCoordinates = useMemo(() => {
-    if (!selectedEvent) return null;
+    if (!selectedProject) return null;
     return {
-      longitude: selectedEvent.longitude,
-      latitude: selectedEvent.latitude,
+      longitude: selectedProject.longitude,
+      latitude: selectedProject.latitude,
     };
-  }, [selectedEvent]);
+  }, [selectedProject]);
 
   return (
     <div className="relative w-full h-full">
@@ -140,14 +130,12 @@ export function MapView({
         maxZoom={18}
         attributionControl={false}
       >
-        {/* Contrôles natifs */}
         <ScaleControl position="bottom-left" />
 
-        {/* Clusters et marqueurs */}
         {clusters.map((feature) => {
           const [longitude, latitude] = feature.geometry.coordinates;
           
-          if (isCluster(feature)) {
+          if (isProjectCluster(feature)) {
             return (
               <Marker
                 key={`cluster-${feature.id}`}
@@ -164,49 +152,47 @@ export function MapView({
             );
           }
 
-          const event = feature.properties;
-          const isSelected = selectedEvent?.id === event.id;
-          const isHovered = hoveredEvent?.id === event.id;
+          const project = feature.properties;
+          const isSelected = selectedProject?.id === project.id;
+          const isHovered = hoveredProject?.id === project.id;
 
           return (
             <Marker
-              key={`event-${event.id}`}
+              key={`project-${project.id}`}
               longitude={longitude}
               latitude={latitude}
             >
-              <EventMarker
-                type={event.type}
+              <ProjectMarker
+                type={project.type}
                 isSelected={isSelected || isHovered}
-                onClick={() => handleEventClick(feature)}
-                onMouseEnter={() => onHoverEvent(event)}
-                onMouseLeave={() => onHoverEvent(null)}
+                onClick={() => handleProjectClick(feature)}
+                onMouseEnter={() => onHoverProject(project)}
+                onMouseLeave={() => onHoverProject(null)}
               />
             </Marker>
           );
         })}
 
-        {/* Popup */}
-        {selectedEvent && popupCoordinates && (
+        {selectedProject && popupCoordinates && (
           <Popup
             longitude={popupCoordinates.longitude}
             latitude={popupCoordinates.latitude}
             anchor="bottom"
-            onClose={() => onSelectEvent(null)}
+            onClose={() => onSelectProject(null)}
             closeButton={false}
             closeOnClick={false}
             offset={25}
             maxWidth="340px"
           >
-            <EventPopup 
-              event={selectedEvent} 
-              onClose={() => onSelectEvent(null)} 
-              onViewDetails={onViewEventDetails}
+            <ProjectPopup 
+              project={selectedProject} 
+              onClose={() => onSelectProject(null)} 
+              onViewDetails={onViewProjectDetails}
             />
           </Popup>
         )}
       </Map>
 
-      {/* Contrôles carte - zoom et recentrage */}
       <div className="absolute top-20 right-4 flex flex-col gap-2">
         <button
           onClick={() => {
@@ -252,15 +238,14 @@ export function MapView({
         </button>
       </div>
 
-      {/* Mini-cartes DOM/TOM + France métropolitaine */}
       <DOMTOMInset
-        geojson={geojson}
+        geojson={geojson as any}
         mapStyleUrl={currentStyleUrl}
         onEventClick={(eventId) => {
-          const event = geojson.features.find(f => f.properties.id === eventId);
-          if (event) {
-            onSelectEvent(event.properties);
-            smoothFlyTo(event.properties.longitude, event.properties.latitude, 14);
+          const project = geojson.features.find(f => f.properties.id === eventId);
+          if (project) {
+            onSelectProject(project.properties);
+            smoothFlyTo(project.properties.longitude, project.properties.latitude, 14);
           }
         }}
         onTerritoryClick={(territory) => {

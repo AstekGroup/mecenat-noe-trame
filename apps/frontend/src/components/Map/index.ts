@@ -1,5 +1,5 @@
 export { MapView } from './MapView';
 export { ClusterMarker } from './ClusterMarker';
-export { EventMarker } from './EventMarker';
-export { EventPopup } from './EventPopup';
+export { ProjectMarker } from './ProjectMarker';
+export { ProjectPopup } from './ProjectPopup';
 export { SearchOverlay } from './SearchOverlay';

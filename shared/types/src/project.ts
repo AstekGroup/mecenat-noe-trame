@@ -1,5 +1,5 @@
 import type { Region, ClusterFeature } from './event';
-import { REGIONS, isCluster } from './event';
+import { REGIONS } from './event';
 
 export type ProjectType =
   | 'pratiques-raisonnees'
@@ -75,6 +75,10 @@ export interface ProjectsGeoJSON {
 export type ProjectFeature = GeoJSONProject;
 
 export type ProjectMapFeature = ClusterFeature | ProjectFeature;
+
+export function isProjectCluster(feature: ProjectMapFeature): feature is ClusterFeature {
+  return feature.properties && 'cluster' in feature.properties && feature.properties.cluster === true;
+}
 
 export const PROJECT_TYPE_LABELS: Record<ProjectType, string> = {
   'pratiques-raisonnees': 'Pratiques raisonnées',

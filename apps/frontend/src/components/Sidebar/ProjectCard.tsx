@@ -1,10 +1,10 @@
 import { memo } from 'react';
-import { Event, EVENT_TYPE_LABELS, EVENT_TYPE_COLORS } from '@/types/event';
-import { TYPE_ICONS } from '@/components/Map/EventMarker';
-import { Calendar, Clock, MapPin } from 'lucide-react';
+import { Project, PROJECT_TYPE_LABELS, PROJECT_TYPE_COLORS } from '@/types/project';
+import { TYPE_ICONS } from '@/components/Map/ProjectMarker';
+import { Calendar, MapPin } from 'lucide-react';
 
-interface EventCardProps {
-  event: Event;
+interface ProjectCardProps {
+  project: Project;
   isSelected: boolean;
   isHovered: boolean;
   onClick: () => void;
@@ -12,21 +12,21 @@ interface EventCardProps {
   onMouseLeave: () => void;
 }
 
-function EventCardComponent({
-  event,
+function ProjectCardComponent({
+  project,
   isSelected,
   isHovered,
   onClick,
   onMouseEnter,
   onMouseLeave,
-}: EventCardProps) {
-  const formattedDate = new Date(event.date).toLocaleDateString('fr-FR', {
+}: ProjectCardProps) {
+  const formattedDate = project.startDate ? new Date(project.startDate).toLocaleDateString('fr-FR', {
     day: 'numeric',
     month: 'short',
-  });
+  }) : null;
 
-  const Icon = TYPE_ICONS[event.type];
-  const color = EVENT_TYPE_COLORS[event.type];
+  const Icon = TYPE_ICONS[project.type];
+  const color = PROJECT_TYPE_COLORS[project.type] || '#ccc';
 
   return (
     <div
@@ -45,60 +45,45 @@ function EventCardComponent({
       onKeyDown={(e) => e.key === 'Enter' && onClick()}
     >
       <div className="flex items-start gap-3">
-        {/* Indicateur type avec picto */}
         <div
           className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center"
           style={{ backgroundColor: color }}
         >
-          <Icon className="w-4 h-4 text-white" />
+          {Icon && <Icon className="w-4 h-4 text-white" />}
         </div>
 
-        {/* Contenu */}
         <div className="flex-1 min-w-0">
-          {/* Tag catégorie */}
           <span
             className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold mb-1"
             style={{ backgroundColor: '#ffeed0', color: '#003082' }}
           >
-            <Icon className="w-2.5 h-2.5" />
-            {EVENT_TYPE_LABELS[event.type]}
+            {Icon && <Icon className="w-2.5 h-2.5" />}
+            {PROJECT_TYPE_LABELS[project.type]}
           </span>
 
           <h4 className="font-rubik font-semibold text-text-primary text-sm leading-tight line-clamp-2">
-            {event.title}
+            {project.title}
           </h4>
 
           <div className="mt-2 space-y-1">
-            {/* Date et heure */}
-            <div className="flex items-center gap-3 text-xs text-text-secondary">
-              <span className="flex items-center gap-1">
-                <Calendar className="w-3.5 h-3.5 text-accent-coral" />
-                {formattedDate}
-              </span>
-              <span className="flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5 text-accent-coral" />
-                {event.time}
-              </span>
-            </div>
+            {formattedDate && (
+              <div className="flex items-center gap-3 text-xs text-text-secondary">
+                <span className="flex items-center gap-1">
+                  <Calendar className="w-3.5 h-3.5 text-accent-coral" />
+                  {formattedDate}
+                </span>
+              </div>
+            )}
 
-            {/* Lieu */}
             <div className="flex items-center gap-1 text-xs text-text-secondary">
               <MapPin className="w-3.5 h-3.5 text-accent-coral flex-shrink-0" />
-              <span className="truncate">{event.city}</span>
+              <span className="truncate">{project.city}</span>
             </div>
           </div>
-
-          {/* Badge semaine IA */}
-          {event.isDuringWeek && (
-            <div className="mt-2 inline-flex items-center gap-1 text-xs text-accent-coral font-medium">
-              <span className="w-1.5 h-1.5 bg-accent-coral rounded-full animate-pulse-soft" />
-              Semaine de l'IA
-            </div>
-          )}
         </div>
       </div>
     </div>
   );
 }
 
-export const EventCard = memo(EventCardComponent);
+export const ProjectCard = memo(ProjectCardComponent);

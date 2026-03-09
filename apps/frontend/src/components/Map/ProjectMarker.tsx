@@ -1,9 +1,9 @@
 import { memo } from 'react';
-import { MapPin, Coffee, Wrench, Mic2, Gamepad2, HelpCircle } from 'lucide-react';
-import { EventType, EVENT_TYPE_COLORS } from '@/types/event';
+import { Leaf, Sprout, Wrench, Megaphone, BookOpen, Users, Eye } from 'lucide-react';
+import { ProjectType, PROJECT_TYPE_COLORS } from '@/types/project';
 
-interface EventMarkerProps {
-  type: EventType;
+interface ProjectMarkerProps {
+  type: ProjectType;
   isSelected?: boolean;
   onClick: () => void;
   onMouseEnter?: () => void;
@@ -11,24 +11,26 @@ interface EventMarkerProps {
   size?: 'sm' | 'md';
 }
 
-export const TYPE_ICONS: Record<EventType, typeof MapPin> = {
-  'cafe-ia': Coffee,
-  'atelier': Wrench,
-  'conference': Mic2,
-  'jeu': Gamepad2,
-  'autre': HelpCircle,
+export const TYPE_ICONS: Record<ProjectType, typeof Leaf> = {
+  'pratiques-raisonnees': Leaf,
+  'renaturation': Sprout,
+  'restauration': Wrench,
+  'sensibilisation': Megaphone,
+  'formation': BookOpen,
+  'consultation': Users,
+  'suivis': Eye,
 };
 
-function EventMarkerComponent({
+function ProjectMarkerComponent({
   type,
   isSelected = false,
   onClick,
   onMouseEnter,
   onMouseLeave,
   size = 'md',
-}: EventMarkerProps) {
+}: ProjectMarkerProps) {
   const Icon = TYPE_ICONS[type];
-  const color = EVENT_TYPE_COLORS[type];
+  const color = PROJECT_TYPE_COLORS[type] || '#cccccc';
   const isSmall = size === 'sm';
   
   return (
@@ -45,11 +47,11 @@ function EventMarkerComponent({
       role="button"
       tabIndex={0}
       onKeyDown={(e) => e.key === 'Enter' && onClick()}
-      aria-label="Voir les détails de l'événement"
+      aria-label="Voir les détails du projet"
     >
       <Icon className={isSmall ? 'w-2 h-2 text-white' : 'w-4 h-4 text-white'} />
     </div>
   );
 }
 
-export const EventMarker = memo(EventMarkerComponent);
+export const ProjectMarker = memo(ProjectMarkerComponent);

@@ -2,12 +2,11 @@ import { useMemo } from 'react';
 import Map, { Marker } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-import { EventsGeoJSON, isCluster } from '@/types/event';
+import { ProjectsGeoJSON, isProjectCluster } from '@/types/project';
 import { useClusters } from '@/hooks';
 import { ClusterMarker } from './ClusterMarker';
-import { EventMarker } from './EventMarker';
+import { ProjectMarker } from './ProjectMarker';
 
-// Configuration des territoires (DOM/TOM + France métropolitaine)
 export const QUICK_ACCESS_TERRITORIES = [
   {
     id: 'metropole',
@@ -68,25 +67,23 @@ export const QUICK_ACCESS_TERRITORIES = [
 type Territory = typeof QUICK_ACCESS_TERRITORIES[number];
 
 interface DOMTOMInsetProps {
-  geojson: EventsGeoJSON;
+  geojson: ProjectsGeoJSON;
   mapStyleUrl: string;
-  onEventClick?: (eventId: string) => void;
+  onEventClick?: (projectId: string) => void;
   onTerritoryClick?: (territory: Territory) => void;
 }
 
 interface TerritoryMapProps {
   territory: Territory;
-  geojson: EventsGeoJSON;
+  geojson: ProjectsGeoJSON;
   mapStyleUrl: string;
-  onEventClick?: (eventId: string) => void;
+  onEventClick?: (projectId: string) => void;
   onTerritoryClick?: (territory: Territory) => void;
 }
 
 function TerritoryMap({ territory, geojson, mapStyleUrl, onEventClick, onTerritoryClick }: TerritoryMapProps) {
-  // Filtrer les événements pour ce territoire
   const filteredGeojson = useMemo(() => {
     if (territory.isMetropole) {
-      // France métropolitaine : tous les événements qui ne sont pas dans les DOM-TOM
       const domTomRegions = ['Guadeloupe', 'Martinique', 'Guyane', 'La Réunion', 'Mayotte'];
       return {
         ...geojson,
@@ -99,7 +96,6 @@ function TerritoryMap({ territory, geojson, mapStyleUrl, onEventClick, onTerrito
     };
   }, [geojson, territory]);
 
-  // Clustering pour ce territoire
   const { clusters } = useClusters(
     filteredGeojson,
     territory.bounds,
@@ -113,7 +109,6 @@ function TerritoryMap({ territory, geojson, mapStyleUrl, onEventClick, onTerrito
       className="relative bg-white rounded-lg shadow-card overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary/30 transition-all"
       onClick={() => onTerritoryClick?.(territory)}
     >
-      {/* Label du territoire */}
       <div className="absolute top-1 left-1 z-10 bg-white/90 backdrop-blur-sm rounded px-1.5 py-0.5 text-[9px] font-medium text-primary leading-tight">
         {territory.shortName}
         {eventCount > 0 && (
@@ -135,7 +130,7 @@ function TerritoryMap({ territory, geojson, mapStyleUrl, onEventClick, onTerrito
         {!territory.isMetropole && clusters.map((feature) => {
           const [longitude, latitude] = feature.geometry.coordinates;
           
-          if (isCluster(feature)) {
+          if (isProjectCluster(feature)) {
             return (
               <Marker
                 key={`cluster-${territory.id}-${feature.id}`}
@@ -151,18 +146,18 @@ function TerritoryMap({ territory, geojson, mapStyleUrl, onEventClick, onTerrito
             );
           }
 
-          const event = feature.properties;
+          const project = feature.properties;
           return (
             <Marker
-              key={`event-${territory.id}-${event.id}`}
+              key={`project-${territory.id}-${project.id}`}
               longitude={longitude}
               latitude={latitude}
             >
-              <EventMarker
-                type={event.type}
+              <ProjectMarker
+                type={project.type}
                 isSelected={false}
                 onClick={() => {
-                  onEventClick?.(event.id);
+                  onEventClick?.(project.id);
                 }}
                 size="sm"
               />
@@ -181,7 +176,6 @@ export function DOMTOMInset({ geojson, mapStyleUrl, onEventClick, onTerritoryCli
         <div className="text-[10px] font-semibold text-primary/70 uppercase tracking-wide mb-2 px-1">
           Accès rapide
         </div>
-        {/* France métropolitaine - full width */}
         <div className="mb-1.5">
           <TerritoryMap
             territory={QUICK_ACCESS_TERRITORIES[0]}
@@ -191,7 +185,6 @@ export function DOMTOMInset({ geojson, mapStyleUrl, onEventClick, onTerritoryCli
             onTerritoryClick={onTerritoryClick}
           />
         </div>
-        {/* DOM-TOM - grille 2 colonnes avec la dernière centrée */}
         <div className="grid grid-cols-2 gap-1.5">
           {QUICK_ACCESS_TERRITORIES.slice(1, 5).map((territory) => (
             <TerritoryMap

@@ -1,6 +1,6 @@
 import { useMemo, useCallback } from 'react';
 import Supercluster from 'supercluster';
-import { EventsGeoJSON, GeoJSONEvent, ClusterFeature, MapFeature } from '@/types/event';
+import { ProjectsGeoJSON, GeoJSONProject, ClusterFeature, ProjectMapFeature } from '@/types/project';
 
 interface BoundingBox {
   west: number;
@@ -16,7 +16,7 @@ interface UseClustersOptions {
 }
 
 export function useClusters(
-  geojson: EventsGeoJSON,
+  geojson: ProjectsGeoJSON,
   bounds: BoundingBox | null,
   zoom: number,
   options: UseClustersOptions = {}
@@ -25,7 +25,7 @@ export function useClusters(
 
   // Créer l'instance Supercluster
   const supercluster = useMemo(() => {
-    const index = new Supercluster<GeoJSONEvent['properties'], ClusterFeature['properties']>({
+    const index = new Supercluster<GeoJSONProject['properties'], ClusterFeature['properties']>({
       radius,
       maxZoom,
       minZoom,
@@ -39,7 +39,7 @@ export function useClusters(
   }, [geojson, radius, maxZoom, minZoom]);
 
   // Obtenir les clusters pour la vue actuelle
-  const clusters = useMemo((): MapFeature[] => {
+  const clusters = useMemo((): ProjectMapFeature[] => {
     if (!bounds || !supercluster) return [];
 
     const bbox: [number, number, number, number] = [
@@ -50,7 +50,7 @@ export function useClusters(
     ];
 
     try {
-      return supercluster.getClusters(bbox, Math.floor(zoom)) as MapFeature[];
+      return supercluster.getClusters(bbox, Math.floor(zoom)) as ProjectMapFeature[];
     } catch {
       return [];
     }
@@ -58,10 +58,10 @@ export function useClusters(
 
   // Obtenir les enfants d'un cluster
   const getClusterChildren = useCallback(
-    (clusterId: number): GeoJSONEvent[] => {
+    (clusterId: number): GeoJSONProject[] => {
       if (!supercluster) return [];
       try {
-        return supercluster.getLeaves(clusterId, Infinity) as GeoJSONEvent[];
+        return supercluster.getLeaves(clusterId, Infinity) as GeoJSONProject[];
       } catch {
         return [];
       }
