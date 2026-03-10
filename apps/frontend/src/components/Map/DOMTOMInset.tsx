@@ -171,7 +171,7 @@ function TerritoryMap({ territory, geojson, mapStyleUrl, onEventClick, onTerrito
 
 export function DOMTOMInset({ geojson, mapStyleUrl, onEventClick, onTerritoryClick }: DOMTOMInsetProps) {
   return (
-    <div className="hidden md:block absolute bottom-4 right-4 z-10">
+    <div className="hidden md:block absolute bottom-8 right-4 z-10">
       <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-popup p-2 border border-primary/10">
         <div className="text-[10px] font-semibold text-primary/70 uppercase tracking-wide mb-2 px-1">
           Accès rapide

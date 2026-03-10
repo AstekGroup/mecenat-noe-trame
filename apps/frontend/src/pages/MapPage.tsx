@@ -118,6 +118,10 @@ export function MapPage() {
         geojson={geojson}
         natura2000Data={natura2000Data}
         showNatura2000={filters.showNatura2000}
+        showRegions={filters.showRegions}
+        showDepartments={filters.showDepartments}
+        showEPCI={filters.showEPCI}
+        showCommunes={filters.showCommunes}
         selectedProject={selectedProject}
         onSelectProject={setSelectedProject}
         hoveredProject={hoveredProject}

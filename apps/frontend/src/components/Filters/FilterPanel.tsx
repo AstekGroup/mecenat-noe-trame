@@ -33,7 +33,11 @@ export function FilterPanel({
     filters.postalCode ||
     filters.regions.length > 0 ||
     filters.types.length > 0 ||
-    filters.showNatura2000;
+    filters.showNatura2000 ||
+    filters.showRegions ||
+    filters.showDepartments ||
+    filters.showEPCI ||
+    filters.showCommunes;
 
   return (
     <div className="flex flex-col h-full">
@@ -102,7 +106,7 @@ export function FilterPanel({
         <FilterAccordion
           title="Calques"
           icon={<Layers className="w-4 h-4" />}
-          defaultOpen={filters.showNatura2000}
+          defaultOpen={filters.showNatura2000 || filters.showRegions || filters.showDepartments || filters.showEPCI || filters.showCommunes}
         >
           <div className="space-y-2">
             <label className="flex items-center gap-3 cursor-pointer group">
@@ -116,6 +120,60 @@ export function FilterPanel({
                 Zones Natura 2000
               </span>
             </label>
+
+            <div className="pt-2 mt-2 border-t border-primary/10">
+              <p className="text-[10px] text-text-secondary mb-2 font-medium uppercase tracking-wider">Limites administratives (IGN)</p>
+              
+              <div className="space-y-2">
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={filters.showRegions}
+                    onChange={() => onUpdateFilters({ showRegions: !filters.showRegions })}
+                    className="w-4 h-4 text-accent-coral border-primary/30 rounded focus:ring-accent-coral"
+                  />
+                  <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">
+                    Régions
+                  </span>
+                </label>
+
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={filters.showDepartments}
+                    onChange={() => onUpdateFilters({ showDepartments: !filters.showDepartments })}
+                    className="w-4 h-4 text-accent-coral border-primary/30 rounded focus:ring-accent-coral"
+                  />
+                  <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">
+                    Départements
+                  </span>
+                </label>
+
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={filters.showEPCI}
+                    onChange={() => onUpdateFilters({ showEPCI: !filters.showEPCI })}
+                    className="w-4 h-4 text-accent-coral border-primary/30 rounded focus:ring-accent-coral"
+                  />
+                  <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">
+                    Intercommunalités (EPCI)
+                  </span>
+                </label>
+
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={filters.showCommunes}
+                    onChange={() => onUpdateFilters({ showCommunes: !filters.showCommunes })}
+                    className="w-4 h-4 text-accent-coral border-primary/30 rounded focus:ring-accent-coral"
+                  />
+                  <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">
+                    Communes
+                  </span>
+                </label>
+              </div>
+            </div>
           </div>
         </FilterAccordion>
 

@@ -10,6 +10,10 @@ export interface ProjectFilters {
   postalCode: string;
   modality: 'all' | 'presentiel' | 'distanciel';
   showNatura2000: boolean;
+  showRegions: boolean;
+  showDepartments: boolean;
+  showEPCI: boolean;
+  showCommunes: boolean;
 }
 
 const initialFilters: ProjectFilters = {
@@ -20,6 +24,10 @@ const initialFilters: ProjectFilters = {
   postalCode: '',
   modality: 'all',
   showNatura2000: false,
+  showRegions: false,
+  showDepartments: false,
+  showEPCI: false,
+  showCommunes: false,
 };
 
 export function useProjects() {

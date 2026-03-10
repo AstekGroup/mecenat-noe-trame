@@ -16,18 +16,26 @@ interface MapViewProps {
   geojson: ProjectsGeoJSON;
   natura2000Data?: any;
   showNatura2000?: boolean;
+  showRegions?: boolean;
+  showDepartments?: boolean;
+  showEPCI?: boolean;
+  showCommunes?: boolean;
   selectedProject: Project | null;
   onSelectProject: (project: Project | null) => void;
   hoveredProject: Project | null;
   onHoverProject: (project: Project | null) => void;
-  onViewProjectDetails?: (projectId: string) => void;
-  onMapFlyToReady?: (flyTo: (lng: number, lat: number, zoom?: number) => void) => void;
+  onViewProjectDetails: (id: string) => void;
+  onMapFlyToReady?: (flyToFn: (lng: number, lat: number, zoom?: number) => void) => void;
 }
 
 export function MapView({
   geojson,
   natura2000Data,
-  showNatura2000,
+  showNatura2000 = false,
+  showRegions = false,
+  showDepartments = false,
+  showEPCI = false,
+  showCommunes = false,
   selectedProject,
   onSelectProject,
   hoveredProject,
@@ -132,7 +140,7 @@ export function MapView({
         style={{ width: '100%', height: '100%' }}
         minZoom={3}
         maxZoom={18}
-        attributionControl={false}
+        attributionControl={true}
       >
         <ScaleControl position="bottom-left" />
 
@@ -156,6 +164,71 @@ export function MapView({
                 'line-opacity': 0.5,
               }}
             />
+          </Source>
+        )}
+
+        {/* Couches Administratives IGN */}
+        {(showRegions || showDepartments || showEPCI || showCommunes) && (
+          <Source
+            id="ign-admin-express"
+            type="vector"
+            tiles={["https://data.geopf.fr/tms/1.0.0/ADMIN_EXPRESS/{z}/{x}/{y}.pbf"]}
+            scheme="xyz"
+            bounds={[-63.1617737, -21.4000159, 55.8469391, 51.0992102]}
+            minzoom={6}
+            maxzoom={16}
+            attribution="© IGN"
+          >
+            {showCommunes && (
+              <Layer
+                id="ign-communes"
+                type="line"
+                source-layer="commune"
+                minzoom={9}
+                paint={{
+                  'line-color': '#a70000',
+                  'line-width': 0.5,
+                  'line-opacity': 0.4,
+                }}
+              />
+            )}
+            {showEPCI && (
+              <Layer
+                id="ign-epci"
+                type="line"
+                source-layer="epci"
+                minzoom={7}
+                paint={{
+                  'line-color': '#757575',
+                  'line-width': 0.8,
+                  'line-opacity': 0.5,
+                }}
+              />
+            )}
+            {showDepartments && (
+              <Layer
+                id="ign-departments"
+                type="line"
+                source-layer="departement"
+                paint={{
+                  'line-color': '#455a64',
+                  'line-width': 1.2,
+                  'line-opacity': 0.6,
+                }}
+              />
+            )}
+            {showRegions && (
+              <Layer
+                id="ign-regions"
+                type="line"
+                source-layer="region"
+                paint={{
+                  'line-color': '#003081',
+                  'line-width': 2,
+                  'line-opacity': 0.8,
+                }}
+              />
+            )}
           </Source>
         )}
 
