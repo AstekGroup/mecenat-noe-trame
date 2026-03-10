@@ -1,154 +1,72 @@
-# Carte Interactive - Semaine de l'IA pour Tous
+# Carte Interactive - Trame pollinisateur (Noé)
 
-Application React standalone pour afficher les événements de la Semaine de l'IA pour Tous sur une carte interactive de France.
+Application React standalone pour afficher les initiatives de préservation des pollinisateurs de la Trame pollinisateur (Noé) sur une carte interactive de France.
 
 ## Aperçu
 
-Cette application permet de visualiser et filtrer 1500 événements de sensibilisation à l'intelligence artificielle organisés sur tout le territoire français.
+Cette application permet de visualiser et filtrer les projets de renaturation, restauration et sensibilisation aux pollinisateurs sur tout le territoire français.
 
 ### Fonctionnalités
 
 - 🗺️ **Carte interactive** avec MapLibre GL JS (WebGL)
-- 📍 **Clustering intelligent** avec Supercluster (gère 500k+ points)
-- 🔍 **Recherche** par ville, organisateur, région
-- 📅 **Filtres** par date (pendant/hors Semaine IA), type d'événement, région
+- 📍 **Clustering intelligent** avec Supercluster
+- 🔍 **Recherche** par ville, porteur de projet, région
+- 📅 **Filtres** par type de projet, région, Natura 2000
 - 📱 **Responsive** (desktop + mobile)
-- 🎨 **Design** respectant la charte graphique semaine-ia.fr
+- 🎨 **Design** respectant la charte graphique noe.org
 
 ## Stack technique
 
-| Technologie | Usage |
-|-------------|-------|
-| React 18 + Vite | Framework et bundler |
-| MapLibre GL JS | Carte vectorielle WebGL |
-| react-map-gl | Wrapper React pour MapLibre |
-| Supercluster | Clustering performant |
-| Tailwind CSS | Styling |
-| Lucide React | Icônes |
+- **Framework** : React + Vite
+- **Langage** : TypeScript
+- **Style** : Tailwind CSS
+- **Carte** : MapLibre GL JS + Supercluster
+- **Icons** : Lucide React
+- **Routage** : React Router v6
 
-## Installation
+## Installation et Développement
 
-```bash
-# Installer les dépendances
-pnpm install
+L'application est incluse dans un monorepo TurboRepo.
 
-# Lancer en mode développement
-pnpm dev
-
-# Build production
-pnpm build
-```
-
-## Structure du projet
-
-```
-src/
-├── components/
-│   ├── Map/           # Composants carte (MapView, Markers, Popup)
-│   ├── Sidebar/       # Sidebar avec liste et recherche
-│   ├── Filters/       # Panneau de filtres
-│   ├── Events/        # Vue liste événements et filtres
-│   ├── Layout/        # Header et Footer
-│   └── UI/            # Composants UI réutilisables
-├── hooks/
-│   ├── useEvents.ts   # Gestion des événements et filtres
-│   ├── useClusters.ts # Clustering avec Supercluster
-│   └── useMapViewport.ts
-├── pages/
-│   ├── HomePage.tsx        # Page d'accueil (carrefour)
-│   ├── MapPage.tsx         # Carte interactive
-│   ├── EventsListPage.tsx  # Liste des événements
-│   └── EventDetailPage.tsx # Détail d'un événement
-├── services/
-│   ├── api.ts              # Service API Airtable + fallback mock
-│   ├── geocoding.ts        # Géocodage via api-adresse.data.gouv.fr
-│   └── airtableMapping.ts  # Mapping champs Airtable → types internes
-├── data/
-│   └── mockEvents.ts  # Données mockées (fallback si Airtable non configuré)
-├── types/
-│   └── event.ts       # Types TypeScript
-└── styles/
-    └── globals.css    # Styles globaux + Tailwind
-```
-
-## Design System
-
-Couleurs reprises de semaine-ia.fr :
-
-| Couleur | Hex | Usage |
-|---------|-----|-------|
-| Bleu foncé | `#003081` | Fond principal, header |
-| Rose coral | `#f56476` | Boutons, clusters, accents |
-| Magenta | `#cc3366` | Liens, hover |
-| Beige | `#ffeed1` | Fond secondaire |
-
-Typographie :
-- **Titres** : Rubik (Google Fonts)
-- **Corps** : Palanquin (Google Fonts)
-
-## Configuration API Airtable
-
-L'application se connecte à une base Airtable pour récupérer les événements. En l'absence de configuration, elle utilise les données mockées (fallback automatique).
-
-### Variables d'environnement
-
-Copier `.env.example` en `.env` et renseigner les valeurs :
+### Commandes (depuis la racine)
 
 ```bash
-cp .env.example .env
+pnpm install       # Installer les dépendances
+pnpm dev           # Lancer frontend + backend
+pnpm front:dev     # Lancer uniquement le frontend
 ```
 
-```env
-# MapTiler (carte)
-VITE_MAPTILER_KEY=votre_cle_maptiler
-
-# Airtable (données événements)
-VITE_AIRTABLE_API_KEY=votre_personal_access_token
-VITE_AIRTABLE_BASE_ID=votre_base_id      # commence par "app"
-VITE_AIRTABLE_TABLE_ID=votre_table_id    # commence par "tbl"
-```
-
-### Architecture du pipeline de données
-
-1. **Fetch** : Récupération paginée depuis Airtable (GET uniquement, lecture seule)
-2. **Mapping** : Transformation des champs français Airtable vers le modèle Event interne
-3. **Géocodage** : Conversion des adresses en coordonnées GPS via api-adresse.data.gouv.fr (API BAN, gratuite)
-4. **Cache** : Les résultats de géocodage sont mis en cache dans localStorage (7 jours)
-5. **Filtre** : Par défaut, seuls les événements validés et visibles sur la cartographie sont récupérés
-
-### Mode développeur
-
-Un mode dev est disponible via `useEvents().toggleDevMode()` pour afficher tous les événements (y compris non validés).
-
-### Événements distanciels
-
-Les événements en ligne (sans adresse physique) ne sont pas géocodés et n'apparaissent pas sur la carte. Ils sont accessibles via la page "Événements en ligne" (`/evenements?modality=distanciel`).
-
-## Scripts disponibles
+### Commandes (depuis apps/frontend)
 
 ```bash
-pnpm dev      # Serveur de développement (localhost:5173)
-pnpm build    # Build production
-pnpm preview  # Preview du build
-pnpm lint     # Lint du code
+pnpm dev           # Lancer en local (localhost:5173)
+pnpm build         # Build pour la production
+pnpm lint          # Linter le code
 ```
 
-## Performance
+## Structure du Code
 
-L'application est optimisée pour gérer un grand nombre d'événements :
+- `/src/components` : Composants UI réutilisables (Map, Sidebar, Filters)
+- `/src/hooks` : Hooks personnalisés (useProjects, useClusters, useMapViewport)
+- `/src/pages` : Pages principales (HomePage, MapPage, ProjectDetail)
+- `/src/services` : Client API pour communiquer avec le backend NestJS
+- `/src/types` : Types TypeScript partagés (re-export depuis @make-map/types)
 
-- **Clustering WebGL** : Les événements sont groupés automatiquement selon le niveau de zoom
-- **Virtualisation** : Seuls les événements visibles sont rendus
-- **Lazy loading** : Chargement progressif des données
+## Performances
+
+L'application est optimisée pour gérer un grand nombre de points :
+
+- **Clustering WebGL** : Les projets sont groupés automatiquement selon le niveau de zoom
+- **Virtualisation** : Seuls les éléments visibles sont rendus
 - **Memoization** : Cache des calculs de clusters
 
 ## Liens
 
-- Site principal : https://semaine-ia.fr
+- Site principal : https://noe.org
 - Documentation API : À compléter
-- LinkedIn La Mednum : https://www.linkedin.com/company/mednum/
+- LinkedIn Noé : https://www.linkedin.com/company/ong-no%C3%A9/
 
 ---
 
-**Semaine de l'IA pour Tous** - Du 18 au 24 mai 2026  
-Organisé par [La Mednum](https://lamednum.coop)
+**Trame pollinisateur** - Initiative de préservation de la biodiversité
+Porté par [Noé](https://noe.org)

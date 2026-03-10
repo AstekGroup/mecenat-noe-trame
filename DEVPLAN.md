@@ -27,6 +27,7 @@ Ce projet est une adaptation de la base technologique de la "Semaine de l'IA pou
 - [x] 3.4 **Refonte Frontend** : Adaptation des hooks (`useProjects`) et des composants UI au nouveau modèle.
 - [x] 3.5 **Qualité** : Correction complète de la stack TypeScript et validation des builds.
 - [x] 3.6 **Natura 2000** : Intégration des réserves (GeoJSON) avec filtre toggle sur la carte.
+- [x] 3.7 **Branding et Identité visuelle** : Mise à jour du titre "Trame pollinisateur", du favicon et intégration de la charte graphique Noe.org.
 
 ### Phase 4 : Déploiement et Infrastructure
 *Mise en production et automatisation.*

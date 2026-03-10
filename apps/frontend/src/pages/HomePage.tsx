@@ -60,15 +60,15 @@ export function HomePage() {
       <div className="bg-primary text-white py-16 px-4">
         <div className="max-w-5xl mx-auto text-center">
           <h1 className="font-rubik text-4xl md:text-5xl font-bold mb-4">
-            Plateforme des projets
+            Trame pollinisateur
           </h1>
           <p className="text-xl md:text-2xl text-white/90 mb-2 flex items-center justify-center gap-2">
-            <Globe className="w-6 h-6" />
-            Découvrez nos initiatives
+            <Globe className="w-6 h-6 text-accent-coral" />
+            Carte des initiatives pour la biodiversité
           </p>
           <p className="text-lg text-white/70 max-w-2xl mx-auto mt-4">
-            Découvrez les différents projets de renaturation, restauration, et sensibilisation
-            disponibles sur le territoire.
+            Découvrez les projets de renaturation, restauration, et sensibilisation
+            en faveur des pollinisateurs sur tout le territoire français.
           </p>
         </div>
       </div>

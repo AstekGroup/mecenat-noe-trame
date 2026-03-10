@@ -8,15 +8,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Couleurs du design system Semaine IA
+        // Couleurs du design system Noé - Trame Pollinisateur
         primary: {
-          DEFAULT: '#003081',
-          dark: '#002060',
-          light: '#004099',
+          DEFAULT: '#122E22',
+          dark: '#0a1a13',
+          light: '#1e4d39',
         },
         accent: {
-          coral: '#f56476',
-          'coral-dark': '#e04a5c',
+          coral: '#D64203',
+          'coral-dark': '#b03602',
           magenta: '#cc3366',
         },
         surface: {
@@ -25,7 +25,7 @@ export default {
           white: '#ffffff',
         },
         text: {
-          primary: '#003081',
+          primary: '#122E22',
           secondary: '#69727d',
           light: '#ffffff',
         }

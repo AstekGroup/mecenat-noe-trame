@@ -7,16 +7,16 @@ export function Footer() {
         {/* Liens */}
         <div className="flex items-center gap-4">
           <a
-            href="https://semaine-ia.fr"
+            href="https://noe.org"
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm hover:text-accent-coral transition-colors"
           >
-            semaine-ia.fr
+            noe.org
           </a>
           <span className="text-white/30">|</span>
           <a
-            href="https://www.linkedin.com/company/mednum/"
+            href="https://www.linkedin.com/company/ong-no%C3%A9/"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 text-sm hover:text-accent-coral transition-colors"
@@ -25,7 +25,7 @@ export function Footer() {
             <span className="hidden sm:inline">LinkedIn</span>
           </a>
           <a
-            href="mailto:contact@lamednum.coop"
+            href="mailto:contact@noe.org"
             className="flex items-center gap-1.5 text-sm hover:text-accent-coral transition-colors"
           >
             <Mail className="w-4 h-4" />
@@ -35,16 +35,16 @@ export function Footer() {
 
         {/* Copyright */}
         <div className="flex items-center gap-1.5 text-sm text-white/70">
-          <span>Fait avec</span>
+          <span>Trame pollinisateur</span>
           <Heart className="w-3.5 h-3.5 text-accent-coral fill-accent-coral" />
           <span>par</span>
           <a
-            href="https://lamednum.coop"
+            href="https://noe.org"
             target="_blank"
             rel="noopener noreferrer"
             className="font-medium hover:text-accent-coral transition-colors"
           >
-            La Mednum
+            Noé
           </a>
           <span className="text-white/50">• 2026</span>
         </div>
