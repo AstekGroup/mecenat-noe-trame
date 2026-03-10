@@ -1,6 +1,6 @@
 import { ProjectFilters } from '@/hooks';
 import { ProjectType, PROJECT_TYPE_LABELS, PROJECT_TYPE_COLORS, REGIONS } from '@/types/project';
-import { MapPin, Tag, RotateCcw, Search, X, Hash } from 'lucide-react';
+import { MapPin, Tag, RotateCcw, Search, X, Hash, Layers } from 'lucide-react';
 import { Button } from '@/components/UI';
 import { FilterAccordion } from './FilterAccordion';
 import { TYPE_ICONS } from '@/components/Map/ProjectMarker';
@@ -32,7 +32,8 @@ export function FilterPanel({
     filters.search ||
     filters.postalCode ||
     filters.regions.length > 0 ||
-    filters.types.length > 0;
+    filters.types.length > 0 ||
+    filters.showNatura2000;
 
   return (
     <div className="flex flex-col h-full">
@@ -94,6 +95,27 @@ export function FilterPanel({
                 </label>
               );
             })}
+          </div>
+        </FilterAccordion>
+
+        {/* Calques optionnels */}
+        <FilterAccordion
+          title="Calques"
+          icon={<Layers className="w-4 h-4" />}
+          defaultOpen={filters.showNatura2000}
+        >
+          <div className="space-y-2">
+            <label className="flex items-center gap-3 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={filters.showNatura2000}
+                onChange={() => onUpdateFilters({ showNatura2000: !filters.showNatura2000 })}
+                className="w-4 h-4 text-accent-coral border-primary/30 rounded focus:ring-accent-coral"
+              />
+              <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">
+                Zones Natura 2000
+              </span>
+            </label>
           </div>
         </FilterAccordion>
 

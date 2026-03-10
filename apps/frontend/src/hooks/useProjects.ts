@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Project, ProjectType, ProjectsGeoJSON } from '@/types/project';
-import { fetchProjects, projectsToGeoJSON } from '@/services/api';
+import { fetchProjects, fetchNatura2000, projectsToGeoJSON } from '@/services/api';
 
 export interface ProjectFilters {
   search: string;
@@ -9,6 +9,7 @@ export interface ProjectFilters {
   types: ProjectType[];
   postalCode: string;
   modality: 'all' | 'presentiel' | 'distanciel';
+  showNatura2000: boolean;
 }
 
 const initialFilters: ProjectFilters = {
@@ -18,10 +19,12 @@ const initialFilters: ProjectFilters = {
   types: [],
   postalCode: '',
   modality: 'all',
+  showNatura2000: false,
 };
 
 export function useProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
+  const [natura2000Data, setNatura2000Data] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [filters, setFilters] = useState<ProjectFilters>(initialFilters);
@@ -45,6 +48,21 @@ export function useProjects() {
 
     loadProjects();
   }, [devMode]);
+
+  // Charger les données Natura 2000 si le filtre est activé et qu'on ne les a pas encore
+  useEffect(() => {
+    if (filters.showNatura2000 && !natura2000Data) {
+      const loadNatura2000 = async () => {
+        try {
+          const data = await fetchNatura2000();
+          setNatura2000Data(data);
+        } catch (err) {
+          console.error('[useProjects] Erreur lors du chargement Natura 2000:', err);
+        }
+      };
+      loadNatura2000();
+    }
+  }, [filters.showNatura2000, natura2000Data]);
 
   // Filtrer les projets
   const filteredProjects = useMemo(() => {
@@ -150,6 +168,7 @@ export function useProjects() {
     projects: filteredProjects,
     allProjects: projects,
     geojson,
+    natura2000Data,
     loading,
     error,
     filters,

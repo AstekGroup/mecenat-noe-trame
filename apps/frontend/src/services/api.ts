@@ -37,6 +37,18 @@ export async function fetchProjectById(id: string): Promise<Project> {
 }
 
 /**
+ * Récupère les données Natura 2000 (GeoJSON simplifié) depuis le backend.
+ */
+export async function fetchNatura2000(): Promise<any> {
+  const response = await fetch(`${API_BASE}/api/natura2000`);
+  if (!response.ok) {
+    throw new Error(`Erreur API: ${response.status} ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+/**
  * Convertit un tableau de projets en GeoJSON FeatureCollection.
  * Exclut les projets sans coordonnées valides.
  */

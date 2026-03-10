@@ -1,5 +1,5 @@
 import { useRef, useState, useCallback, useMemo, useEffect } from 'react';
-import Map, { Marker, Popup, ScaleControl } from 'react-map-gl/maplibre';
+import Map, { Marker, Popup, ScaleControl, Source, Layer } from 'react-map-gl/maplibre';
 import type { MapRef } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
@@ -14,6 +14,8 @@ import { ZoomIn, ZoomOut, Home } from 'lucide-react';
 
 interface MapViewProps {
   geojson: ProjectsGeoJSON;
+  natura2000Data?: any;
+  showNatura2000?: boolean;
   selectedProject: Project | null;
   onSelectProject: (project: Project | null) => void;
   hoveredProject: Project | null;
@@ -24,6 +26,8 @@ interface MapViewProps {
 
 export function MapView({
   geojson,
+  natura2000Data,
+  showNatura2000,
   selectedProject,
   onSelectProject,
   hoveredProject,
@@ -131,6 +135,29 @@ export function MapView({
         attributionControl={false}
       >
         <ScaleControl position="bottom-left" />
+
+        {/* Couche Natura 2000 */}
+        {showNatura2000 && natura2000Data && (
+          <Source id="natura2000" type="geojson" data={natura2000Data}>
+            <Layer
+              id="natura2000-fill"
+              type="fill"
+              paint={{
+                'fill-color': '#2e7d32',
+                'fill-opacity': 0.3,
+              }}
+            />
+            <Layer
+              id="natura2000-outline"
+              type="line"
+              paint={{
+                'line-color': '#ffffff',
+                'line-width': 1,
+                'line-opacity': 0.5,
+              }}
+            />
+          </Source>
+        )}
 
         {clusters.map((feature) => {
           const [longitude, latitude] = feature.geometry.coordinates;

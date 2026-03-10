@@ -26,6 +26,7 @@ Ce projet est une adaptation de la base technologique de la "Semaine de l'IA pou
 - [x] 3.3 **API Projets** : Déploiement du module `projects` et des endpoints `/api/projects`.
 - [x] 3.4 **Refonte Frontend** : Adaptation des hooks (`useProjects`) et des composants UI au nouveau modèle.
 - [x] 3.5 **Qualité** : Correction complète de la stack TypeScript et validation des builds.
+- [x] 3.6 **Natura 2000** : Intégration des réserves (GeoJSON) avec filtre toggle sur la carte.
 
 ### Phase 4 : Déploiement et Infrastructure
 *Mise en production et automatisation.*
@@ -35,6 +36,6 @@ Ce projet est une adaptation de la base technologique de la "Semaine de l'IA pou
 - [ ] 4.4 **Production** : Mise en ligne finale sur l'infrastructure Scaleway.
 
 ## État du Projet
-- **Statut** : Adaptation terminée, prêt pour déploiement ✅
+- **Statut** : Adaptation terminée, zones Natura 2000 intégrées ✅
 - **Base technique** : Adaptée de "Semaine de l'IA"
 - **Dernière mise à jour** : 10 mars 2026

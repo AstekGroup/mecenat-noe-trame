@@ -17,6 +17,7 @@ export function MapPage() {
   const {
     projects,
     geojson,
+    natura2000Data,
     loading,
     error,
     filters,
@@ -115,6 +116,8 @@ export function MapPage() {
 
       <MapView
         geojson={geojson}
+        natura2000Data={natura2000Data}
+        showNatura2000={filters.showNatura2000}
         selectedProject={selectedProject}
         onSelectProject={setSelectedProject}
         hoveredProject={hoveredProject}
