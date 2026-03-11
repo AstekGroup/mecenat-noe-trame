@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { Project, PROJECT_TYPE_LABELS, PROJECT_TYPE_COLORS } from '@/types/project';
 import { TYPE_ICONS } from '@/components/Map/ProjectMarker';
-import { Calendar, MapPin } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 
 interface ProjectCardProps {
   project: Project;
@@ -20,11 +20,6 @@ function ProjectCardComponent({
   onMouseEnter,
   onMouseLeave,
 }: ProjectCardProps) {
-  const formattedDate = project.startDate ? new Date(project.startDate).toLocaleDateString('fr-FR', {
-    day: 'numeric',
-    month: 'short',
-  }) : null;
-
   const Icon = TYPE_ICONS[project.type];
   const color = PROJECT_TYPE_COLORS[project.type] || '#ccc';
 
@@ -66,19 +61,15 @@ function ProjectCardComponent({
           </h4>
 
           <div className="mt-2 space-y-1">
-            {formattedDate && (
-              <div className="flex items-center gap-3 text-xs text-text-secondary">
-                <span className="flex items-center gap-1">
-                  <Calendar className="w-3.5 h-3.5 text-accent-coral" />
-                  {formattedDate}
-                </span>
+            <div className="flex items-center gap-1 text-xs text-text-secondary font-medium text-accent-magenta">
+              <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="truncate">{project.city || project.region}</span>
+            </div>
+            {project.owner && (
+              <div className="text-[10px] text-text-secondary truncate italic">
+                {project.owner}
               </div>
             )}
-
-            <div className="flex items-center gap-1 text-xs text-text-secondary">
-              <MapPin className="w-3.5 h-3.5 text-accent-coral flex-shrink-0" />
-              <span className="truncate">{project.city}</span>
-            </div>
           </div>
         </div>
       </div>

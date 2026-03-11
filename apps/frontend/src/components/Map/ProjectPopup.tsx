@@ -9,12 +9,6 @@ interface ProjectPopupProps {
 }
 
 export function ProjectPopup({ project, onClose, onViewDetails }: ProjectPopupProps) {
-  const formattedDate = project.startDate ? new Date(project.startDate).toLocaleDateString('fr-FR', {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'long',
-  }) : null;
-  
   const Icon = TYPE_ICONS[project.type];
 
   return (
@@ -24,7 +18,7 @@ export function ProjectPopup({ project, onClose, onViewDetails }: ProjectPopupPr
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded textxs font-semibold" style={{ backgroundColor: '#ffeed0', color: '#003082' }}>
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-semibold" style={{ backgroundColor: '#ffeed0', color: '#003082' }}>
                 <Icon className="w-3 h-3" />
                 {PROJECT_TYPE_LABELS[project.type]}
               </span>
@@ -47,13 +41,6 @@ export function ProjectPopup({ project, onClose, onViewDetails }: ProjectPopupPr
       
       {/* Content */}
       <div className="p-4 space-y-2.5">
-        {formattedDate && (
-          <div className="flex items-center gap-2 text-sm text-text-secondary flex-wrap">
-            <Calendar className="w-4 h-4 text-accent-coral flex-shrink-0" />
-            <span className="capitalize">{formattedDate}</span>
-          </div>
-        )}
-        
         {/* Lieu */}
         <div className="flex items-start gap-2 text-sm">
           <MapPin className="w-4 h-4 text-accent-coral mt-0.5 flex-shrink-0" />

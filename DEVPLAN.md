@@ -29,6 +29,7 @@ Ce projet est une adaptation de la base technologique de la "Semaine de l'IA pou
 - [x] 3.6 **Natura 2000** : Intégration des réserves (GeoJSON) avec filtre toggle sur la carte.
 - [x] 3.7 **Limites Administratives** : Ajout de 4 calques (Régions, Départements, EPCI, Communes) via les Vector Tiles de l'IGN.
 - [x] 3.8 **Branding et Identité visuelle** : Mise à jour du titre "Trame pollinisateur", du favicon et intégration de la charte graphique Noe.org.
+- [x] 3.9 **Évolution du Modèle** : Alignement sur la nouvelle structure Airtable (Type d'action, Milieu, Profil porteur, Emprise) et retrait des dates/tags.
 
 ### Phase 4 : Déploiement et Infrastructure
 *Mise en production et automatisation.*
@@ -40,4 +41,4 @@ Ce projet est une adaptation de la base technologique de la "Semaine de l'IA pou
 ## État du Projet
 - **Statut** : Adaptation terminée, zones Natura 2000 intégrées ✅
 - **Base technique** : Adaptée de "Semaine de l'IA"
-- **Dernière mise à jour** : 10 mars 2026
+- **Dernière mise à jour** : 11 mars 2026

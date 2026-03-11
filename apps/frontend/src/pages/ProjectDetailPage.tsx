@@ -57,22 +57,6 @@ export function ProjectDetailPage() {
     );
   }
 
-  const formattedStartDate = project.startDate ? new Date(project.startDate).toLocaleDateString('fr-FR', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  }) : null;
-
-  const formattedEndDate = project.endDate
-    ? new Date(project.endDate).toLocaleDateString('fr-FR', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      })
-    : null;
-
   return (
     <div className="min-h-screen bg-surface-beige overflow-y-auto">
       {/* Hero Header */}
@@ -113,45 +97,55 @@ export function ProjectDetailPage() {
               {project.title}
             </h1>
 
-            {/* Owner */}
-            {project.owner && (
-              <p className="text-text-secondary">
-                Porté par <span className="font-medium text-primary">{project.owner}</span>
-              </p>
-            )}
+            {/* Owner & Profile */}
+            <div className="space-y-1">
+              {project.owner && (
+                <p className="text-text-secondary">
+                  Porté par <span className="font-medium text-primary">{project.owner}</span>
+                </p>
+              )}
+              {project.ownerProfile && (
+                <p className="text-sm text-text-secondary italic">
+                  Profil : {project.ownerProfile}
+                </p>
+              )}
+            </div>
             
-            {/* Tags */}
-            {project.tags && project.tags.length > 0 && (
+            {/* Habitat Types (as tags) */}
+            {project.habitatType && (
               <div className="mt-4 flex flex-wrap gap-2">
-                {project.tags.map(tag => (
-                  <span key={tag} className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-md">
-                    {tag}
+                {(Array.isArray(project.habitatType) ? project.habitatType : [project.habitatType]).map(habitat => (
+                  <span key={habitat} className="px-2 py-1 bg-accent-coral/10 text-accent-coral text-xs font-medium rounded-md">
+                    {habitat}
                   </span>
                 ))}
               </div>
             )}
           </div>
 
-          {/* Date & Location side by side */}
+          {/* Details & Location side by side */}
           <div className="p-6 md:p-8 border-b border-primary/10 bg-surface-beige/30">
             <div className="grid md:grid-cols-2 gap-6">
-              {/* Date */}
-              {formattedStartDate && (
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 bg-accent-coral/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Calendar className="w-5 h-5 text-accent-coral" />
-                  </div>
-                  <div>
-                    <h3 className="font-rubik font-semibold text-sm text-primary/70 uppercase tracking-wide mb-1">
-                      Période
-                    </h3>
-                    <p className="font-medium text-primary capitalize">{formattedStartDate}</p>
-                    {formattedEndDate && formattedEndDate !== formattedStartDate && (
-                      <p className="text-text-secondary text-sm capitalize">au {formattedEndDate}</p>
-                    )}
-                  </div>
+              {/* Info (Extent etc) */}
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-accent-coral/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Calendar className="w-5 h-5 text-accent-coral" />
                 </div>
-              )}
+                <div>
+                  <h3 className="font-rubik font-semibold text-sm text-primary/70 uppercase tracking-wide mb-1">
+                    Informations
+                  </h3>
+                  {project.extent && (
+                    <p className="text-text-secondary font-medium">Emprise : {project.extent}</p>
+                  )}
+                  {project.isOngoing && (
+                    <p className="text-text-secondary">Projet en cours de réalisation</p>
+                  )}
+                  {!project.extent && !project.isOngoing && (
+                    <p className="text-text-secondary italic text-sm">Aucune information additionnelle</p>
+                  )}
+                </div>
+              </div>
 
               {/* Location */}
               <div className="flex items-start gap-4">

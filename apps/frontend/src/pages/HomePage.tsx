@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Globe, Calendar, ArrowRight, Users } from 'lucide-react';
+import { MapPin, Globe, ArrowRight, Users } from 'lucide-react';
 import { useProjects } from '@/hooks';
 import { Project, PROJECT_TYPE_COLORS } from '@/types/project';
 import { TYPE_ICONS } from '@/components/Map/ProjectMarker';
@@ -9,10 +9,6 @@ import { Loader2 } from 'lucide-react';
 function MiniProjectCard({ project }: { project: Project }) {
   const Icon = TYPE_ICONS[project.type];
   const typeColor = PROJECT_TYPE_COLORS[project.type];
-  const formattedDate = project.startDate ? new Date(project.startDate).toLocaleDateString('fr-FR', {
-    day: 'numeric',
-    month: 'long',
-  }) : null;
 
   return (
     <Link
@@ -27,12 +23,10 @@ function MiniProjectCard({ project }: { project: Project }) {
           {project.title}
         </h3>
         <div className="space-y-1 text-xs text-text-secondary mt-auto">
-          {formattedDate && (
-            <p className="flex items-center gap-1.5">
-              <Calendar className="w-3 h-3 text-accent-coral flex-shrink-0" />
-              <span>{formattedDate}</span>
-            </p>
-          )}
+          <p className="flex items-center gap-1.5 text-accent-magenta font-medium truncate">
+            <MapPin className="w-3 h-3 flex-shrink-0" />
+            <span>{project.city || project.region}</span>
+          </p>
           {project.owner && (
             <p className="flex items-center gap-1.5">
               <Users className="w-3 h-3 text-accent-coral flex-shrink-0" />

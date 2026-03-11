@@ -59,7 +59,7 @@ export function transformProjectRecord(
   const postalCode = (f['Code postal'] || '').trim();
   const fallbackRegion = fallbackRegionFromPostalCode(postalCode);
 
-  const rawType = f['Type de projet'];
+  const rawType = f["Type d'action"];
   const projectType = mapProjectType(rawType);
 
   const isOngoingRaw = f['Projet en cours ?'];
@@ -86,15 +86,15 @@ export function transformProjectRecord(
     type: projectType,
 
     owner: f['Acteur porteur'] || '',
+    ownerProfile: Array.isArray(f['Profil du porteur de projet'])
+      ? f['Profil du porteur de projet'][0]
+      : f['Profil du porteur de projet'],
     contactEmail: f['Email de contact'] || undefined,
     contactPhone: f['Téléphone de contact'] || undefined,
     website: f['Site web'] || undefined,
 
-    startDate: f['Date de début'] || undefined,
-    endDate: f['Date de fin'] || undefined,
+    habitatType: f['Type de milieu'],
+    extent: f['Emprise'],
     isOngoing,
-
-    tags: f['Mots-clés'] || undefined,
   };
 }
-

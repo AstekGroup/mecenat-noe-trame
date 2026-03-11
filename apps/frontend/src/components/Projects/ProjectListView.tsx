@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Project, PROJECT_TYPE_LABELS, PROJECT_TYPE_COLORS } from '@/types/project';
 import { Pagination } from '@/components/UI/Pagination';
-import { Calendar, Users, MapPin } from 'lucide-react';
+import { Users, MapPin } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 24;
 
@@ -92,17 +92,10 @@ export function ProjectListView({ projects }: ProjectListViewProps) {
                   </h3>
                   
                   <div className="space-y-1 text-xs text-text-secondary mt-auto">
-                    {project.startDate && (
-                      <p className="flex items-center gap-1.5">
-                        <Calendar className="w-3.5 h-3.5 text-accent-coral flex-shrink-0" />
-                        <span>
-                          {new Date(project.startDate).toLocaleDateString('fr-FR', {
-                            day: 'numeric',
-                            month: 'long',
-                          })}
-                        </span>
-                      </p>
-                    )}
+                    <p className="flex items-center gap-1.5 text-accent-magenta font-medium truncate">
+                      <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                      <span>{project.city || project.region}</span>
+                    </p>
                     
                     {project.owner && (
                       <p className="flex items-center gap-1.5">

@@ -36,6 +36,11 @@ export interface Project {
   owner: string;
 
   /**
+   * Profil du porteur de projet.
+   */
+  ownerProfile?: string;
+
+  /**
    * Informations de contact et de ressources.
    */
   contactEmail?: string;
@@ -43,19 +48,20 @@ export interface Project {
   website?: string;
 
   /**
-   * Période du projet (facultative).
-   * - startDate: date de démarrage (AAAA-MM-JJ)
-   * - endDate: date de fin si le projet est borné
-   * - isOngoing: vrai si le projet est en cours de manière continue
+   * Type de milieu.
    */
-  startDate?: string;
-  endDate?: string;
-  isOngoing?: boolean;
+  habitatType?: string | string[];
 
   /**
-   * Mots-clés libres ou thématiques complémentaires (ex: type de milieu, espèces ciblées...).
+   * Emprise du projet.
    */
-  tags?: string[];
+  extent?: string;
+
+  /**
+   * État du projet.
+   * - isOngoing: vrai si le projet est en cours de manière continue
+   */
+  isOngoing?: boolean;
 }
 
 export interface GeoJSONProject {

@@ -13,15 +13,15 @@ export interface AirtableProjectRecord {
     'Ville'?: string;
     'Région'?: string;
     'Département'?: string;
-    'Type de projet'?: string | string[];
+    "Type d'action"?: string | string[];
     'Acteur porteur'?: string;
+    'Profil du porteur de projet'?: string | string[];
     'Email de contact'?: string;
     'Téléphone de contact'?: string;
     'Site web'?: string;
-    'Date de début'?: string;
-    'Date de fin'?: string;
     'Projet en cours ?'?: string | boolean;
-    'Mots-clés'?: string[];
+    'Type de milieu'?: string | string[];
+    'Emprise'?: string;
   };
   createdTime?: string;
 }
@@ -30,4 +30,3 @@ export interface AirtableProjectsResponse {
   records: AirtableProjectRecord[];
   offset?: string;
 }
-

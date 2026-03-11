@@ -4,11 +4,9 @@ import { fetchProjects, fetchNatura2000, projectsToGeoJSON } from '@/services/ap
 
 export interface ProjectFilters {
   search: string;
-  dateFilter: 'all' | 'during-week' | 'other';
   regions: string[];
   types: ProjectType[];
   postalCode: string;
-  modality: 'all' | 'presentiel' | 'distanciel';
   showNatura2000: boolean;
   showRegions: boolean;
   showDepartments: boolean;
@@ -18,11 +16,9 @@ export interface ProjectFilters {
 
 const initialFilters: ProjectFilters = {
   search: '',
-  dateFilter: 'all',
   regions: [],
   types: [],
   postalCode: '',
-  modality: 'all',
   showNatura2000: false,
   showRegions: false,
   showDepartments: false,
