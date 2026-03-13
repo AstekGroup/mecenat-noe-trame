@@ -1,13 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { fetchEvents, fetchEventById, eventsToGeoJSON } from './api';
-import type { Event } from '@/types/event';
+import { fetchProjects, fetchProjectById, projectsToGeoJSON } from './api';
+import type { Project } from '@/types/project';
 
-const mockEvent: Event = {
+const mockProject: Project = {
   id: 'rec1',
-  title: 'Atelier IA',
+  title: 'Projet Nature',
   description: 'Description test',
-  date: '2026-05-20',
-  time: '14:00',
   address: '1 rue Test',
   city: 'Paris',
   region: 'Île-de-France',
@@ -15,28 +13,24 @@ const mockEvent: Event = {
   postalCode: '75001',
   latitude: 48.8566,
   longitude: 2.3522,
-  type: 'atelier',
-  organizer: 'Org Test',
-  isDuringWeek: true,
-  modality: 'presentiel',
-  format: 'atelier',
-  targetAudience: ['tout-public'],
+  type: 'renaturation',
+  owner: 'Org Test',
 };
 
-describe('fetchEvents', () => {
+describe('fetchProjects', () => {
   beforeEach(() => {
     vi.stubGlobal('fetch', vi.fn());
   });
 
-  it('retourne les événements en cas de succès', async () => {
+  it('retourne les projets en cas de succès', async () => {
     vi.mocked(fetch).mockResolvedValueOnce({
       ok: true,
-      json: async () => [mockEvent],
+      json: async () => [mockProject],
     } as Response);
 
-    const result = await fetchEvents();
-    expect(result).toEqual([mockEvent]);
-    expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/api/events'));
+    const result = await fetchProjects();
+    expect(result).toEqual([mockProject]);
+    expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/api/projects'));
   });
 
   it('ajoute ?devMode=true si devMode est activé', async () => {
@@ -45,7 +39,7 @@ describe('fetchEvents', () => {
       json: async () => [],
     } as Response);
 
-    await fetchEvents(true);
+    await fetchProjects(true);
     expect(fetch).toHaveBeenCalledWith(expect.stringContaining('?devMode=true'));
   });
 
@@ -55,7 +49,7 @@ describe('fetchEvents', () => {
       json: async () => [],
     } as Response);
 
-    await fetchEvents(false);
+    await fetchProjects(false);
     const url = vi.mocked(fetch).mock.calls[0][0] as string;
     expect(url).not.toContain('devMode');
   });
@@ -67,66 +61,66 @@ describe('fetchEvents', () => {
       statusText: 'Internal Server Error',
     } as Response);
 
-    await expect(fetchEvents()).rejects.toThrow('Erreur API: 500');
+    await expect(fetchProjects()).rejects.toThrow('Erreur API: 500');
   });
 });
 
-describe('fetchEventById', () => {
+describe('fetchProjectById', () => {
   beforeEach(() => {
     vi.stubGlobal('fetch', vi.fn());
   });
 
-  it('retourne l\'événement en cas de succès', async () => {
+  it('retourne le projet en cas de succès', async () => {
     vi.mocked(fetch).mockResolvedValueOnce({
       ok: true,
-      json: async () => mockEvent,
+      json: async () => mockProject,
     } as Response);
 
-    const result = await fetchEventById('rec1');
-    expect(result).toEqual(mockEvent);
-    expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/api/events/rec1'));
+    const result = await fetchProjectById('rec1');
+    expect(result).toEqual(mockProject);
+    expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/api/projects/rec1'));
   });
 
-  it('lève une erreur si l\'événement n\'existe pas', async () => {
+  it('lève une erreur si le projet n\'existe pas', async () => {
     vi.mocked(fetch).mockResolvedValueOnce({
       ok: false,
       status: 404,
       statusText: 'Not Found',
     } as Response);
 
-    await expect(fetchEventById('inexistant')).rejects.toThrow('Erreur API: 404');
+    await expect(fetchProjectById('inexistant')).rejects.toThrow('Erreur API: 404');
   });
 });
 
-describe('eventsToGeoJSON', () => {
-  it('convertit les événements en FeatureCollection GeoJSON', () => {
-    const result = eventsToGeoJSON([mockEvent]);
+describe('projectsToGeoJSON', () => {
+  it('convertit les projets en FeatureCollection GeoJSON', () => {
+    const result = projectsToGeoJSON([mockProject]);
     expect(result.type).toBe('FeatureCollection');
     expect(result.features).toHaveLength(1);
     expect(result.features[0].geometry.coordinates).toEqual([2.3522, 48.8566]);
   });
 
-  it('exclut les événements avec latitude et longitude à 0', () => {
-    const eventSansCoords = { ...mockEvent, latitude: 0, longitude: 0 };
-    const result = eventsToGeoJSON([mockEvent, eventSansCoords]);
+  it('exclut les projets avec latitude et longitude à 0', () => {
+    const projectSansCoords = { ...mockProject, latitude: 0, longitude: 0 };
+    const result = projectsToGeoJSON([mockProject, projectSansCoords]);
     expect(result.features).toHaveLength(1);
   });
 
-  it('retourne une FeatureCollection vide si tous les événements sont à 0,0', () => {
-    const event = { ...mockEvent, latitude: 0, longitude: 0 };
-    const result = eventsToGeoJSON([event]);
+  it('retourne une FeatureCollection vide si tous les projets sont à 0,0', () => {
+    const project = { ...mockProject, latitude: 0, longitude: 0 };
+    const result = projectsToGeoJSON([project]);
     expect(result.features).toHaveLength(0);
   });
 
   it('place les coordonnées en [longitude, latitude]', () => {
-    const result = eventsToGeoJSON([mockEvent]);
+    const result = projectsToGeoJSON([mockProject]);
     const [lon, lat] = result.features[0].geometry.coordinates;
-    expect(lon).toBe(mockEvent.longitude);
-    expect(lat).toBe(mockEvent.latitude);
+    expect(lon).toBe(mockProject.longitude);
+    expect(lat).toBe(mockProject.latitude);
   });
 
   it('retourne une FeatureCollection vide pour un tableau vide', () => {
-    const result = eventsToGeoJSON([]);
+    const result = projectsToGeoJSON([]);
     expect(result.features).toHaveLength(0);
   });
 });

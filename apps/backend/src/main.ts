@@ -24,7 +24,7 @@ async function bootstrap() {
     await app.listen(port, '0.0.0.0');
     logger.log(`Backend démarré sur http://0.0.0.0:${port} (production)`);
     logger.log(`Health check: http://localhost:${port}/api/health`);
-    logger.log(`Events API: http://localhost:${port}/api/events`);
+    logger.log(`Projects API: http://localhost:${port}/api/projects`);
   } else {
     // En dev : tenter plusieurs ports si le premier est occupé
     for (let p = port; p < port + 10; p++) {
@@ -32,7 +32,7 @@ async function bootstrap() {
         await app.listen(p);
         logger.log(`Backend démarré sur http://localhost:${p} (développement)`);
         logger.log(`Health check: http://localhost:${p}/api/health`);
-        logger.log(`Events API: http://localhost:${p}/api/events`);
+        logger.log(`Projects API: http://localhost:${p}/api/projects`);
         return;
       } catch (err: any) {
         if (err.code === 'EADDRINUSE') {
