@@ -30,6 +30,7 @@ Ce projet est une adaptation de la base technologique de la "Semaine de l'IA pou
 - [x] 3.7 **Limites Administratives** : Ajout de 4 calques (Régions, Départements, EPCI, Communes) via les Vector Tiles de l'IGN.
 - [x] 3.8 **Branding et Identité visuelle** : Mise à jour du titre "Trame pollinisateur", du favicon et intégration de la charte graphique Noe.org.
 - [x] 3.9 **Évolution du Modèle** : Alignement sur la nouvelle structure Airtable (Type d'action, Milieu, Profil porteur, Emprise) et retrait des dates/tags.
+- [x] 3.10 **Tests Unitaires** : Migration complète de la suite de tests (Vitest/Jest) vers le modèle "Projet" et couverture des nouveaux services.
 
 ### Phase 4 : Déploiement et Infrastructure
 *Mise en production et automatisation.*
@@ -39,6 +40,6 @@ Ce projet est une adaptation de la base technologique de la "Semaine de l'IA pou
 - [ ] 4.4 **Production** : Mise en ligne finale sur l'infrastructure Scaleway.
 
 ## État du Projet
-- **Statut** : Adaptation terminée, zones Natura 2000 intégrées ✅
+- **Statut** : Migration "Projets" finalisée, tests unitaires 100% opérationnels ✅
 - **Base technique** : Adaptée de "Semaine de l'IA"
-- **Dernière mise à jour** : 11 mars 2026
+- **Dernière mise à jour** : 13 mars 2026

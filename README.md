@@ -1,8 +1,8 @@
-# Make Map - Semaine de l'IA pour Tous
+# Make Map - Trame pollinisateur (Noé)
 
-Carte interactive pour visualiser les 1500+ événements de la [Semaine de l'IA pour Tous](https://semaine-ia.fr) (18-24 mai 2026) à travers la France.
+Carte interactive pour visualiser les projets de renaturation et de préservation de la biodiversité de la [Trame pollinisateur](https://noe.org) (Noé) à travers la France.
 
-**Client** : La Mednum | **Stack** : React + NestJS + MapLibre GL JS | **Monorepo** : pnpm + TurboRepo
+**Client** : Noé | **Stack** : React + NestJS + MapLibre GL JS | **Monorepo** : pnpm + TurboRepo
 
 ## Structure du projet
 
@@ -47,9 +47,8 @@ cp apps/frontend/.env.example apps/frontend/.env
 |---|---|---|
 | `AIRTABLE_API_KEY` | backend | Personal Access Token Airtable |
 | `AIRTABLE_BASE_ID` | backend | ID de la base (commence par `app`) |
-| `AIRTABLE_TABLE_ID` | backend | ID de la table (commence par `tbl`) |
+| `AIRTABLE_PROJECTS_TABLE_ID` | backend | ID de la table des projets (commence par `tbl`) |
 | `VITE_API_URL` | frontend | URL du backend (`http://localhost:3000`) |
-| `VITE_MAPTILER_KEY` | frontend | Clé API MapTiler ([obtenir ici](https://cloud.maptiler.com/account/keys/)) |
 
 ### Lancer le projet
 
@@ -68,7 +67,7 @@ pnpm front:dev   # Frontend (port 5173)
 
 Proxy sécurisé NestJS pour l'API Airtable. Le token reste côté serveur.
 
-- **API** : `GET /api/events` · `GET /api/events/:id` · `GET /api/health`
+- **API** : `GET /api/projects` · `GET /api/projects/:id` · `GET /api/health` · `GET /api/natura2000`
 - Géocodage via [api-adresse.data.gouv.fr](https://adresse.data.gouv.fr) avec cache permanent
 - Cache TTL 5 min pour les données Airtable
 - `?devMode=true` pour bypasser le filtre de modération
@@ -77,15 +76,16 @@ Proxy sécurisé NestJS pour l'API Airtable. Le token reste côté serveur.
 
 Application React avec carte interactive MapLibre GL JS.
 
-- Clustering (Supercluster) pour 1500+ événements
-- Filtres par type, format, audience, modalité, région
+- Clustering (Supercluster) pour les projets de renaturation
+- Filtres par type de projet, région, Natura 2000
 - Vue carte + vue liste avec pagination
 - Encarts DOM-TOM
-- Design system calé sur la charte semaine-ia.fr (Rubik / Palanquin)
+- Calques administratifs (Régions, Départements, EPCI, Communes) via Vector Tiles IGN
+- Design system calé sur la charte Noé (Rubik / Montserrat)
 
 ### map-interactive (`apps/map-interactive`)
 
-Version standalone originale avec appel direct Airtable côté client. Conservée comme référence, non modifiée.
+Version standalone originale (Semaine IA). Conservée comme référence, non modifiée.
 
 ```bash
 pnpm map:dev
@@ -95,11 +95,11 @@ pnpm map:dev
 
 ### @make-map/types (`shared/types`)
 
-Types TypeScript partagés : `Event`, `EventType`, `EventFormat`, `TargetAudience`, `EventModality`, `GeoJSONEvent`, constantes de labels, liste des régions.
+Types TypeScript partagés : `Project`, `ProjectType`, `GeoJSONProject`, constantes de labels, liste des régions.
 
 ## Déploiement
 
-Instance **Scaleway DEV1-S** avec Docker Compose : Caddy (HTTPS auto) + Nginx (frontend) + NestJS (backend).
+Instance **Scaleway** avec Docker Compose : Caddy (HTTPS auto) + Nginx (frontend) + NestJS (backend).
 
 ```bash
 pnpm deploy:v2
@@ -109,13 +109,12 @@ Voir [deploy/README.md](deploy/README.md) pour le guide complet.
 
 ## Ressources
 
-- [Analyse du site semaine-ia.fr](resources/analyse-semaine-ia-fr.md)
-- [Analyse des frameworks carte](resources/analyse-frameworks-carte-interactive.md)
+- [DEVPLAN](DEVPLAN.md) : Suivi des étapes de développement.
 
 ## Liens
 
-- Site officiel : https://semaine-ia.fr
-- Organisateur : [La Mednum](https://lamednum.coop)
+- Site officiel : https://noe.org
+- Organisateur : [Noé](https://noe.org)
 
 ---
 
