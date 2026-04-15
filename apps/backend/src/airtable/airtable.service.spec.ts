@@ -16,7 +16,7 @@ describe('AirtableService', () => {
       'Code postal': '75001',
       'Adresse': '1 rue de Rivoli',
       'Ville': 'Paris',
-      "Type d'action": 'Renaturation',
+      "Type d'action": 'renaturation-restauration',
       'Acteur porteur': 'Ville de Paris',
     },
   };

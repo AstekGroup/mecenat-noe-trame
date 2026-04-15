@@ -149,8 +149,7 @@ export function useProjects() {
     byType: Object.fromEntries(
       ([
         'pratiques-raisonnees',
-        'renaturation',
-        'restauration',
+        'renaturation-restauration',
         'sensibilisation',
         'formation',
         'consultation',

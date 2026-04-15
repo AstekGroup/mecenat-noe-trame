@@ -3,17 +3,17 @@ import type { AirtableProjectRecord } from './airtable-projects.types';
 
 describe('airtable-projects-mapping.util', () => {
   describe('mapProjectType', () => {
-    it('should return renaturation by default', () => {
-      expect(mapProjectType(undefined)).toBe('renaturation');
-      expect(mapProjectType([])).toBe('renaturation');
-      expect(mapProjectType('unknown type')).toBe('renaturation');
+    it('should return renaturation-restauration by default', () => {
+      expect(mapProjectType(undefined)).toBe('renaturation-restauration');
+      expect(mapProjectType([])).toBe('renaturation-restauration');
+      expect(mapProjectType('unknown type')).toBe('renaturation-restauration');
     });
 
     it('should map various labels to ProjectType', () => {
       expect(mapProjectType('Pratiques Raisonnées')).toBe('pratiques-raisonnees');
       expect(mapProjectType('agriculture raisonnée')).toBe('pratiques-raisonnees');
-      expect(mapProjectType('Renaturation des sols')).toBe('renaturation');
-      expect(mapProjectType('Restauration écologique')).toBe('restauration');
+      expect(mapProjectType('renaturation-restauration des sols')).toBe('renaturation-restauration');
+      expect(mapProjectType('renaturation-restauration écologique')).toBe('renaturation-restauration');
       expect(mapProjectType('Sensibilisation')).toBe('sensibilisation');
       expect(mapProjectType('Formation')).toBe('formation');
       expect(mapProjectType('Consultation du public')).toBe('consultation');
@@ -23,7 +23,7 @@ describe('airtable-projects-mapping.util', () => {
     });
 
     it('should handle array inputs from Airtable', () => {
-      expect(mapProjectType(['Renaturation'])).toBe('renaturation');
+      expect(mapProjectType(['renaturation-restauration'])).toBe('renaturation-restauration');
     });
   });
 
@@ -37,7 +37,7 @@ describe('airtable-projects-mapping.util', () => {
         'Ville': 'Test City',
         'Code postal': '75001',
         'Département': 'Paris',
-        "Type d'action": 'Renaturation',
+        "Type d'action": 'renaturation-restauration',
         'Acteur porteur': 'Test Owner',
         'Profil du porteur de projet': 'Collectivité',
         'Email de contact': 'test@example.com',
@@ -65,7 +65,7 @@ describe('airtable-projects-mapping.util', () => {
         postalCode: '75001',
         latitude: 0,
         longitude: 0,
-        type: 'renaturation',
+        type: 'renaturation-restauration',
         owner: 'Test Owner',
         ownerProfile: 'Collectivité',
         contactEmail: 'test@example.com',
@@ -87,7 +87,7 @@ describe('airtable-projects-mapping.util', () => {
 
       expect(result.title).toBe('Projet sans titre');
       expect(result.region).toBe('Île-de-France');
-      expect(result.type).toBe('renaturation');
+      expect(result.type).toBe('renaturation-restauration');
       expect(result.isOngoing).toBeUndefined();
     });
 

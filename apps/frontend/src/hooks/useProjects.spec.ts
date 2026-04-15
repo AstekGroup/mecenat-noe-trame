@@ -18,7 +18,7 @@ function makeProject(overrides: Partial<Project> = {}): Project {
     postalCode: '75001',
     latitude: 48.8566,
     longitude: 2.3522,
-    type: 'renaturation' as ProjectType,
+    type: 'renaturation-restauration' as ProjectType,
     owner: 'Org Test',
     ...overrides,
   };
@@ -132,7 +132,7 @@ describe('useProjects', () => {
 
     it('filtre par type via toggleType', async () => {
       const projects = [
-        makeProject({ id: 'a', type: 'renaturation' }),
+        makeProject({ id: 'a', type: 'renaturation-restauration' }),
         makeProject({ id: 'b', type: 'sensibilisation' }),
       ];
       vi.mocked(api.fetchProjects).mockResolvedValueOnce(projects);
@@ -168,7 +168,7 @@ describe('useProjects', () => {
 
     it('resetFilters réinitialise tous les filtres', async () => {
       const projects = [
-        makeProject({ id: 'a', type: 'renaturation' }),
+        makeProject({ id: 'a', type: 'renaturation-restauration' }),
         makeProject({ id: 'b', type: 'sensibilisation' }),
       ];
       vi.mocked(api.fetchProjects).mockResolvedValueOnce(projects);
@@ -187,9 +187,9 @@ describe('useProjects', () => {
   describe('stats', () => {
     it('calcule les stats totales et filtrées', async () => {
       const projects = [
-        makeProject({ id: 'a', type: 'renaturation' }),
+        makeProject({ id: 'a', type: 'renaturation-restauration' }),
         makeProject({ id: 'b', type: 'sensibilisation' }),
-        makeProject({ id: 'c', type: 'renaturation' }),
+        makeProject({ id: 'c', type: 'renaturation-restauration' }),
       ];
       vi.mocked(api.fetchProjects).mockResolvedValueOnce(projects);
 
@@ -198,7 +198,7 @@ describe('useProjects', () => {
 
       expect(result.current.stats.total).toBe(3);
       expect(result.current.stats.filtered).toBe(3);
-      expect(result.current.stats.byType['renaturation']).toBe(2);
+      expect(result.current.stats.byType['renaturation-restauration']).toBe(2);
       expect(result.current.stats.byType['sensibilisation']).toBe(1);
     });
   });

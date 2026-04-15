@@ -13,8 +13,7 @@ interface ProjectMarkerProps {
 
 export const TYPE_ICONS: Record<ProjectType, typeof Leaf> = {
   'pratiques-raisonnees': Leaf,
-  'renaturation': Sprout,
-  'restauration': Wrench,
+  'renaturation-restauration': Sprout,
   'sensibilisation': Megaphone,
   'formation': BookOpen,
   'consultation': Users,

@@ -13,7 +13,7 @@ export function mapProjectType(
   rawType: string | string[] | undefined,
 ): ProjectType {
   if (!rawType || (Array.isArray(rawType) && rawType.length === 0)) {
-    return 'renaturation';
+    return 'renaturation-restauration';
   }
 
   const value = Array.isArray(rawType) ? rawType[0] : rawType;
@@ -22,11 +22,8 @@ export function mapProjectType(
   if (lower.includes('pratique') || lower.includes('raisonn')) {
     return 'pratiques-raisonnees';
   }
-  if (lower.includes('renatur')) {
-    return 'renaturation';
-  }
-  if (lower.includes('restaur')) {
-    return 'restauration';
+  if (lower.includes('renatur') || lower.includes('restaur')) {
+    return 'renaturation-restauration';
   }
   if (lower.includes('sensibil')) {
     return 'sensibilisation';
@@ -42,7 +39,7 @@ export function mapProjectType(
   }
 
   // Valeur par défaut raisonnable si aucun mot-clé n'est reconnu.
-  return 'renaturation';
+  return 'renaturation-restauration';
 }
 
 /**

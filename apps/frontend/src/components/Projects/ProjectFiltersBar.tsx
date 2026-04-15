@@ -11,7 +11,16 @@ interface ProjectFiltersBarProps {
   onResetFilters: () => void;
 }
 
-const PROJECT_TYPES: ProjectType[] = ['pratiques-raisonnees', 'renaturation', 'restauration', 'sensibilisation', 'formation', 'consultation', 'suivis'];
+const PROJECT_TYPE_GROUPS = [
+  {
+    title: 'Actions directes sur les milieux',
+    types: ['pratiques-raisonnees', 'renaturation-restauration'] as ProjectType[],
+  },
+  {
+    title: 'Actions indirectes sur les milieux',
+    types: ['sensibilisation', 'formation', 'consultation', 'suivis'] as ProjectType[],
+  },
+];
 
 interface FilterDropdownProps {
   label: string;
@@ -51,7 +60,7 @@ function FilterDropdown({ label, children, badge }: FilterDropdownProps) {
       </button>
       
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-popup z-50 min-w-[200px] max-h-[300px] overflow-y-auto">
+        <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-popup z-50 min-w-[240px] max-h-[400px] overflow-y-auto">
           {children}
         </div>
       )}
@@ -140,30 +149,37 @@ export function ProjectFiltersBar({
           label="Type de projet"
           badge={filters.types.length || undefined}
         >
-          <div className="p-2 space-y-1">
-            {PROJECT_TYPES.map((type) => {
-              const color = PROJECT_TYPE_COLORS[type];
-              return (
-                <label
-                  key={type}
-                  className="flex items-center gap-2 px-3 py-2 rounded-md text-sm cursor-pointer hover:bg-primary/5 transition-colors"
-                >
-                  <input
-                    type="checkbox"
-                    checked={filters.types.includes(type)}
-                    onChange={() => onToggleType(type)}
-                    className="w-4 h-4 text-accent-coral border-primary/30 rounded focus:ring-accent-coral"
-                  />
-                  <span
-                    className="w-4 h-4 rounded flex items-center justify-center flex-shrink-0"
-                    style={{ backgroundColor: color }}
-                  />
-                  <span className={filters.types.includes(type) ? 'text-primary font-medium' : 'text-text-secondary'}>
-                    {PROJECT_TYPE_LABELS[type]}
-                  </span>
-                </label>
-              );
-            })}
+          <div className="p-3 space-y-4">
+            {PROJECT_TYPE_GROUPS.map((group) => (
+              <div key={group.title} className="space-y-1">
+                <h4 className="text-[10px] text-text-secondary mb-2 font-medium uppercase tracking-wider border-b border-primary/5 pb-1">
+                  {group.title}
+                </h4>
+                {group.types.map((type) => {
+                  const color = PROJECT_TYPE_COLORS[type];
+                  return (
+                    <label
+                      key={type}
+                      className="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm cursor-pointer hover:bg-primary/5 transition-colors"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={filters.types.includes(type)}
+                        onChange={() => onToggleType(type)}
+                        className="w-4 h-4 text-accent-coral border-primary/30 rounded focus:ring-accent-coral"
+                      />
+                      <span
+                        className="w-3 h-3 rounded flex items-center justify-center flex-shrink-0"
+                        style={{ backgroundColor: color }}
+                      />
+                      <span className={filters.types.includes(type) ? 'text-primary font-medium text-xs' : 'text-text-secondary text-xs'}>
+                        {PROJECT_TYPE_LABELS[type]}
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+            ))}
           </div>
         </FilterDropdown>
         

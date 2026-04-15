@@ -19,7 +19,7 @@ describe('ProjectsController', () => {
     postalCode: '75001',
     latitude: 48.8566,
     longitude: 2.3522,
-    type: 'renaturation',
+    type: 'renaturation-restauration',
     owner: 'Porteur Test',
   };
 

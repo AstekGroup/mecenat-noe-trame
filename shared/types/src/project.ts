@@ -3,8 +3,7 @@ import { REGIONS } from './event';
 
 export type ProjectType =
   | 'pratiques-raisonnees'
-  | 'renaturation'
-  | 'restauration'
+  | 'renaturation-restauration'
   | 'sensibilisation'
   | 'formation'
   | 'consultation'
@@ -88,8 +87,7 @@ export function isProjectCluster(feature: ProjectMapFeature): feature is Cluster
 
 export const PROJECT_TYPE_LABELS: Record<ProjectType, string> = {
   'pratiques-raisonnees': 'Pratiques raisonnées',
-  renaturation: 'Renaturation',
-  restauration: 'Restauration',
+  'renaturation-restauration': 'Renaturation / Restauration',
   sensibilisation: 'Sensibilisation',
   formation: 'Formation',
   consultation: 'Consultation',
@@ -98,8 +96,7 @@ export const PROJECT_TYPE_LABELS: Record<ProjectType, string> = {
 
 export const PROJECT_TYPE_COLORS: Record<ProjectType, string> = {
   'pratiques-raisonnees': '#2E7D32', // vert agriculture raisonnée
-  renaturation: '#00897B', // vert-bleu renaturation des milieux
-  restauration: '#5D4037', // brun restauration d’habitats
+  'renaturation-restauration': '#00897B', // vert-bleu renaturation des milieux
   sensibilisation: '#F57C00', // orange sensibilisation
   formation: '#1976D2', // bleu formation
   consultation: '#6A1B9A', // violet concertation/consultation
