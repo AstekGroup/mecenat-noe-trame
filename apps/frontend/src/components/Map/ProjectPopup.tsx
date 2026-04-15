@@ -1,5 +1,5 @@
 import { Project, PROJECT_TYPE_LABELS } from '@/types/project';
-import { Calendar, MapPin, User, Mail, Eye } from 'lucide-react';
+import { MapPin, User, Mail, Eye } from 'lucide-react';
 import { TYPE_ICONS } from './ProjectMarker';
 
 interface ProjectPopupProps {
@@ -59,9 +59,11 @@ export function ProjectPopup({ project, onClose, onViewDetails }: ProjectPopupPr
         )}
         
         {/* Description */}
-        <p className="text-sm text-text-secondary line-clamp-2">
-          {project.description}
-        </p>
+        {project.description && (
+          <p className="text-sm text-text-secondary line-clamp-2">
+            {project.description}
+          </p>
+        )}
         
         {/* Actions */}
         <div className="flex gap-2 pt-1">

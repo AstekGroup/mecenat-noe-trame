@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Calendar, MapPin, Mail, Globe } from 'lucide-react';
+import { ArrowLeft, Info, MapPin, Mail, Globe } from 'lucide-react';
 import { useProjects } from '@/hooks';
 import { 
   PROJECT_TYPE_LABELS, 
@@ -129,7 +129,7 @@ export function ProjectDetailPage() {
               {/* Info (Extent etc) */}
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 bg-accent-coral/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Calendar className="w-5 h-5 text-accent-coral" />
+                  <Info className="w-5 h-5 text-accent-coral" />
                 </div>
                 <div>
                   <h3 className="font-rubik font-semibold text-sm text-primary/70 uppercase tracking-wide mb-1">
@@ -169,43 +169,47 @@ export function ProjectDetailPage() {
           </div>
 
           {/* Description */}
-          <div className="p-6 md:p-8 border-b border-primary/10">
-            <h2 className="font-rubik font-semibold text-lg text-primary mb-3">
-              Description
-            </h2>
-            <p className="text-text-secondary whitespace-pre-line">
-              {project.description}
-            </p>
-          </div>
+          {project.description && (
+            <div className="p-6 md:p-8 border-b border-primary/10">
+              <h2 className="font-rubik font-semibold text-lg text-primary mb-3">
+                Description
+              </h2>
+              <p className="text-text-secondary whitespace-pre-line">
+                {project.description}
+              </p>
+            </div>
+          )}
 
           {/* Contact */}
-          <div className="p-6 md:p-8 border-b border-primary/10">
-            <h2 className="font-rubik font-semibold text-lg text-primary mb-4">
-              Contact & Liens
-            </h2>
-            <div className="space-y-3">
-              {project.contactEmail && (
-                <a
-                  href={`mailto:${project.contactEmail}`}
-                  className="flex items-center gap-3 text-text-secondary hover:text-primary transition-colors"
-                >
-                  <Mail className="w-5 h-5 text-accent-coral" />
-                  {project.contactEmail}
-                </a>
-              )}
-              {project.website && (
-                <a
-                  href={project.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 text-text-secondary hover:text-primary transition-colors"
-                >
-                  <Globe className="w-5 h-5 text-accent-coral" />
-                  Site web du projet
-                </a>
-              )}
+          {(project.contactEmail || project.website) && (
+            <div className="p-6 md:p-8 border-b border-primary/10">
+              <h2 className="font-rubik font-semibold text-lg text-primary mb-4">
+                Contact & Liens
+              </h2>
+              <div className="space-y-3">
+                {project.contactEmail && (
+                  <a
+                    href={`mailto:${project.contactEmail}`}
+                    className="flex items-center gap-3 text-text-secondary hover:text-primary transition-colors"
+                  >
+                    <Mail className="w-5 h-5 text-accent-coral" />
+                    {project.contactEmail}
+                  </a>
+                )}
+                {project.website && (
+                  <a
+                    href={project.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 text-text-secondary hover:text-primary transition-colors"
+                  >
+                    <Globe className="w-5 h-5 text-accent-coral" />
+                    Site web du projet
+                  </a>
+                )}
+              </div>
             </div>
-          </div>
+          )}
 
         </div>
       </div>
