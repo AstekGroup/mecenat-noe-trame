@@ -19,6 +19,10 @@ export function MapPage() {
     geojson,
     natura2000Data,
     corridorsData,
+    parcsNationauxData,
+    parcsNaturelsRegionauxData,
+    reservesNaturellesData,
+    reservesBiologiquesData,
     loading,
     error,
     filters,
@@ -119,8 +123,16 @@ export function MapPage() {
         geojson={geojson}
         natura2000Data={natura2000Data}
         corridorsData={corridorsData}
+        parcsNationauxData={parcsNationauxData}
+        parcsNaturelsRegionauxData={parcsNaturelsRegionauxData}
+        reservesNaturellesData={reservesNaturellesData}
+        reservesBiologiquesData={reservesBiologiquesData}
         showNatura2000={filters.showNatura2000}
         showCorridors={filters.showCorridors}
+        showParcsNationaux={filters.showParcsNationaux}
+        showParcsNaturelsRegionaux={filters.showParcsNaturelsRegionaux}
+        showReservesNaturelles={filters.showReservesNaturelles}
+        showReservesBiologiques={filters.showReservesBiologiques}
         showRegions={filters.showRegions}
         showDepartments={filters.showDepartments}
         showEPCI={filters.showEPCI}

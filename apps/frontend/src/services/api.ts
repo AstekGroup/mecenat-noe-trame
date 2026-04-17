@@ -61,6 +61,18 @@ export async function fetchCorridors(): Promise<any> {
 }
 
 /**
+ * Récupère un calque environnemental spécifique depuis le backend.
+ */
+export async function fetchEnvironmentalLayer(layerName: string): Promise<any> {
+  const response = await fetch(`${API_BASE}/api/environmental-layers/${layerName}`);
+  if (!response.ok) {
+    throw new Error(`Erreur API: ${response.status} ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+/**
  * Convertit un tableau de projets en GeoJSON FeatureCollection.
  * Exclut les projets sans coordonnées valides.
  */

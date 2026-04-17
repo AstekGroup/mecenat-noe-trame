@@ -125,7 +125,7 @@ export function FilterPanel({
         <FilterAccordion
           title="Calques"
           icon={<Layers className="w-4 h-4" />}
-          defaultOpen={filters.showCorridors || filters.showNatura2000 || filters.showRegions || filters.showDepartments || filters.showEPCI || filters.showCommunes}
+          defaultOpen={filters.showCorridors || filters.showNatura2000 || filters.showParcsNationaux || filters.showParcsNaturelsRegionaux || filters.showReservesNaturelles || filters.showReservesBiologiques || filters.showRegions || filters.showDepartments || filters.showEPCI || filters.showCommunes}
         >
           <div className="space-y-2">
             <label className="flex items-center gap-3 cursor-pointer group">
@@ -140,17 +140,71 @@ export function FilterPanel({
               </span>
             </label>
 
-            <label className="flex items-center gap-3 cursor-pointer group">
-              <input
-                type="checkbox"
-                checked={filters.showNatura2000}
-                onChange={() => onUpdateFilters({ showNatura2000: !filters.showNatura2000 })}
-                className="w-4 h-4 text-accent-coral border-primary/30 rounded focus:ring-accent-coral"
-              />
-              <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">
-                Zones Natura 2000
-              </span>
-            </label>
+            <div className="pt-2 mt-2 border-t border-primary/10">
+              <p className="text-[10px] text-text-secondary mb-2 font-medium uppercase tracking-wider">Espaces Protégés</p>
+              
+              <div className="space-y-2">
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={filters.showParcsNationaux}
+                    onChange={() => onUpdateFilters({ showParcsNationaux: !filters.showParcsNationaux })}
+                    className="w-4 h-4 text-accent-coral border-primary/30 rounded focus:ring-accent-coral"
+                  />
+                  <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">
+                    Parcs Nationaux
+                  </span>
+                </label>
+
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={filters.showParcsNaturelsRegionaux}
+                    onChange={() => onUpdateFilters({ showParcsNaturelsRegionaux: !filters.showParcsNaturelsRegionaux })}
+                    className="w-4 h-4 text-accent-coral border-primary/30 rounded focus:ring-accent-coral"
+                  />
+                  <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">
+                    Parcs Naturels Régionaux
+                  </span>
+                </label>
+
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={filters.showReservesNaturelles}
+                    onChange={() => onUpdateFilters({ showReservesNaturelles: !filters.showReservesNaturelles })}
+                    className="w-4 h-4 text-accent-coral border-primary/30 rounded focus:ring-accent-coral"
+                  />
+                  <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">
+                    Réserves Naturelles
+                  </span>
+                </label>
+
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={filters.showReservesBiologiques}
+                    onChange={() => onUpdateFilters({ showReservesBiologiques: !filters.showReservesBiologiques })}
+                    className="w-4 h-4 text-accent-coral border-primary/30 rounded focus:ring-accent-coral"
+                  />
+                  <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">
+                    Réserves Biologiques
+                  </span>
+                </label>
+
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={filters.showNatura2000}
+                    onChange={() => onUpdateFilters({ showNatura2000: !filters.showNatura2000 })}
+                    className="w-4 h-4 text-accent-coral border-primary/30 rounded focus:ring-accent-coral"
+                  />
+                  <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">
+                    Zones Natura 2000
+                  </span>
+                </label>
+              </div>
+            </div>
 
             <div className="pt-2 mt-2 border-t border-primary/10">
               <p className="text-[10px] text-text-secondary mb-2 font-medium uppercase tracking-wider">Limites administratives (IGN)</p>

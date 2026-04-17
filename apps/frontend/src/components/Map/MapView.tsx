@@ -16,8 +16,16 @@ interface MapViewProps {
   geojson: ProjectsGeoJSON;
   natura2000Data?: any;
   corridorsData?: any;
+  parcsNationauxData?: any;
+  parcsNaturelsRegionauxData?: any;
+  reservesNaturellesData?: any;
+  reservesBiologiquesData?: any;
   showNatura2000?: boolean;
   showCorridors?: boolean;
+  showParcsNationaux?: boolean;
+  showParcsNaturelsRegionaux?: boolean;
+  showReservesNaturelles?: boolean;
+  showReservesBiologiques?: boolean;
   showRegions?: boolean;
   showDepartments?: boolean;
   showEPCI?: boolean;
@@ -34,8 +42,16 @@ export function MapView({
   geojson,
   natura2000Data,
   corridorsData,
+  parcsNationauxData,
+  parcsNaturelsRegionauxData,
+  reservesNaturellesData,
+  reservesBiologiquesData,
   showNatura2000 = false,
   showCorridors = false,
+  showParcsNationaux = false,
+  showParcsNaturelsRegionaux = false,
+  showReservesNaturelles = false,
+  showReservesBiologiques = false,
   showRegions = false,
   showDepartments = false,
   showEPCI = false,
@@ -147,6 +163,94 @@ export function MapView({
         attributionControl={true}
       >
         <ScaleControl position="bottom-left" />
+
+        {/* Couche Parcs Nationaux */}
+        {showParcsNationaux && parcsNationauxData && (
+          <Source id="parcsNationaux" type="geojson" data={parcsNationauxData}>
+            <Layer
+              id="parcsNationaux-fill"
+              type="fill"
+              paint={{
+                'fill-color': '#004d40', // Vert foncé
+                'fill-opacity': 0.4,
+              }}
+            />
+            <Layer
+              id="parcsNationaux-outline"
+              type="line"
+              paint={{
+                'line-color': '#00251a',
+                'line-width': 1,
+              }}
+            />
+          </Source>
+        )}
+
+        {/* Couche Parcs Naturels Régionaux */}
+        {showParcsNaturelsRegionaux && parcsNaturelsRegionauxData && (
+          <Source id="parcsNaturelsRegionaux" type="geojson" data={parcsNaturelsRegionauxData}>
+            <Layer
+              id="parcsNaturelsRegionaux-fill"
+              type="fill"
+              paint={{
+                'fill-color': '#689f38', // Vert herbe
+                'fill-opacity': 0.3,
+              }}
+            />
+            <Layer
+              id="parcsNaturelsRegionaux-outline"
+              type="line"
+              paint={{
+                'line-color': '#33691e',
+                'line-width': 0.5,
+              }}
+            />
+          </Source>
+        )}
+
+        {/* Couche Réserves Naturelles */}
+        {showReservesNaturelles && reservesNaturellesData && (
+          <Source id="reservesNaturelles" type="geojson" data={reservesNaturellesData}>
+            <Layer
+              id="reservesNaturelles-fill"
+              type="fill"
+              paint={{
+                'fill-color': '#795548', // Brun
+                'fill-opacity': 0.4,
+              }}
+            />
+            <Layer
+              id="reservesNaturelles-outline"
+              type="line"
+              paint={{
+                'line-color': '#3e2723',
+                'line-width': 1,
+              }}
+            />
+          </Source>
+        )}
+
+        {/* Couche Réserves Biologiques */}
+        {showReservesBiologiques && reservesBiologiquesData && (
+          <Source id="reservesBiologiques" type="geojson" data={reservesBiologiquesData}>
+            <Layer
+              id="reservesBiologiques-fill"
+              type="fill"
+              paint={{
+                'fill-color': '#0097a7', // Cyan foncé
+                'fill-opacity': 0.4,
+              }}
+            />
+            <Layer
+              id="reservesBiologiques-outline"
+              type="line"
+              paint={{
+                'line-color': '#006064',
+                'line-width': 1,
+              }}
+            />
+          </Source>
+        )}
 
         {/* Couche Natura 2000 */}
         {showNatura2000 && natura2000Data && (

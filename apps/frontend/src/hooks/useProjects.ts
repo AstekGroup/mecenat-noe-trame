@@ -9,6 +9,10 @@ export interface ProjectFilters {
   postalCode: string;
   showNatura2000: boolean;
   showCorridors: boolean;
+  showParcsNationaux: boolean;
+  showParcsNaturelsRegionaux: boolean;
+  showReservesNaturelles: boolean;
+  showReservesBiologiques: boolean;
   showRegions: boolean;
   showDepartments: boolean;
   showEPCI: boolean;
@@ -22,6 +26,10 @@ const initialFilters: ProjectFilters = {
   postalCode: '',
   showNatura2000: false,
   showCorridors: true,
+  showParcsNationaux: false,
+  showParcsNaturelsRegionaux: false,
+  showReservesNaturelles: false,
+  showReservesBiologiques: false,
   showRegions: false,
   showDepartments: false,
   showEPCI: false,
@@ -32,6 +40,10 @@ export function useProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [natura2000Data, setNatura2000Data] = useState<any>(null);
   const [corridorsData, setCorridorsData] = useState<any>(null);
+  const [parcsNationauxData, setParcsNationauxData] = useState<any>(null);
+  const [parcsNaturelsRegionauxData, setParcsNaturelsRegionauxData] = useState<any>(null);
+  const [reservesNaturellesData, setReservesNaturellesData] = useState<any>(null);
+  const [reservesBiologiquesData, setReservesBiologiquesData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [filters, setFilters] = useState<ProjectFilters>(initialFilters);
@@ -85,6 +97,70 @@ export function useProjects() {
       loadCorridors();
     }
   }, [filters.showCorridors, corridorsData]);
+
+  // Charger les Parcs Nationaux
+  useEffect(() => {
+    if (filters.showParcsNationaux && !parcsNationauxData) {
+      import('@/services/api').then(async ({ fetchEnvironmentalLayer }) => {
+        try {
+          const data = await fetchEnvironmentalLayer('parcs-nationaux');
+          setParcsNationauxData(data);
+        } catch (err) {
+          console.error('[useProjects] Erreur lors du chargement Parcs Nationaux:', err);
+        }
+      });
+    }
+  }, [filters.showParcsNationaux, parcsNationauxData]);
+
+  // Charger les Parcs Naturels Régionaux
+  useEffect(() => {
+    if (filters.showParcsNaturelsRegionaux && !parcsNaturelsRegionauxData) {
+      import('@/services/api').then(async ({ fetchEnvironmentalLayer }) => {
+        try {
+          const data = await fetchEnvironmentalLayer('parcs-naturels-regionaux');
+          setParcsNaturelsRegionauxData(data);
+        } catch (err) {
+          console.error('[useProjects] Erreur lors du chargement PNR:', err);
+        }
+      });
+    }
+  }, [filters.showParcsNaturelsRegionaux, parcsNaturelsRegionauxData]);
+
+  // Charger les Réserves Naturelles (Nationales + Régionales)
+  useEffect(() => {
+    if (filters.showReservesNaturelles && !reservesNaturellesData) {
+      import('@/services/api').then(async ({ fetchEnvironmentalLayer }) => {
+        try {
+          const [rnn, rnr] = await Promise.all([
+            fetchEnvironmentalLayer('reserves-naturelles-nationales'),
+            fetchEnvironmentalLayer('reserves-naturelles-regionales')
+          ]);
+          // Merge RNN and RNR
+          setReservesNaturellesData({
+            type: 'FeatureCollection',
+            features: [...rnn.features, ...rnr.features]
+          });
+        } catch (err) {
+          console.error('[useProjects] Erreur lors du chargement Réserves Naturelles:', err);
+        }
+      });
+    }
+  }, [filters.showReservesNaturelles, reservesNaturellesData]);
+
+  // Charger les Réserves Biologiques (optionnel si pas de source directe facile)
+  useEffect(() => {
+    if (filters.showReservesBiologiques && !reservesBiologiquesData) {
+      import('@/services/api').then(async ({ fetchEnvironmentalLayer }) => {
+        try {
+          const data = await fetchEnvironmentalLayer('reserves-biologiques');
+          setReservesBiologiquesData(data);
+        } catch (err) {
+          // Si RB n'est pas dispo, on ignore ou on log discretement
+          console.warn('[useProjects] Réserves Biologiques non disponibles');
+        }
+      });
+    }
+  }, [filters.showReservesBiologiques, reservesBiologiquesData]);
 
   // Filtrer les projets
   const filteredProjects = useMemo(() => {
@@ -191,6 +267,10 @@ export function useProjects() {
     geojson,
     natura2000Data,
     corridorsData,
+    parcsNationauxData,
+    parcsNaturelsRegionauxData,
+    reservesNaturellesData,
+    reservesBiologiquesData,
     loading,
     error,
     filters,
