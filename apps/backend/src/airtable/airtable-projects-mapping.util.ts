@@ -99,7 +99,9 @@ export function transformProjectRecord(
     consultationType: Array.isArray(f['Type de consultation'])
       ? f['Type de consultation'][0]
       : f['Type de consultation'],
-    followUpType: Array.isArray(f['Type de suivi']) ? f['Type de suivi'][0] : f['Type de suivi'],
+    followUpType: Array.isArray(f['Type de suivi'])
+      ? f['Type de suivi'][0]
+      : f['Type de suivi'],
     followUpFrequency: f['Fréquence de suivi'],
     isOngoing,
   };

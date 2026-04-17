@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Project, ProjectType, ProjectsGeoJSON } from '@/types/project';
-import { fetchProjects, fetchNatura2000, projectsToGeoJSON } from '@/services/api';
+import { fetchProjects, fetchNatura2000, fetchCorridors, projectsToGeoJSON } from '@/services/api';
 
 export interface ProjectFilters {
   search: string;
@@ -8,6 +8,7 @@ export interface ProjectFilters {
   types: ProjectType[];
   postalCode: string;
   showNatura2000: boolean;
+  showCorridors: boolean;
   showRegions: boolean;
   showDepartments: boolean;
   showEPCI: boolean;
@@ -20,6 +21,7 @@ const initialFilters: ProjectFilters = {
   types: [],
   postalCode: '',
   showNatura2000: false,
+  showCorridors: true,
   showRegions: false,
   showDepartments: false,
   showEPCI: false,
@@ -29,6 +31,7 @@ const initialFilters: ProjectFilters = {
 export function useProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [natura2000Data, setNatura2000Data] = useState<any>(null);
+  const [corridorsData, setCorridorsData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [filters, setFilters] = useState<ProjectFilters>(initialFilters);
@@ -67,6 +70,21 @@ export function useProjects() {
       loadNatura2000();
     }
   }, [filters.showNatura2000, natura2000Data]);
+
+  // Charger les données Corridors si le filtre est activé et qu'on ne les a pas encore
+  useEffect(() => {
+    if (filters.showCorridors && !corridorsData) {
+      const loadCorridors = async () => {
+        try {
+          const data = await fetchCorridors();
+          setCorridorsData(data);
+        } catch (err) {
+          console.error('[useProjects] Erreur lors du chargement Corridors:', err);
+        }
+      };
+      loadCorridors();
+    }
+  }, [filters.showCorridors, corridorsData]);
 
   // Filtrer les projets
   const filteredProjects = useMemo(() => {
@@ -172,6 +190,7 @@ export function useProjects() {
     allProjects: projects,
     geojson,
     natura2000Data,
+    corridorsData,
     loading,
     error,
     filters,

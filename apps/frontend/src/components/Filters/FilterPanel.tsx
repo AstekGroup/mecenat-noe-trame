@@ -43,6 +43,7 @@ export function FilterPanel({
     filters.regions.length > 0 ||
     filters.types.length > 0 ||
     filters.showNatura2000 ||
+    !filters.showCorridors || // Show reset if corridors is hidden (since it's default)
     filters.showRegions ||
     filters.showDepartments ||
     filters.showEPCI ||
@@ -124,9 +125,21 @@ export function FilterPanel({
         <FilterAccordion
           title="Calques"
           icon={<Layers className="w-4 h-4" />}
-          defaultOpen={filters.showNatura2000 || filters.showRegions || filters.showDepartments || filters.showEPCI || filters.showCommunes}
+          defaultOpen={filters.showCorridors || filters.showNatura2000 || filters.showRegions || filters.showDepartments || filters.showEPCI || filters.showCommunes}
         >
           <div className="space-y-2">
+            <label className="flex items-center gap-3 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={filters.showCorridors}
+                onChange={() => onUpdateFilters({ showCorridors: !filters.showCorridors })}
+                className="w-4 h-4 text-accent-coral border-primary/30 rounded focus:ring-accent-coral"
+              />
+              <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">
+                Corridors (Trame pollinisateur)
+              </span>
+            </label>
+
             <label className="flex items-center gap-3 cursor-pointer group">
               <input
                 type="checkbox"

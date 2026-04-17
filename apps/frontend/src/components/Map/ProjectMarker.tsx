@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Leaf, Sprout, Wrench, Megaphone, BookOpen, Users, Eye } from 'lucide-react';
+import { Leaf, Sprout, Megaphone, BookOpen, Users, Eye } from 'lucide-react';
 import { ProjectType, PROJECT_TYPE_COLORS } from '@/types/project';
 
 interface ProjectMarkerProps {

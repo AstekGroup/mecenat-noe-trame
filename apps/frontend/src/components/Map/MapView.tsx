@@ -15,7 +15,9 @@ import { ZoomIn, ZoomOut, Home } from 'lucide-react';
 interface MapViewProps {
   geojson: ProjectsGeoJSON;
   natura2000Data?: any;
+  corridorsData?: any;
   showNatura2000?: boolean;
+  showCorridors?: boolean;
   showRegions?: boolean;
   showDepartments?: boolean;
   showEPCI?: boolean;
@@ -24,14 +26,16 @@ interface MapViewProps {
   onSelectProject: (project: Project | null) => void;
   hoveredProject: Project | null;
   onHoverProject: (project: Project | null) => void;
-  onViewProjectDetails: (id: string) => void;
+  onViewProjectDetails?: (id: string) => void;
   onMapFlyToReady?: (flyToFn: (lng: number, lat: number, zoom?: number) => void) => void;
 }
 
 export function MapView({
   geojson,
   natura2000Data,
+  corridorsData,
   showNatura2000 = false,
+  showCorridors = false,
   showRegions = false,
   showDepartments = false,
   showEPCI = false,
@@ -166,6 +170,34 @@ export function MapView({
             />
           </Source>
         )}
+
+        {/* Couche Corridors (Trame pollinisateur) */}
+        {showCorridors && corridorsData && (
+          <Source id="corridors" type="geojson" data={corridorsData}>
+            <Layer
+              id="corridors-line"
+              type="line"
+              paint={{
+                'line-color': '#cc3366', // accent-magenta
+                'line-width': [
+                  'interpolate',
+                  ['linear'],
+                  ['zoom'],
+                  5, 1,    // Zoom 5: épaisseur 1px
+                  8, 3,    // Zoom 8: épaisseur 3px
+                  12, 50,   // Zoom 12: épaisseur 50px
+                  16, 500    // Zoom 16: épaisseur 500px
+                ],
+                'line-opacity': 0.7,
+              }}
+              layout={{
+                'line-join': 'round',
+                'line-cap': 'round',
+              }}
+            />
+          </Source>
+        )}
+
 
         {/* Couches Administratives IGN */}
         {(showRegions || showDepartments || showEPCI || showCommunes) && (

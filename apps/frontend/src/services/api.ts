@@ -49,6 +49,18 @@ export async function fetchNatura2000(): Promise<any> {
 }
 
 /**
+ * Récupère les données Corridors (Trame pollinisateur) depuis le backend.
+ */
+export async function fetchCorridors(): Promise<any> {
+  const response = await fetch(`${API_BASE}/api/corridors`);
+  if (!response.ok) {
+    throw new Error(`Erreur API: ${response.status} ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+/**
  * Convertit un tableau de projets en GeoJSON FeatureCollection.
  * Exclut les projets sans coordonnées valides.
  */

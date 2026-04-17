@@ -18,6 +18,7 @@ export function MapPage() {
     projects,
     geojson,
     natura2000Data,
+    corridorsData,
     loading,
     error,
     filters,
@@ -117,7 +118,9 @@ export function MapPage() {
       <MapView
         geojson={geojson}
         natura2000Data={natura2000Data}
+        corridorsData={corridorsData}
         showNatura2000={filters.showNatura2000}
+        showCorridors={filters.showCorridors}
         showRegions={filters.showRegions}
         showDepartments={filters.showDepartments}
         showEPCI={filters.showEPCI}
