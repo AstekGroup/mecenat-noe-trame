@@ -34,9 +34,8 @@ export class AirtableService {
 
     // 2. Transformer sans géocodage
     const partialProjects = records.map((r) =>
-      transformProjectRecord(
-        r,
-        (postalCode) => this.geocodingService.getRegionFromPostalCode(postalCode),
+      transformProjectRecord(r, (postalCode) =>
+        this.geocodingService.getRegionFromPostalCode(postalCode),
       ),
     );
 
@@ -50,7 +49,9 @@ export class AirtableService {
         city: p.city,
       }));
 
-    this.logger.log(`Géocodage de ${itemsToGeocode.length} adresses de projets...`);
+    this.logger.log(
+      `Géocodage de ${itemsToGeocode.length} adresses de projets...`,
+    );
 
     // 4. Géocoder en batch
     const geocodingResults =
@@ -89,8 +90,9 @@ export class AirtableService {
     const baseId =
       this.configService.get<string>('AIRTABLE_PROJECTS_BASE_ID') ||
       this.configService.get<string>('AIRTABLE_BASE_ID');
-    const tableId =
-      this.configService.get<string>('AIRTABLE_PROJECTS_TABLE_ID');
+    const tableId = this.configService.get<string>(
+      'AIRTABLE_PROJECTS_TABLE_ID',
+    );
 
     if (!apiKey || !baseId || !tableId) {
       throw new Error(

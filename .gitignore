@@ -17,6 +17,8 @@ build/
 *.swp
 *.swo
 .DS_Store
+.gemini/
+.cursor/
 
 # Logs
 *.log

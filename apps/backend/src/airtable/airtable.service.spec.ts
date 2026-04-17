@@ -14,8 +14,8 @@ describe('AirtableService', () => {
     fields: {
       'Nom du projet': 'Test Project',
       'Code postal': '75001',
-      'Adresse': '1 rue de Rivoli',
-      'Ville': 'Paris',
+      Adresse: '1 rue de Rivoli',
+      Ville: 'Paris',
       "Type d'action": 'renaturation-restauration',
       'Acteur porteur': 'Ville de Paris',
     },
@@ -50,9 +50,19 @@ describe('AirtableService', () => {
           provide: GeocodingService,
           useValue: {
             getRegionFromPostalCode: jest.fn().mockReturnValue('Île-de-France'),
-            batchGeocode: jest.fn().mockResolvedValue(new Map([
-              ['rec1', { latitude: 48.8566, longitude: 2.3522, region: 'Île-de-France', department: 'Paris' }]
-            ])),
+            batchGeocode: jest.fn().mockResolvedValue(
+              new Map([
+                [
+                  'rec1',
+                  {
+                    latitude: 48.8566,
+                    longitude: 2.3522,
+                    region: 'Île-de-France',
+                    department: 'Paris',
+                  },
+                ],
+              ]),
+            ),
           },
         },
       ],
@@ -90,7 +100,9 @@ describe('AirtableService', () => {
 
     it('should throw an error if Airtable configuration is missing', async () => {
       jest.spyOn(configService, 'get').mockReturnValue(null);
-      await expect(service.fetchProjects()).rejects.toThrow('Configuration Airtable Projets manquante');
+      await expect(service.fetchProjects()).rejects.toThrow(
+        'Configuration Airtable Projets manquante',
+      );
     });
 
     it('should throw an error if Airtable API returns an error', async () => {
@@ -101,33 +113,36 @@ describe('AirtableService', () => {
         text: jest.fn().mockResolvedValue('Invalid API key'),
       });
 
-      await expect(service.fetchProjects()).rejects.toThrow('Erreur Airtable (projets): 401 Unauthorized');
+      await expect(service.fetchProjects()).rejects.toThrow(
+        'Erreur Airtable (projets): 401 Unauthorized',
+      );
     });
 
     it('should handle pagination with offset', async () => {
-        const firstResponse = {
-            records: [mockProjectRecord],
-            offset: 'next-page'
-        };
-        const secondResponse = {
-            records: [{ ...mockProjectRecord, id: 'rec2' }]
-        };
+      const firstResponse = {
+        records: [mockProjectRecord],
+        offset: 'next-page',
+      };
+      const secondResponse = {
+        records: [{ ...mockProjectRecord, id: 'rec2' }],
+      };
 
-        global.fetch = jest.fn()
-            .mockResolvedValueOnce({
-                ok: true,
-                json: jest.fn().mockResolvedValue(firstResponse),
-            })
-            .mockResolvedValueOnce({
-                ok: true,
-                json: jest.fn().mockResolvedValue(secondResponse),
-            });
-        
-        jest.spyOn(geocodingService, 'batchGeocode').mockResolvedValue(new Map());
+      global.fetch = jest
+        .fn()
+        .mockResolvedValueOnce({
+          ok: true,
+          json: jest.fn().mockResolvedValue(firstResponse),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: jest.fn().mockResolvedValue(secondResponse),
+        });
 
-        const projects = await service.fetchProjects();
-        expect(projects).toHaveLength(2);
-        expect(global.fetch).toHaveBeenCalledTimes(2);
+      jest.spyOn(geocodingService, 'batchGeocode').mockResolvedValue(new Map());
+
+      const projects = await service.fetchProjects();
+      expect(projects).toHaveLength(2);
+      expect(global.fetch).toHaveBeenCalledTimes(2);
     });
   });
 });

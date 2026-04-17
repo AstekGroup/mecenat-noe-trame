@@ -138,10 +138,56 @@ export function ProjectDetailPage() {
                   {project.extent && (
                     <p className="text-text-secondary font-medium">Emprise : {project.extent}</p>
                   )}
-                  {project.isOngoing && (
-                    <p className="text-text-secondary">Projet en cours de réalisation</p>
+                  {project.type === 'pratiques-raisonnees' && project.reasonedPracticeTypes?.length && (
+                    <div className="mt-2">
+                      <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-1">Type de pratiques raisonnées</p>
+                      <p className="text-text-secondary">{project.reasonedPracticeTypes.join(', ')}</p>
+                    </div>
                   )}
-                  {!project.extent && !project.isOngoing && (
+                  {project.type === 'renaturation-restauration' && project.renaturationTypes?.length && (
+                    <div className="mt-2">
+                      <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-1">Type de renaturation</p>
+                      <p className="text-text-secondary">{project.renaturationTypes.join(', ')}</p>
+                    </div>
+                  )}
+                  {project.type === 'sensibilisation' && project.sensitizationTitle && (
+                    <div className="mt-2">
+                      <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-1">Titre de la sensibilisation</p>
+                      <p className="text-text-secondary">{project.sensitizationTitle}</p>
+                    </div>
+                  )}
+                  {project.type === 'formation' && project.trainingTitle && (
+                    <div className="mt-2">
+                      <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-1">Titre de la formation</p>
+                      <p className="text-text-secondary">{project.trainingTitle}</p>
+                    </div>
+                  )}
+                  {project.type === 'consultation' && project.consultationType && (
+                    <div className="mt-2">
+                      <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-1">Type de consultation</p>
+                      <p className="text-text-secondary">{project.consultationType}</p>
+                    </div>
+                  )}
+                  {project.type === 'suivis' && (project.followUpType || project.followUpFrequency) && (
+                    <div className="mt-2 space-y-2">
+                      {project.followUpType && (
+                        <div>
+                          <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-1">Type de suivi</p>
+                          <p className="text-text-secondary">{project.followUpType}</p>
+                        </div>
+                      )}
+                      {project.followUpFrequency && (
+                        <div>
+                          <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-1">Fréquence de suivi</p>
+                          <p className="text-text-secondary">{project.followUpFrequency}</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {project.isOngoing && (
+                    <p className="text-text-secondary mt-1">Projet en cours de réalisation</p>
+                  )}
+                  {!project.extent && !project.isOngoing && project.type !== 'pratiques-raisonnees' && project.type !== 'renaturation-restauration' && project.type !== 'sensibilisation' && project.type !== 'formation' && project.type !== 'consultation' && project.type !== 'suivis' && (
                     <p className="text-text-secondary italic text-sm">Aucune information additionnelle</p>
                   )}
                 </div>

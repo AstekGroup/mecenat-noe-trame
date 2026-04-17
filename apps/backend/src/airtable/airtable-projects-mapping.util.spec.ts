@@ -1,4 +1,7 @@
-import { mapProjectType, transformProjectRecord } from './airtable-projects-mapping.util';
+import {
+  mapProjectType,
+  transformProjectRecord,
+} from './airtable-projects-mapping.util';
 import type { AirtableProjectRecord } from './airtable-projects.types';
 
 describe('airtable-projects-mapping.util', () => {
@@ -10,10 +13,18 @@ describe('airtable-projects-mapping.util', () => {
     });
 
     it('should map various labels to ProjectType', () => {
-      expect(mapProjectType('Pratiques Raisonnées')).toBe('pratiques-raisonnees');
-      expect(mapProjectType('agriculture raisonnée')).toBe('pratiques-raisonnees');
-      expect(mapProjectType('renaturation-restauration des sols')).toBe('renaturation-restauration');
-      expect(mapProjectType('renaturation-restauration écologique')).toBe('renaturation-restauration');
+      expect(mapProjectType('Pratiques Raisonnées')).toBe(
+        'pratiques-raisonnees',
+      );
+      expect(mapProjectType('agriculture raisonnée')).toBe(
+        'pratiques-raisonnees',
+      );
+      expect(mapProjectType('renaturation-restauration des sols')).toBe(
+        'renaturation-restauration',
+      );
+      expect(mapProjectType('renaturation-restauration écologique')).toBe(
+        'renaturation-restauration',
+      );
       expect(mapProjectType('Sensibilisation')).toBe('sensibilisation');
       expect(mapProjectType('Formation')).toBe('formation');
       expect(mapProjectType('Consultation du public')).toBe('consultation');
@@ -23,7 +34,9 @@ describe('airtable-projects-mapping.util', () => {
     });
 
     it('should handle array inputs from Airtable', () => {
-      expect(mapProjectType(['renaturation-restauration'])).toBe('renaturation-restauration');
+      expect(mapProjectType(['renaturation-restauration'])).toBe(
+        'renaturation-restauration',
+      );
     });
   });
 
@@ -32,11 +45,11 @@ describe('airtable-projects-mapping.util', () => {
       id: 'rec123',
       fields: {
         'Nom du projet': 'Test Project',
-        'Description': 'Test Description',
-        'Adresse': '123 Main St',
-        'Ville': 'Test City',
+        Description: 'Test Description',
+        Adresse: '123 Main St',
+        Ville: 'Test City',
         'Code postal': '75001',
-        'Département': 'Paris',
+        Département: 'Paris',
         "Type d'action": 'renaturation-restauration',
         'Acteur porteur': 'Test Owner',
         'Profil du porteur de projet': 'Collectivité',
@@ -45,8 +58,8 @@ describe('airtable-projects-mapping.util', () => {
         'Site web': 'https://example.com',
         'Projet en cours ?': 'Oui',
         'Type de milieu': 'Urbain',
-        'Emprise': 'Locale',
-      }
+        Emprise: 'Locale',
+      },
     };
 
     const mockFallbackRegion = jest.fn().mockReturnValue('Île-de-France');
@@ -81,7 +94,7 @@ describe('airtable-projects-mapping.util', () => {
     it('should handle missing fields with defaults', () => {
       const emptyRecord: AirtableProjectRecord = {
         id: 'rec456',
-        fields: {}
+        fields: {},
       };
       const result = transformProjectRecord(emptyRecord, () => undefined);
 
@@ -94,24 +107,28 @@ describe('airtable-projects-mapping.util', () => {
     it('should handle boolean and string values for isOngoing', () => {
       const recordWithBool: AirtableProjectRecord = {
         id: 'rec1',
-        fields: { 'Projet en cours ?': true }
+        fields: { 'Projet en cours ?': true },
       };
-      expect(transformProjectRecord(recordWithBool, () => undefined).isOngoing).toBe(true);
+      expect(
+        transformProjectRecord(recordWithBool, () => undefined).isOngoing,
+      ).toBe(true);
 
       const recordWithNo: AirtableProjectRecord = {
         id: 'rec2',
-        fields: { 'Projet en cours ?': 'Non' }
+        fields: { 'Projet en cours ?': 'Non' },
       };
-      expect(transformProjectRecord(recordWithNo, () => undefined).isOngoing).toBe(false);
+      expect(
+        transformProjectRecord(recordWithNo, () => undefined).isOngoing,
+      ).toBe(false);
     });
 
     it('should prioritize fallback region over Airtable region if provided', () => {
-        const record: AirtableProjectRecord = {
-            id: 'rec1',
-            fields: { 'Région': 'Bretagne', 'Code postal': '75001' }
-        };
-        const result = transformProjectRecord(record, () => 'Île-de-France');
-        expect(result.region).toBe('Île-de-France');
+      const record: AirtableProjectRecord = {
+        id: 'rec1',
+        fields: { Région: 'Bretagne', 'Code postal': '75001' },
+      };
+      const result = transformProjectRecord(record, () => 'Île-de-France');
+      expect(result.region).toBe('Île-de-France');
     });
   });
 });

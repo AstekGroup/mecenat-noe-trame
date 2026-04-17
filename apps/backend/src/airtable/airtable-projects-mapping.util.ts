@@ -92,6 +92,15 @@ export function transformProjectRecord(
 
     habitatType: f['Type de milieu'],
     extent: f['Emprise'],
+    reasonedPracticeTypes: f['Type de pratiques raisonnées'],
+    renaturationTypes: f['Type de renaturation'],
+    sensitizationTitle: f['Titre de la sensibilisation'],
+    trainingTitle: f['Titre de la formation'],
+    consultationType: Array.isArray(f['Type de consultation'])
+      ? f['Type de consultation'][0]
+      : f['Type de consultation'],
+    followUpType: Array.isArray(f['Type de suivi']) ? f['Type de suivi'][0] : f['Type de suivi'],
+    followUpFrequency: f['Fréquence de suivi'],
     isOngoing,
   };
 }

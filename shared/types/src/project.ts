@@ -57,6 +57,17 @@ export interface Project {
   extent?: string;
 
   /**
+   * Informations spécifiques selon le type de projet.
+   */
+  reasonedPracticeTypes?: string[];
+  renaturationTypes?: string[];
+  sensitizationTitle?: string;
+  trainingTitle?: string;
+  consultationType?: string;
+  followUpType?: string;
+  followUpFrequency?: string;
+
+  /**
    * État du projet.
    * - isOngoing: vrai si le projet est en cours de manière continue
    */

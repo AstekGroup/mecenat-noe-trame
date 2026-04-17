@@ -25,7 +25,7 @@ describe('Natura2000Service', () => {
     }).compile();
 
     service = module.get<Natura2000Service>(Natura2000Service);
-    
+
     // Clear cache between tests
     (service as any).cachedData = null;
     jest.clearAllMocks();
@@ -42,7 +42,10 @@ describe('Natura2000Service', () => {
       const result = await service.getGeoJSON();
 
       expect(result).toEqual(mockGeoJSON);
-      expect(fs.readFile).toHaveBeenCalledWith(expect.stringContaining('natura2000-simple.json'), 'utf8');
+      expect(fs.readFile).toHaveBeenCalledWith(
+        expect.stringContaining('natura2000-simple.json'),
+        'utf8',
+      );
     });
 
     it('should use cached data if available', async () => {
@@ -64,7 +67,10 @@ describe('Natura2000Service', () => {
 
       expect(result).toEqual(mockGeoJSON);
       expect(fs.readFile).toHaveBeenCalledTimes(2);
-      expect(fs.readFile).toHaveBeenLastCalledWith(expect.stringContaining('dist'), 'utf8');
+      expect(fs.readFile).toHaveBeenLastCalledWith(
+        expect.stringContaining('dist'),
+        'utf8',
+      );
     });
 
     it('should return empty FeatureCollection if both attempts fail', async () => {

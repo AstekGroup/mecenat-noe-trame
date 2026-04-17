@@ -57,6 +57,48 @@ export function ProjectPopup({ project, onClose, onViewDetails }: ProjectPopupPr
             <span className="text-text-secondary">{project.owner}</span>
           </div>
         )}
+
+        {/* Informations spécifiques au type */}
+        {project.type === 'pratiques-raisonnees' && project.reasonedPracticeTypes?.length && (
+          <div className="text-xs bg-primary/5 p-2 rounded border border-primary/10">
+            <p className="font-semibold text-primary mb-1">Pratiques :</p>
+            <p className="text-text-secondary">{project.reasonedPracticeTypes.join(', ')}</p>
+          </div>
+        )}
+        {project.type === 'renaturation-restauration' && project.renaturationTypes?.length && (
+          <div className="text-xs bg-primary/5 p-2 rounded border border-primary/10">
+            <p className="font-semibold text-primary mb-1">Actions :</p>
+            <p className="text-text-secondary">{project.renaturationTypes.join(', ')}</p>
+          </div>
+        )}
+        {project.type === 'sensibilisation' && project.sensitizationTitle && (
+          <div className="text-xs bg-primary/5 p-2 rounded border border-primary/10">
+            <p className="font-semibold text-primary mb-1">Titre :</p>
+            <p className="text-text-secondary">{project.sensitizationTitle}</p>
+          </div>
+        )}
+        {project.type === 'formation' && project.trainingTitle && (
+          <div className="text-xs bg-primary/5 p-2 rounded border border-primary/10">
+            <p className="font-semibold text-primary mb-1">Titre :</p>
+            <p className="text-text-secondary">{project.trainingTitle}</p>
+          </div>
+        )}
+        {project.type === 'consultation' && project.consultationType && (
+          <div className="text-xs bg-primary/5 p-2 rounded border border-primary/10">
+            <p className="font-semibold text-primary mb-1">Type de consultation :</p>
+            <p className="text-text-secondary">{project.consultationType}</p>
+          </div>
+        )}
+        {project.type === 'suivis' && (project.followUpType || project.followUpFrequency) && (
+          <div className="text-xs bg-primary/5 p-2 rounded border border-primary/10">
+            {project.followUpType && (
+              <p className="text-text-secondary"><span className="font-semibold text-primary">Type :</span> {project.followUpType}</p>
+            )}
+            {project.followUpFrequency && (
+              <p className="text-text-secondary mt-1"><span className="font-semibold text-primary">Fréquence :</span> {project.followUpFrequency}</p>
+            )}
+          </div>
+        )}
         
         {/* Description */}
         {project.description && (

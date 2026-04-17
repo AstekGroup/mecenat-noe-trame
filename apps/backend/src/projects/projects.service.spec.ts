@@ -53,15 +53,15 @@ describe('ProjectsService', () => {
     it('devrait utiliser le cache lors du deuxième appel', async () => {
       await service.findAll();
       const result = await service.findAll();
-      
+
       expect(result).toEqual([mockProject]);
       expect(airtableService.fetchProjects).toHaveBeenCalledTimes(1);
     });
 
     it('devrait avoir des caches séparés pour prod et devMode', async () => {
       await service.findAll(false); // prod
-      await service.findAll(true);  // dev
-      
+      await service.findAll(true); // dev
+
       expect(airtableService.fetchProjects).toHaveBeenCalledTimes(2);
       expect(airtableService.fetchProjects).toHaveBeenCalledWith(false);
       expect(airtableService.fetchProjects).toHaveBeenCalledWith(true);
@@ -74,7 +74,7 @@ describe('ProjectsService', () => {
       expect(result).toEqual(mockProject);
     });
 
-    it('devrait retourner null si le projet n\'existe pas', async () => {
+    it("devrait retourner null si le projet n'existe pas", async () => {
       const result = await service.findOne('inconnu');
       expect(result).toBeNull();
     });
@@ -85,7 +85,7 @@ describe('ProjectsService', () => {
       await service.findAll();
       service.invalidateCache();
       await service.findAll();
-      
+
       expect(airtableService.fetchProjects).toHaveBeenCalledTimes(2);
     });
   });

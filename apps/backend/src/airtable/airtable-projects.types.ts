@@ -7,12 +7,12 @@ export interface AirtableProjectRecord {
   id: string;
   fields: {
     'Nom du projet'?: string;
-    'Description'?: string;
-    'Adresse'?: string;
+    Description?: string;
+    Adresse?: string;
     'Code postal'?: string;
-    'Ville'?: string;
-    'Région'?: string;
-    'Département'?: string;
+    Ville?: string;
+    Région?: string;
+    Département?: string;
     "Type d'action"?: string | string[];
     'Acteur porteur'?: string;
     'Profil du porteur de projet'?: string | string[];
@@ -21,7 +21,14 @@ export interface AirtableProjectRecord {
     'Site web'?: string;
     'Projet en cours ?'?: string | boolean;
     'Type de milieu'?: string | string[];
-    'Emprise'?: string;
+    Emprise?: string;
+    'Type de pratiques raisonnées'?: string[];
+    'Type de renaturation'?: string[];
+    'Titre de la sensibilisation'?: string;
+    'Titre de la formation'?: string;
+    'Type de consultation'?: string | string[];
+    'Type de suivi'?: string | string[];
+    'Fréquence de suivi'?: string;
   };
   createdTime?: string;
 }

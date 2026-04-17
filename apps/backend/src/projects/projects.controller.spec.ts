@@ -67,8 +67,10 @@ describe('ProjectsController', () => {
       expect(result).toEqual(mockProject);
     });
 
-    it('devrait lancer une NotFoundException si le projet n\'est pas trouvé', async () => {
-      await expect(controller.findOne('inconnu')).rejects.toThrow(NotFoundException);
+    it("devrait lancer une NotFoundException si le projet n'est pas trouvé", async () => {
+      await expect(controller.findOne('inconnu')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });

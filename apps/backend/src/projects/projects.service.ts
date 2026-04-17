@@ -61,4 +61,3 @@ export class ProjectsService {
     this.logger.log('Cache projets invalidé');
   }
 }
-
