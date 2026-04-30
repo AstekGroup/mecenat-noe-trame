@@ -4,6 +4,7 @@ import { MapPin, Globe, ArrowRight, Users } from 'lucide-react';
 import { useProjects } from '@/hooks';
 import { Project, PROJECT_TYPE_COLORS } from '@/types/project';
 import { TYPE_ICONS } from '@/components/Map/ProjectMarker';
+import { ProjectGauge } from '@/components/UI';
 import { Loader2 } from 'lucide-react';
 
 function MiniProjectCard({ project }: { project: Project }) {
@@ -64,6 +65,13 @@ export function HomePage() {
             Découvrez les projets de renaturation, restauration, et sensibilisation
             en faveur des pollinisateurs sur tout le territoire français.
           </p>
+
+          <div className="max-w-md mx-auto mt-10 p-6 bg-white/10 rounded-2xl backdrop-blur-sm border border-white/10">
+            <ProjectGauge 
+              current={allProjects.length} 
+              variant="hero"
+            />
+          </div>
         </div>
       </div>
 

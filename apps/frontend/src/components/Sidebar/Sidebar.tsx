@@ -4,6 +4,7 @@ import { ProjectFilters } from '@/hooks';
 import { ProjectCard } from './ProjectCard';
 import { FilterPanel } from '@/components/Filters/FilterPanel';
 import { ChevronLeft, ChevronRight, Filter, List, MapIcon } from 'lucide-react';
+import { ProjectGauge } from '@/components/UI';
 
 interface SidebarProps {
   projects: Project[];
@@ -149,10 +150,12 @@ export function Sidebar({
         )}
       </div>
 
-      <div className="p-4 bg-white border-t border-primary/10">
-        <div className="flex items-center justify-between text-sm">
+      <div className="p-4 bg-white border-t border-primary/10 space-y-4">
+        <ProjectGauge current={stats.total} />
+        
+        <div className="flex items-center justify-between text-xs pt-2 border-t border-primary/5">
           <span className="text-text-secondary">
-            <span className="font-semibold text-accent-coral">{stats.filtered}</span> projets affichés
+            <span className="font-semibold text-accent-coral">{stats.filtered}</span> projets filtrés
           </span>
           {(filters.search || filters.postalCode || filters.regions.length > 0 || filters.types.length > 0) && (
             <button
