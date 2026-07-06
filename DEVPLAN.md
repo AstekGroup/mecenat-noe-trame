@@ -1,5 +1,8 @@
 # DEVPLAN - MVP Carte Interactive (Renaturons)
 
+> Statut : historique. Ce fichier décrit l'état du POC initial au 13 mars 2026.
+> La feuille de route active est désormais [`ROADMAP.md`](ROADMAP.md).
+
 ## Objectif
 Ce projet est une adaptation de la base technologique de la "Semaine de l'IA pour Tous" pour le projet **"Renaturons - Trame pollinisateur"** de Noe.org. L'objectif est d'afficher et de gérer des projets de renaturation sur une carte interactive performante.
 

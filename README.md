@@ -109,7 +109,11 @@ Voir [deploy/README.md](deploy/README.md) pour le guide complet.
 
 ## Ressources
 
-- [DEVPLAN](DEVPLAN.md) : Suivi des étapes de développement.
+- [AGENTS](AGENTS.md) : consignes de travail pour les agents IA.
+- [CONSTITUTION](CONSTITUTION.md) : règles techniques non négociables.
+- [DECISION](DECISION.md) : décisions d'architecture acceptées.
+- [ROADMAP](ROADMAP.md) : feuille de route active.
+- [DEVPLAN](DEVPLAN.md) : historique du POC initial.
 
 ## Liens
 
