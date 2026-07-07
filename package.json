@@ -2,7 +2,7 @@
   "name": "make-map",
   "version": "0.2.0",
   "private": true,
-  "description": "Carte interactive - Semaine de l'IA pour Tous",
+  "description": "Carte interactive - Trame pollinisateur (Noe)",
   "scripts": {
     "dev": "turbo run dev --filter=@make-map/frontend --filter=@make-map/backend",
     "dev:all": "turbo run dev",
@@ -11,6 +11,7 @@
     "front:dev": "turbo run dev --filter=@make-map/frontend",
     "back:dev": "turbo run dev --filter=@make-map/backend",
     "map:dev": "turbo run dev --filter=@make-map/map-interactive",
+    "strapi:dev": "turbo run dev --filter=@make-map/strapi",
     "install:map": "cd apps/map-interactive && pnpm install",
     "deploy:scw": "./scripts/deploy.sh",
     "deploy:v2": "./scripts/deploy-v2.sh",
@@ -26,7 +27,7 @@
     "airtable"
   ],
   "author": "ILAB Innovation Team",
-  "packageManager": "pnpm@9.0.0",
+  "packageManager": "pnpm@11.7.0",
   "devDependencies": {
     "husky": "^9.1.7",
     "turbo": "^2.8.7"

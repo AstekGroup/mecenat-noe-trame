@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface ProjectGaugeProps {
   current: number;
   target?: number;
@@ -16,7 +14,7 @@ export function ProjectGauge({
   variant = 'default',
 }: ProjectGaugeProps) {
   const percentage = Math.min(Math.round((current / target) * 100), 100);
-  
+
   const isHero = variant === 'hero';
 
   return (

@@ -1,0 +1,28 @@
+{
+  "name": "@make-map/strapi",
+  "version": "0.1.0",
+  "private": true,
+  "description": "CMS Strapi pour la Trame pollinisateur (Noe)",
+  "scripts": {
+    "dev": "BROWSER=none strapi develop",
+    "start": "strapi start",
+    "build": "strapi build",
+    "strapi": "strapi"
+  },
+  "dependencies": {
+    "@strapi/strapi": "^5.50.0",
+    "better-sqlite3": "^12.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.30.3",
+    "styled-components": "^6.1.19"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "typescript": "^5.7.3"
+  },
+  "strapi": {
+    "telemetryDisabled": true
+  }
+}

@@ -2,7 +2,7 @@
 
 Carte interactive pour visualiser les projets de renaturation et de préservation de la biodiversité de la [Trame pollinisateur](https://noe.org) (Noé) à travers la France.
 
-**Client** : Noé | **Stack** : React + NestJS + MapLibre GL JS | **Monorepo** : pnpm + TurboRepo
+**Client** : Noé | **Stack** : React + NestJS + MapLibre GL JS, migration Airtable vers Strapi en cours | **Monorepo** : pnpm + TurboRepo
 
 ## Structure du projet
 
@@ -11,6 +11,7 @@ make-map/
 ├── apps/
 │   ├── frontend/           # React + Vite (consomme l'API backend)
 │   ├── backend/            # NestJS (proxy Airtable + géocodage)
+│   ├── strapi/             # Strapi v5 (CMS headless, SQLite)
 │   └── map-interactive/    # Version standalone originale (référence)
 ├── shared/
 │   └── types/              # @make-map/types (types TypeScript partagés)
@@ -25,8 +26,8 @@ make-map/
 
 ### Prérequis
 
-- Node.js 18+
-- pnpm 9+
+- Node.js 22+
+- pnpm 11.7+
 
 ### Installation
 
@@ -70,7 +71,7 @@ Proxy sécurisé NestJS pour l'API Airtable. Le token reste côté serveur.
 - **API** : `GET /api/projects` · `GET /api/projects/:id` · `GET /api/health` · `GET /api/natura2000`
 - Géocodage via [api-adresse.data.gouv.fr](https://adresse.data.gouv.fr) avec cache permanent
 - Cache TTL 5 min pour les données Airtable
-- `?devMode=true` pour bypasser le filtre de modération
+- `?devMode=true` pour bypasser le filtre de modération en contexte de developpement uniquement. Ce bypass ne doit pas etre reporte sur les endpoints publics Strapi sans protection explicite.
 
 ### Frontend (`apps/frontend`)
 
@@ -91,6 +92,31 @@ Version standalone originale (Semaine IA). Conservée comme référence, non mod
 pnpm map:dev
 ```
 
+### Strapi (`apps/strapi`)
+
+CMS Strapi v5 (TypeScript, SQLite). Installation native minimale. Aucun content-type en Phase 1 — la modélisation des projets, départements et partenaires se fera en Phase 2.
+
+```bash
+pnpm strapi:dev    # Strapi Admin sur http://localhost:1337/admin
+```
+
+**Configuration locale :**
+
+```bash
+cp apps/strapi/.env.example apps/strapi/.env
+# Générer les clés : openssl rand -base64 32
+```
+
+| Variable | Description |
+|---|---|
+| `APP_KEYS` | Clés de session (2 valeurs séparées par virgule) |
+| `API_TOKEN_SALT` | Sel pour les tokens API |
+| `ADMIN_JWT_SECRET` | Secret JWT admin |
+| `TRANSFER_TOKEN_SALT` | Sel pour les tokens de transfert |
+| `STRAPI_DISABLE_NPS` | Désactiver le programme d'amélioration Strapi |
+
+**Fichiers ignorés par Git :** `.env`, `data/` (SQLite), `dist/`, `.cache/`, `.strapi/`, `public/uploads/`.
+
 ## Package partagé
 
 ### @make-map/types (`shared/types`)
@@ -109,7 +135,11 @@ Voir [deploy/README.md](deploy/README.md) pour le guide complet.
 
 ## Ressources
 
-- [DEVPLAN](DEVPLAN.md) : Suivi des étapes de développement.
+- [AGENTS](AGENTS.md) : consignes de travail pour les agents IA.
+- [CONSTITUTION](CONSTITUTION.md) : règles techniques non négociables.
+- [DECISION](DECISION.md) : décisions d'architecture acceptées.
+- [ROADMAP](ROADMAP.md) : feuille de route active.
+- [DEVPLAN_HISTORY](DEVPLAN_HISTORY.md) : historique du POC initial.
 
 ## Liens
 

@@ -90,13 +90,13 @@ export class AirtableService {
     const baseId =
       this.configService.get<string>('AIRTABLE_PROJECTS_BASE_ID') ||
       this.configService.get<string>('AIRTABLE_BASE_ID');
-    const tableId = this.configService.get<string>(
-      'AIRTABLE_PROJECTS_TABLE_ID',
-    );
+    const tableId =
+      this.configService.get<string>('AIRTABLE_PROJECTS_TABLE_ID') ||
+      this.configService.get<string>('AIRTABLE_TABLE_ID');
 
     if (!apiKey || !baseId || !tableId) {
       throw new Error(
-        'Configuration Airtable Projets manquante. Vérifiez AIRTABLE_PROJECTS_BASE_ID et AIRTABLE_PROJECTS_TABLE_ID.',
+        'Configuration Airtable Projets manquante. Vérifiez AIRTABLE_API_KEY, AIRTABLE_PROJECTS_BASE_ID/AIRTABLE_BASE_ID et AIRTABLE_PROJECTS_TABLE_ID/AIRTABLE_TABLE_ID.',
       );
     }
 

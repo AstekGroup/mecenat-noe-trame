@@ -1,0 +1,23 @@
+# Strapi - Fichiers locaux a ignorer
+
+# Environnement
+.env
+
+# Base de donnees SQLite locale
+data/
+
+# Build Strapi
+dist/
+build/
+.cache/
+
+# Fichiers generes par Strapi (admin client, updater)
+.strapi/
+.strapi-updater.json
+public/uploads/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
