@@ -11,6 +11,7 @@ make-map/
 ├── apps/
 │   ├── frontend/           # React + Vite (consomme l'API backend)
 │   ├── backend/            # NestJS (proxy Airtable + géocodage)
+│   ├── strapi/             # Strapi v5 (CMS headless, SQLite)
 │   └── map-interactive/    # Version standalone originale (référence)
 ├── shared/
 │   └── types/              # @make-map/types (types TypeScript partagés)
@@ -25,8 +26,8 @@ make-map/
 
 ### Prérequis
 
-- Node.js 18+
-- pnpm 9+
+- Node.js 22+
+- pnpm 11.7+
 
 ### Installation
 
@@ -90,6 +91,31 @@ Version standalone originale (Semaine IA). Conservée comme référence, non mod
 ```bash
 pnpm map:dev
 ```
+
+### Strapi (`apps/strapi`)
+
+CMS Strapi v5 (TypeScript, SQLite). Installation native minimale. Aucun content-type en Phase 1 — la modélisation des projets, départements et partenaires se fera en Phase 2.
+
+```bash
+pnpm strapi:dev    # Strapi Admin sur http://localhost:1337/admin
+```
+
+**Configuration locale :**
+
+```bash
+cp apps/strapi/.env.example apps/strapi/.env
+# Générer les clés : openssl rand -base64 32
+```
+
+| Variable | Description |
+|---|---|
+| `APP_KEYS` | Clés de session (2 valeurs séparées par virgule) |
+| `API_TOKEN_SALT` | Sel pour les tokens API |
+| `ADMIN_JWT_SECRET` | Secret JWT admin |
+| `TRANSFER_TOKEN_SALT` | Sel pour les tokens de transfert |
+| `STRAPI_DISABLE_NPS` | Désactiver le programme d'amélioration Strapi |
+
+**Fichiers ignorés par Git :** `.env`, `data/` (SQLite), `dist/`, `.cache/`, `.strapi/`, `public/uploads/`.
 
 ## Package partagé
 

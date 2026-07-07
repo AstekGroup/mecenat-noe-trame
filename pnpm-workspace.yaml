@@ -1,3 +1,21 @@
 packages:
   - "apps/*"
   - "shared/*"
+
+# Approbation precise des scripts de build (postinstall/install/preinstall).
+# pnpm 11 utilise allowBuilds comme carte booleenne explicite.
+# Seuls les packages listes ci-dessous sont autorises a executer leur script de build.
+# Justification pour chaque entree :
+# - esbuild : telecharge le binaire natif requis par Vite (frontend) et Strapi (admin build).
+# - @swc/core : installe les bindings natifs requis par la compilation NestJS/SWC.
+# - better-sqlite3 : compile le driver SQLite natif requis par Strapi en dev local.
+# - @nestjs/core : postinstall opencollective (harmless, exit 0), deja present dans le repo.
+# - core-js-pure : postinstall analytics opt-out (harmless, try/catch), dependance transitive.
+# - sharp : installe les bindings natifs de traitement d'images requis par Strapi (upload).
+allowBuilds:
+  esbuild: true
+  "@swc/core": true
+  better-sqlite3: true
+  "@nestjs/core": true
+  core-js-pure: true
+  sharp: true

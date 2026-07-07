@@ -78,13 +78,31 @@ Audit en lecture seule realise sans modifier le comportement applicatif et sans 
 
 ## Phase 1 - Installation Strapi native
 
-**Statut :** A faire
+**Statut :** Termine
 
-- [ ] Ajouter Strapi au monorepo de facon minimale et explicite.
-- [ ] Configurer les environnements locaux sans secrets suivis par Git.
-- [ ] Verifier que Strapi demarre localement sans perturber frontend et backend existants.
-- [ ] Documenter les commandes de demarrage et les limites connues.
-- [ ] Confirmer que les fichiers generes ou locaux sensibles restent ignores par Git.
+Strapi v5.50.0 (TypeScript, SQLite) ajoute nativement dans `apps/strapi`. Aucun content-type cree (Phase 2). Aucun comportement frontend/backend modifie.
+
+- [x] Ajouter Strapi au monorepo de facon minimale et explicite. -> `apps/strapi/` avec package.json, tsconfig, config (database, server, admin, middlewares, plugins), src/index.ts, src/admin/app.example.ts.
+- [x] Configurer les environnements locaux sans secrets suivis par Git. -> `apps/strapi/.env.example` avec cles a generer, `.env` ignore, `data/` (SQLite) ignore.
+- [x] Verifier que Strapi demarre localement sans perturber frontend et backend existants. -> `strapi develop` demarre sur port 1337, health check 204, admin panel accessible. Tests frontend (31) et backend (46) restent verts.
+- [x] Documenter les commandes de demarrage et les limites connues. -> README.md section Strapi, script `pnpm strapi:dev`.
+- [x] Confirmer que les fichiers generes ou locaux sensibles restent ignores par Git. -> `apps/strapi/.gitignore` ignore `.env`, `data/`, `dist/`, `.cache/`, `.strapi/`, `.strapi-updater.json`, `public/uploads/`.
+
+**Verification de phase :**
+- Strapi demarre : `GET /_health` -> 204, `POST /admin/register-admin` -> 200.
+- Tests frontend : 31 passes (3 fichiers) — identique au baseline.
+- Tests backend : 46 passes (7 suites) — identique au baseline.
+- `git add --dry-run apps/strapi/` ne montre aucun secret, base de donnees ou fichier de build.
+
+**Changements de configuration pnpm :**
+- `packageManager` aligne sur `pnpm@11.7.0` (version reelle de l'install existant).
+- `allowBuilds` ajoute dans `pnpm-workspace.yaml` pour 6 packages precis : `esbuild`, `@swc/core`, `better-sqlite3`, `@nestjs/core`, `core-js-pure`, `sharp`. Chaque entree est justifiee dans le fichier.
+
+**Limites connues :**
+- Avertissements non fatals "Config file not loaded, extension must be one of .js,.json): *.js.map" au demarrage Strapi. Cause : Strapi compile le TS en JS avec source maps dans `dist/`, puis scanne `dist/config/` et trouve les `.js.map`. Issue connue Strapi v5 avec TypeScript, sans impact fonctionnel.
+- `favicon.png` placeholder minimal (1x1 transparent) dans `apps/strapi/` et `apps/strapi/public/`. A remplacer par le favicon Noe officiel en Phase 5.
+- Aucun content-type defini (reserve Phase 2).
+- Base SQLite locale dans `apps/strapi/data/strapi.db` (ignoree par Git).
 
 ## Phase 2 - Reproduction des structures Airtable necessaires
 
