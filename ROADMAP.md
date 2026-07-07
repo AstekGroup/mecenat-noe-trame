@@ -60,6 +60,7 @@ Ce socle decrit ce qui existe deja dans le depot avant la migration Strapi. `DEV
 
 - [ ] Identifier les flux de donnees actuels entre frontend, NestJS, Airtable et geocodage.
 - [ ] Documenter la forme exacte attendue par la carte, les filtres, la liste et les pages de detail.
+- [ ] Capturer des contrats de reponse ou exemples sanitises des endpoints actuels pour servir de base de comparaison en Phase 4.
 - [ ] Verifier le role de `apps/map-interactive` comme reference fonctionnelle.
 - [ ] Definir les commandes de validation minimales avant migration.
 - [ ] Relever les points de routage qui pourraient bloquer une integration directe dans la vitrine.
@@ -91,6 +92,7 @@ Ce socle decrit ce qui existe deja dans le depot avant la migration Strapi. `DEV
 
 - [ ] Exposer ou adapter les donnees Strapi pour conserver la forme attendue par la carte.
 - [ ] Garder les endpoints publics en lecture seule.
+- [ ] Ne pas reporter `devMode=true` comme bypass public sur les endpoints Strapi, sauf protection explicite documentee.
 - [ ] Conserver le geocodage et les calculs metier cote serveur.
 - [ ] Ajouter une couche d'adaptation si la forme native Strapi ne correspond pas a la forme consommee par la carte.
 - [ ] Documenter les exemples de reponse attendus pour les endpoints critiques.
@@ -106,6 +108,7 @@ Ce socle decrit ce qui existe deja dans le depot avant la migration Strapi. `DEV
 - [ ] Valider que les pages de detail restent fonctionnelles.
 - [ ] Valider que les territoires et encarts restent fonctionnels.
 - [ ] Comparer les resultats avec la source Airtable pendant la transition.
+- [ ] Conserver le chemin Airtable fonctionnel jusqu'a validation complete du chemin Strapi.
 - [ ] Ne pas refondre le routage ou l'integration carte tant que la migration mecanique n'est pas stable.
 
 ## Phase 5 - Vitrine React et references visuelles

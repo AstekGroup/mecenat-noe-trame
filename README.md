@@ -2,7 +2,7 @@
 
 Carte interactive pour visualiser les projets de renaturation et de préservation de la biodiversité de la [Trame pollinisateur](https://noe.org) (Noé) à travers la France.
 
-**Client** : Noé | **Stack** : React + NestJS + MapLibre GL JS | **Monorepo** : pnpm + TurboRepo
+**Client** : Noé | **Stack** : React + NestJS + MapLibre GL JS, migration Airtable vers Strapi en cours | **Monorepo** : pnpm + TurboRepo
 
 ## Structure du projet
 
@@ -70,7 +70,7 @@ Proxy sécurisé NestJS pour l'API Airtable. Le token reste côté serveur.
 - **API** : `GET /api/projects` · `GET /api/projects/:id` · `GET /api/health` · `GET /api/natura2000`
 - Géocodage via [api-adresse.data.gouv.fr](https://adresse.data.gouv.fr) avec cache permanent
 - Cache TTL 5 min pour les données Airtable
-- `?devMode=true` pour bypasser le filtre de modération
+- `?devMode=true` pour bypasser le filtre de modération en contexte de developpement uniquement. Ce bypass ne doit pas etre reporte sur les endpoints publics Strapi sans protection explicite.
 
 ### Frontend (`apps/frontend`)
 

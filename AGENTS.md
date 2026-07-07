@@ -9,7 +9,8 @@ Avant toute modification, lire dans cet ordre :
 1. [`CONSTITUTION.md`](CONSTITUTION.md)
 2. [`DECISION.md`](DECISION.md)
 3. [`ROADMAP.md`](ROADMAP.md)
-4. Le code concerne par la tache
+4. [`README.md`](README.md)
+5. Le code concerne par la tache
 
 Si la demande contredit une decision acceptee, arreter et demander une validation humaine avant de coder.
 
