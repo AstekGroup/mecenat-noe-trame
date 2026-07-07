@@ -39,7 +39,7 @@ Responsabilite de chaque agent :
 
 **Statut :** Historique
 
-Ce socle decrit ce qui existe deja dans le depot avant la migration Strapi. `DEVPLAN.md` conserve le detail historique du POC au 13 mars 2026.
+Ce socle decrit ce qui existe deja dans le depot avant la migration Strapi. `DEVPLAN_HISTORY.md` conserve le detail historique du POC au 13 mars 2026.
 
 - [x] Monorepo pnpm et TurboRepo en place.
 - [x] Package de types partages `@make-map/types` en place.
