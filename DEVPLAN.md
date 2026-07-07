@@ -1,4 +1,4 @@
-# DEVPLAN - MVP Carte Interactive (Renaturons)
+# DEVPLAN - Historique du POC initial
 
 > Statut : historique. Ce fichier décrit l'état du POC initial au 13 mars 2026.
 > La feuille de route active est désormais [`ROADMAP.md`](ROADMAP.md).
