@@ -56,14 +56,25 @@ Ce socle decrit ce qui existe deja dans le depot avant la migration Strapi. `DEV
 
 ## Phase 0 - Audit du repo et de la carte existante
 
-**Statut :** A faire
+**Statut :** Termine
 
-- [ ] Identifier les flux de donnees actuels entre frontend, NestJS, Airtable et geocodage.
-- [ ] Documenter la forme exacte attendue par la carte, les filtres, la liste et les pages de detail.
-- [ ] Capturer des contrats de reponse ou exemples sanitises des endpoints actuels pour servir de base de comparaison en Phase 4.
-- [ ] Verifier le role de `apps/map-interactive` comme reference fonctionnelle.
-- [ ] Definir les commandes de validation minimales avant migration.
-- [ ] Relever les points de routage qui pourraient bloquer une integration directe dans la vitrine.
+Audit en lecture seule realise sans modifier le comportement applicatif et sans toucher `apps/map-interactive`. Detail dans [`AUDIT_PHASE0.md`](AUDIT_PHASE0.md).
+
+- [x] Identifier les flux de donnees actuels entre frontend, NestJS, Airtable et geocodage. -> AUDIT_PHASE0.md sections 3-5.
+- [x] Documenter la forme exacte attendue par la carte, les filtres, la liste et les pages de detail. -> AUDIT_PHASE0.md section 6.
+- [x] Capturer des contrats de reponse ou exemples sanitises des endpoints actuels pour servir de base de comparaison en Phase 4. -> AUDIT_PHASE0.md sections 4, 6, 7 et exemple sanitize section 10.
+- [x] Verifier le role de `apps/map-interactive` comme reference fonctionnelle. -> AUDIT_PHASE0.md section 2 (reference standalone heritee, non modifiee).
+- [x] Definir les commandes de validation minimales avant migration. -> AUDIT_PHASE0.md section 9.
+- [x] Relever les points de routage qui pourraient bloquer une integration directe dans la vitrine. -> AUDIT_PHASE0.md section 8 (History API sans `basename`, filtres ephemeres, layout plein ecran, detail dependant de la liste).
+
+**Verification de phase :** audit documentaire en lecture seule. Aucun code modifie et aucune validation runtime lancee pour cette phase. La verification repose sur l'exactitude de `AUDIT_PHASE0.md` et la coherence avec le code inspecte. Commandes de validation de la carte existante listees en section 9 (a lancer avant toute modification applicative puis en Phase 4 pour la comparaison avant/apres).
+
+**Sujets ouverts a trancher en Phase 1+ :**
+- `devMode` actuellement sans effet reel (`buildProjectsFilterFormula` retourne `null`) ; moderation a modeliser via Draft/Publish Strapi.
+- `fetchProjectById` debranche (la page de detail lit dans `allProjects`).
+- Calque `reserves-biologiques` absent des donnees locales (retourne une collection vide).
+- `.env.example` backend a aligner avec `AIRTABLE_PROJECTS_TABLE_ID`.
+- Decision iframe vs integration React directe a documenter dans `DECISION.md` avant Phase 5.
 
 ## Phase 1 - Installation Strapi native
 
