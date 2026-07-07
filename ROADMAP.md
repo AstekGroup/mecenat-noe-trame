@@ -106,14 +106,38 @@ Strapi v5.50.0 (TypeScript, SQLite) ajoute nativement dans `apps/strapi`. Aucun 
 
 ## Phase 2 - Reproduction des structures Airtable necessaires
 
-**Statut :** A faire
+**Statut :** Termine
 
-- [ ] Modeliser dans Strapi les projets.
-- [ ] Modeliser dans Strapi les departements.
-- [ ] Modeliser dans Strapi les partenaires.
-- [ ] Modeliser les taxonomies utiles en relations lorsque le besoin l'exige.
-- [ ] Utiliser Draft/Publish pour la moderation editoriale.
-- [ ] Eviter toute logique i18n tant qu'elle n'est pas explicitement decidee.
+Cinq content-types modelises dans `apps/strapi` pour reproduire les structures Airtable necessaires. Aucun comportement frontend/backend modifie. Aucune donnee migree. Aucun endpoint public expose (Phase 3).
+
+- [x] Modeliser dans Strapi les projets. -> `src/api/project/` : collection type avec `draftAndPublish: true`, 22 champs mappes depuis la table Airtable PROJETS (title, description, address, city, postalCode, latitude, longitude, extent, isOngoing, contactEmail, contactPhone, website, sensitizationTitle, trainingTitle, consultationType, followUpType, followUpFrequency) + relations vers Department, Partner, ProjectType, HabitatType + composants repeatable pour reasonedPracticeTypes et renaturationTypes.
+- [x] Modeliser dans Strapi les departements. -> `src/api/department/` : collection type avec code (unique), name, region (string). Relation oneToMany vers Project. `draftAndPublish: false` (reference administrative).
+- [x] Modeliser dans Strapi les partenaires. -> `src/api/partner/` : collection type avec name, profile. Relation oneToMany vers Project. `draftAndPublish: false` (reference).
+- [x] Modeliser les taxonomies utiles en relations lorsque le besoin l'exige. -> `src/api/projecttype/` : 6 valeurs metier (slug, label, color). Relation oneToMany vers Project. `src/api/habitattype/` : types de milieu. Relation manyToMany vers Project. Composants `project.practice-type` et `project.renaturation-type` pour les tableaux repeatables.
+- [x] Utiliser Draft/Publish pour la moderation editoriale. -> Project : `draftAndPublish: true`. Les autres content-types (Department, Partner, ProjectType, HabitatType) : `draftAndPublish: false` (references, pas de moderation necessaire).
+- [x] Eviter toute logique i18n tant qu'elle n'est pas explicitement decidee. -> Aucun plugin i18n active. Aucun champ locale.
+
+**Verification de phase :**
+- `pnpm install --frozen-lockfile` -> OK (lockfile a jour).
+- `pnpm --filter @make-map/strapi build` -> OK (compilation TS + build admin panel).
+- `pnpm --filter @make-map/strapi dev` -> Strapi demarre sans ouverture automatique du navigateur, health 204, admin 200, 5 routes content-types chargees (projects, departments, partners, projecttypes, habitattypes, 401 par defaut).
+- Tests frontend : 31 passes — identique au baseline.
+- Tests backend : 46 passes — identique au baseline.
+- Types generes : `types/generated/contentTypes.d.ts` contient les 5 content-types avec toutes les relations.
+
+**Decisions de modelisation :**
+- Les noms d'API sans tirets (`projecttype`, `habitattype`) pour compatibilite Strapi v5 (la cle du content-type doit egaler son `singularName`).
+- `region` stocke comme string dans Department (pas de content-type Region separe) : la region est derivee du code departement (table DEPT_TO_REGION du backend), conformement au comportement Airtable actuel.
+- `owner` et `ownerProfile` Airtable remplaces par une relation vers Partner (name + profile).
+- `habitatType` Airtable (string ou string[]) remplace par une relation manyToMany vers HabitatType.
+- `reasonedPracticeTypes` et `renaturationTypes` Airtable (string[]) modelises comme composants Strapi repeatables.
+- `consultationType`, `followUpType`, `followUpFrequency` gardes comme strings simples (pas de vocabulaire controle identifie dans Airtable).
+
+**Limites connues :**
+- Les endpoints API retournent 401 par defaut (permissions Strapi natives). La configuration des permissions publiques est reportee en Phase 3.
+- Les schemas Strapi sont en TypeScript (`schema.ts` et composants `.ts`) pour etre compiles dans `dist/` sans watcher ni copie JSON en arriere-plan.
+- Aucune donnee migree depuis Airtable (Phase 3/4).
+- Les noms d'API `projecttype` et `habitattype` (sans tiret) sont une contrainte technique Strapi v5, pas un choix esthetique.
 
 ## Phase 3 - Endpoints et adaptation de forme
 

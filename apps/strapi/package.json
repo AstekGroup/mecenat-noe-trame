@@ -4,7 +4,7 @@
   "private": true,
   "description": "CMS Strapi pour la Trame pollinisateur (Noe)",
   "scripts": {
-    "dev": "strapi develop",
+    "dev": "BROWSER=none strapi develop",
     "start": "strapi start",
     "build": "strapi build",
     "strapi": "strapi"
