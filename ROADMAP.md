@@ -134,21 +134,51 @@ Cinq content-types modelises dans `apps/strapi` pour reproduire les structures A
 - `consultationType`, `followUpType`, `followUpFrequency` gardes comme strings simples (pas de vocabulaire controle identifie dans Airtable).
 
 **Limites connues :**
-- Les endpoints API retournent 401 par defaut (permissions Strapi natives). La configuration des permissions publiques est reportee en Phase 3.
+- Les endpoints API Strapi necessitent un token pour l'acces lecture. Voir Phase 3 pour la configuration du token `STRAPI_API_TOKEN`.
 - Les schemas Strapi sont en TypeScript (`schema.ts` et composants `.ts`) pour etre compiles dans `dist/` sans watcher ni copie JSON en arriere-plan.
 - Aucune donnee migree depuis Airtable (Phase 3/4).
 - Les noms d'API `projecttype` et `habitattype` (sans tiret) sont une contrainte technique Strapi v5, pas un choix esthetique.
 
 ## Phase 3 - Endpoints et adaptation de forme
 
-**Statut :** A faire
+**Statut :** En cours
 
-- [ ] Exposer ou adapter les donnees Strapi pour conserver la forme attendue par la carte.
-- [ ] Garder les endpoints publics en lecture seule.
-- [ ] Ne pas reporter `devMode=true` comme bypass public sur les endpoints Strapi, sauf protection explicite documentee.
-- [ ] Conserver le geocodage et les calculs metier cote serveur.
-- [ ] Ajouter une couche d'adaptation si la forme native Strapi ne correspond pas a la forme consommee par la carte.
-- [ ] Documenter les exemples de reponse attendus pour les endpoints critiques.
+Module `StrapiService` ajoute dans `apps/backend/src/strapi/`. Il prepare l'adaptation de la forme native Strapi v5 (REST aplatie, relations peuplees) vers le contrat `Project[]` attendu par la carte. Aucun comportement frontend modifie : le chemin Airtable reste le defaut via `CMS_SOURCE=airtable`.
+
+- [x] Exposer ou adapter les donnees Strapi pour conserver la forme attendue par la carte. -> `StrapiService.fetchProjects()` appelle l'API REST Strapi avec pagination (`pageSize=100`), `populate=*`, puis transforme via `strapiProjectToDomain()` qui mappe `documentId` → `id`, `department.region` → `region`, `partner.name` → `owner`, `projectType.slug` → `type`, `habitatTypes[].label` → `habitatType[]`, composants `.label` → `[]string`, etc.
+- [x] Garder les endpoints publics en lecture seule. -> `GET /api/projects` et `GET /api/projects/:id` inchanges. Le `StrapiService` utilise un token en lecture seule via `STRAPI_API_TOKEN` (env var). Les endpoints Strapi restent proteges par les permissions natives.
+- [x] Ne pas reporter `devMode=true` comme bypass public sur les endpoints Strapi, sauf protection explicite documentee. -> `devMode=true` est volontairement ignore par `StrapiService` : le endpoint public ne demande pas `status=draft` et ne sert que les contenus publies. Une vraie preview brouillon demandera une route protegee separee si elle est decidee plus tard.
+- [x] Conserver le geocodage et les calculs metier cote serveur. -> `StrapiService` reutilise `GeocodingService` avec le meme pipeline : batch geocoding BAN, ecrasement latitude/longitude/region/department. Meme cache memoire permanent.
+- [x] Ajouter une couche d'adaptation si la forme native Strapi ne correspond pas a la forme consommee par la carte. -> `strapi-projects-mapping.util.ts` gere la transformation complete. Meme pattern que `airtable-projects-mapping.util.ts`.
+- [ ] Documenter les exemples de reponse attendus pour les endpoints critiques. -> A completer avec un exemple Strapi reel et un exemple `Project[]` adapte apres configuration des permissions Strapi.
+
+**Verification partielle :**
+- Tests backend : adapteur Strapi couvert par tests unitaires (`strapi.service.spec.ts`, `strapi-projects-mapping.util.spec.ts`) + tests existants.
+- Aucun changement de comportement utilisateur — `CMS_SOURCE=airtable` par defaut, le chemin Airtable reste le chemin actif.
+- Verification runtime Strapi reelle encore a faire : demarrer Strapi avec contenu de test approuve, configurer `STRAPI_API_TOKEN`, lancer le backend avec `CMS_SOURCE=strapi`, comparer `/api/projects` avec le contrat Airtable attendu.
+
+**Fichiers crees :**
+- `apps/backend/src/strapi/strapi.module.ts` — declaration du module, importe GeocodingModule.
+- `apps/backend/src/strapi/strapi.service.ts` — fetch pagine depuis l'API REST Strapi, transformation, geocodage.
+- `apps/backend/src/strapi/strapi-projects-mapping.util.ts` — mapping `StrapiProjectItem` (REST shape) → `Project`.
+- `apps/backend/src/strapi/strapi.service.spec.ts` — test du fetch Strapi, geocodage serveur et absence de `status=draft` via `devMode`.
+- `apps/backend/src/strapi/strapi-projects-mapping.util.spec.ts` — test du mapping Strapi vers `Project` et des replis metier.
+
+**Fichiers modifies :**
+- `apps/backend/src/projects/projects.module.ts` — importe `StrapiModule`.
+- `apps/backend/src/projects/projects.service.ts` — injecte `StrapiService`, choisit la source via `CMS_SOURCE` (defaut `airtable`).
+- `apps/backend/src/projects/projects.service.spec.ts` — ajoute les mocks `ConfigService` et `StrapiService`.
+- `apps/backend/.env.example` — ajoute `CMS_SOURCE`, `STRAPI_API_URL`, `STRAPI_API_TOKEN`.
+
+**Prochaine etape manuelle (non scriptee) :**
+Avant de basculer vers Strapi en Phase 4, configurer les permissions dans l'admin Strapi :
+1. Creer un token API (Settings → API Tokens) avec les droits `find` et `findOne` sur `project`, `department`, `partner`, `projecttype`, `habitattype`.
+2. Copier le token dans `apps/backend/.env` : `STRAPI_API_TOKEN=...`.
+
+**Limites connues :**
+- Le `StrapiService` suppose que `department`, `partner`, et `projectType` sont toujours peuples (sinon valeurs par defaut). Les projets orphelins (sans relation) auront `region='Île-de-France'`, `owner=''`, `type='renaturation-restauration'`.
+- La pagination Strapi est sequentielle (pas de parallelisme). Meme comportement que `AirtableService`.
+- Aucun contenu Strapi de test n'a encore ete cree via un chemin approuve ; la validation de donnees reelles reste ouverte.
 
 ## Phase 4 - Connexion carte vers Strapi
 
