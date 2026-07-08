@@ -153,9 +153,27 @@ Module `StrapiService` ajoute dans `apps/backend/src/strapi/`. Il prepare l'adap
 - [ ] Documenter les exemples de reponse attendus pour les endpoints critiques. -> A completer avec un exemple Strapi reel et un exemple `Project[]` adapte apres configuration des permissions Strapi.
 
 **Verification partielle :**
-- Tests backend : adapteur Strapi couvert par tests unitaires (`strapi.service.spec.ts`, `strapi-projects-mapping.util.spec.ts`) + tests existants.
-- Aucun changement de comportement utilisateur — `CMS_SOURCE=airtable` par defaut, le chemin Airtable reste le chemin actif.
-- Verification runtime Strapi reelle encore a faire : demarrer Strapi avec contenu de test approuve, configurer `STRAPI_API_TOKEN`, lancer le backend avec `CMS_SOURCE=strapi`, comparer `/api/projects` avec le contrat Airtable attendu.
+- Tests backend : 51 passes (9 suites) — adapteur Strapi couvert (`strapi.service.spec.ts`, `strapi-projects-mapping.util.spec.ts`) + 7 suites existantes.
+- Tests frontend : 31 passes (3 fichiers) — identique au baseline.
+- Build backend : `nest build` OK.
+- **Verification runtime Airtable (09/07/2026) :** `node dist/main.js` → health OK, `/api/projects` → 202 projets Airtable, tous geocodes. `CMS_SOURCE=airtable` par defaut, `StrapiModule` charge sans erreur mais n'est pas appele. Le chemin Airtable est intact.
+- **Correction runtime :** le mapper Strapi n'importe que des types depuis `@make-map/types` et garde ses listes de validation locales, pour eviter de charger les sources TypeScript du package partage au runtime Node.
+- Verification runtime Strapi reelle encore a faire (voir section Bloque ci-dessous).
+
+**Bloque — validation Strapi reelle :**
+Variable `STRAPI_API_TOKEN` absente du `.env` backend. La couche `StrapiService` est codee et testee unitairement mais n'a jamais ete validee contre une instance Strapi avec du contenu approuve. Bloque les taches suivantes :
+- [ ] Documenter les exemples de reponse attendus pour les endpoints critiques (contrat `Project[]` depuis Strapi).
+- [ ] Valider le pipeline complet `Strapi REST → StrapiService → Project[]` avec des donnees de test.
+
+**Sequence exacte pour deverrouiller :**
+1. `cd apps/strapi && pnpm strapi:dev` (demarrer Strapi sur port 1337)
+2. Dans l'admin Strapi (http://localhost:1337/admin) : Settings → API Tokens → Create, droits `find` + `findOne` sur `project`, `department`, `partner`, `projecttype`, `habitattype`. Copier le token.
+3. Dans l'admin Strapi : Content Manager → creer un Projet de test (titre, adresse, code postal, type de projet, departement, partenaire) + le publier.
+4. Dans `apps/backend/.env` : `CMS_SOURCE=strapi`, `STRAPI_API_URL=http://localhost:1337`, `STRAPI_API_TOKEN=<token>`.
+5. `node apps/backend/dist/main.js` puis `curl http://localhost:3000/api/projects` → verifier que la reponse a la forme `Project[]` (identique au contrat Airtable).
+6. Comparer les champs avec l'exemple sanitize de `AUDIT_PHASE0.md` section 10.
+
+Ne pas utiliser `import` de donnees reelles Airtable ou de comptes admin non approuves. Ne pas inserer de lignes SQL directement.
 
 **Fichiers crees :**
 - `apps/backend/src/strapi/strapi.module.ts` — declaration du module, importe GeocodingModule.

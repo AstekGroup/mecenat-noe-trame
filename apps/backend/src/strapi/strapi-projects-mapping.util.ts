@@ -12,19 +12,41 @@
  * exactement comme le fait `AirtableService`.
  */
 
-import {
-  PROJECT_TYPE_LABELS,
-  REGIONS,
-  type Project,
-  type ProjectType,
-  type Region,
-} from '@make-map/types';
+import type { Project, ProjectType, Region } from '@make-map/types';
 
 const DEFAULT_REGION: Region = 'Île-de-France';
 const DEFAULT_PROJECT_TYPE: ProjectType = 'renaturation-restauration';
+const VALID_REGIONS = [
+  'Auvergne-Rhône-Alpes',
+  'Bourgogne-Franche-Comté',
+  'Bretagne',
+  'Centre-Val de Loire',
+  'Corse',
+  'Grand Est',
+  'Hauts-de-France',
+  'Île-de-France',
+  'Normandie',
+  'Nouvelle-Aquitaine',
+  'Occitanie',
+  'Pays de la Loire',
+  "Provence-Alpes-Côte d'Azur",
+  'Guadeloupe',
+  'Martinique',
+  'Guyane',
+  'La Réunion',
+  'Mayotte',
+] as const satisfies readonly Region[];
+const VALID_PROJECT_TYPES = [
+  'pratiques-raisonnees',
+  'renaturation-restauration',
+  'sensibilisation',
+  'formation',
+  'consultation',
+  'suivis',
+] as const satisfies readonly ProjectType[];
 
 function normalizeRegion(value: string | null | undefined): Region {
-  if (value && (REGIONS as readonly string[]).includes(value)) {
+  if (value && (VALID_REGIONS as readonly string[]).includes(value)) {
     return value as Region;
   }
   return DEFAULT_REGION;
@@ -33,7 +55,7 @@ function normalizeRegion(value: string | null | undefined): Region {
 function normalizeProjectType(value: string | null | undefined): ProjectType {
   if (
     value &&
-    Object.prototype.hasOwnProperty.call(PROJECT_TYPE_LABELS, value)
+    (VALID_PROJECT_TYPES as readonly string[]).includes(value)
   ) {
     return value as ProjectType;
   }
