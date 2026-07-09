@@ -40,7 +40,7 @@ Stack cible :
 - Garder les changements petits, atomiques et faciles a relire.
 - Rediger les documents, PR et commentaires techniques en francais.
 - Preferer les patterns deja presents dans le monorepo.
-- Ne pas modifier `apps/map-interactive` sauf demande explicite : cette application reste une reference fonctionnelle.
+- Ne pas reintroduire `apps/map-interactive` : l'ancien POC standalone a ete supprime pour eviter la confusion avec `apps/frontend`.
 - Apres toute modification de schema Strapi future, inclure la regeneration des types dans le meme changement si le depot contient des types generes.
 
 ## Continuite entre agents

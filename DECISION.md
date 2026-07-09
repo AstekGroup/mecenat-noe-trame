@@ -64,3 +64,12 @@ Le frontend public ne doit consommer que des endpoints en lecture. Aucun token a
 La charte officielle est la source de verite pour couleurs, typographies et logos. Les exports de maquette aident a implementer les ecrans mais ne remplacent pas la charte.
 
 **Consequence :** en cas d'ecart entre un export visuel et la charte officielle, appliquer la charte ou documenter une exception.
+
+## D008 - Supprimer l'ancienne application standalone map-interactive
+
+**Statut :** Acceptee
+**Date :** 2026-07-09
+
+L'application `apps/map-interactive` correspondait au POC standalone initial et a cree de la confusion avec l'application frontend active. La reference fonctionnelle de travail devient l'application `apps/frontend`, qui consomme le backend NestJS.
+
+**Consequence :** ne pas relancer ni reintroduire `apps/map-interactive`. Les validations carte doivent passer par `apps/frontend`, le backend et Strapi.

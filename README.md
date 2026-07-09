@@ -11,8 +11,7 @@ make-map/
 ├── apps/
 │   ├── frontend/           # React + Vite (consomme l'API backend)
 │   ├── backend/            # NestJS (proxy Airtable + géocodage)
-│   ├── strapi/             # Strapi v5 (CMS headless, SQLite)
-│   └── map-interactive/    # Version standalone originale (référence)
+│   └── strapi/             # Strapi v5 (CMS headless, SQLite)
 ├── shared/
 │   └── types/              # @make-map/types (types TypeScript partagés)
 ├── deploy/                 # Docker Compose + Caddy (production)
@@ -83,14 +82,6 @@ Application React avec carte interactive MapLibre GL JS.
 - Encarts DOM-TOM
 - Calques administratifs (Régions, Départements, EPCI, Communes) via Vector Tiles IGN
 - Design system calé sur la charte Noé (Rubik / Montserrat)
-
-### map-interactive (`apps/map-interactive`)
-
-Version standalone originale (Semaine IA). Conservée comme référence, non modifiée.
-
-```bash
-pnpm map:dev
-```
 
 ### Strapi (`apps/strapi`)
 
