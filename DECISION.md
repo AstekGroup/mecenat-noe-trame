@@ -73,3 +73,12 @@ La charte officielle est la source de verite pour couleurs, typographies et logo
 L'application `apps/map-interactive` correspondait au POC standalone initial et a cree de la confusion avec l'application frontend active. La reference fonctionnelle de travail devient l'application `apps/frontend`, qui consomme le backend NestJS.
 
 **Consequence :** ne pas relancer ni reintroduire `apps/map-interactive`. Les validations carte doivent passer par `apps/frontend`, le backend et Strapi.
+
+## D009 - Faire de Strapi la source active unique des projets
+
+**Statut :** Acceptee
+**Date :** 2026-07-09
+
+La validation Phase 3 a prouve que Strapi peut alimenter le backend NestJS en conservant le contrat `Project[]` attendu par la carte. Le projet ne doit pas conserver durablement un mode double Airtable/Strapi via une variable de choix de source.
+
+**Consequence :** la Phase 4 doit retirer Airtable du chemin runtime actif des projets, faire de Strapi la source par defaut et unique pour `/api/projects`, puis valider humainement la carte. Le frontend continue de passer par le backend, qui conserve le geocodage, la transformation metier et la protection des tokens. Les references Airtable peuvent rester seulement comme historique, audit ou support temporaire de comparaison pendant le nettoyage.

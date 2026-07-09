@@ -4,7 +4,7 @@ Feuille de route active pour la migration Strapi et la consolidation du site Tra
 
 ## Objectif courant
 
-Remplacer progressivement Airtable par Strapi sans regression visible sur la carte, puis construire le site vitrine React en s'appuyant sur la charte officielle et les references de maquette.
+Achever le remplacement d'Airtable par Strapi sur le chemin actif de la carte sans regression visible, puis rendre la carte integrable dans une page avant de construire le site vitrine React.
 
 ## Mode de suivi
 
@@ -222,24 +222,59 @@ Les commandes Strapi CLI (`admin:reset-user-password`, `console`) echouent avec 
 - Le `StrapiService` suppose que `department`, `partner`, et `projectType` sont toujours peuples (sinon valeurs par defaut). Les projets orphelins (sans relation) auront `region='Île-de-France'`, `owner=''`, `type='renaturation-restauration'`.
 - La pagination Strapi est sequentielle (pas de parallelisme). Meme comportement que `AirtableService`.
 - Le token API Strapi en `.env` backend est un token custom avec permissions explicites `find`+`findOne`. Un token `read-only` natif Strapi ne permet pas de specifier les permissions manuellement (Strapi les gere automatiquement).
+- Le switch `CMS_SOURCE` et le chemin Airtable sont des restes transitoires de validation. D009 demande leur retrait du chemin runtime actif en Phase 4.
 
-## Phase 4 - Connexion carte vers Strapi
+## Phase 4 - Strapi source unique pour la carte
 
 **Statut :** A faire
 
-- [ ] Basculer la source de donnees de la carte vers Strapi ou vers l'adaptateur Strapi.
-- [ ] Valider que la carte reste fonctionnelle.
-- [ ] Valider que la liste reste fonctionnelle.
-- [ ] Valider que les filtres restent fonctionnels.
-- [ ] Valider que les pages de detail restent fonctionnelles.
-- [ ] Valider que les territoires et encarts restent fonctionnels.
-- [ ] Comparer les resultats avec la source Airtable pendant la transition.
-- [ ] Conserver le chemin Airtable fonctionnel jusqu'a validation complete du chemin Strapi.
-- [ ] Ne pas refondre le routage ou l'integration carte tant que la migration mecanique n'est pas stable.
+Objectif : retirer Airtable du chemin runtime actif des projets et faire de Strapi la source unique servie par le backend a la carte.
+
+- [ ] Auditer tous les chemins Airtable encore actifs dans le backend, le frontend, les fichiers d'environnement, les tests et la documentation.
+- [ ] Retirer Airtable du chemin runtime actif de `GET /api/projects` et `GET /api/projects/:id`.
+- [ ] Faire de Strapi la source par defaut et unique pour les projets.
+- [ ] Supprimer ou neutraliser le mode `CMS_SOURCE=airtable` afin d'eviter un switch durable Airtable/Strapi.
+- [ ] Conserver le backend comme passage obligatoire entre le frontend et Strapi : pas de token Strapi expose cote frontend.
+- [ ] Garder le geocodage et les transformations metier cote backend.
+- [ ] Creer environ 10 projets de test locaux dans Strapi via Strapi Admin ou API admin approuvee, jamais par SQL direct et sans importer de donnees reelles Airtable.
+- [ ] Lancer la stack locale complete : Strapi, backend et frontend.
+- [ ] Valider humainement la carte avec les donnees Strapi : points visibles, zoom, clustering et selection.
+- [ ] Valider humainement la liste, les filtres, la recherche et les pages de detail.
+- [ ] Valider humainement les territoires, les encarts DOM-TOM et les comportements de navigation.
+- [ ] Reverse-engineer les corridors/trames : identifier leur source, leur chargement et leur dependance eventuelle aux donnees projet.
+- [ ] Valider que les corridors/trames restent visibles et fonctionnels apres retrait Airtable.
+- [ ] Nettoyer les references Airtable obsoletes dans README, `.env.example`, scripts et docs non historiques lorsque le runtime Strapi est valide.
+- [ ] Mettre a jour les tests backend/frontend pour refleter Strapi comme source active unique.
+- [ ] Documenter la verification de phase avec commandes, URLs locales, donnees de test et resultat des tests humains.
+- [ ] Faire un stop humain avec validation Navid + Clement avant de demarrer Phase 4.5 ou Phase 5.
+
+**Verification de phase attendue :**
+- `pnpm install --frozen-lockfile`
+- Tests backend et frontend cibles ou complets selon le diff.
+- Build backend et frontend.
+- Validation locale sur navigateur de `apps/frontend` avec Strapi + backend + frontend lances ensemble.
+- Note de validation humaine : carte, liste, filtres, recherche, details, territoires et corridors.
+
+## Phase 4.5 - Carte integrable dans une page
+
+**Statut :** A faire
+
+Objectif : transformer la carte d'une experience essentiellement plein ecran en composant integrable dans une page de site, sans regression fonctionnelle.
+
+- [ ] Identifier les contraintes actuelles de layout plein ecran dans `apps/frontend`.
+- [ ] Adapter la carte pour qu'elle puisse vivre dans une page avec navigation, contenu editorial autour et footer.
+- [ ] Creer une page de validation simple avec une fausse navigation, un court contenu, la carte integree et un footer.
+- [ ] Conserver les interactions essentielles : zoom, selection, filtres, liste, recherche, detail et corridors.
+- [ ] Ajouter un mode plein ecran seulement si l'integration reste simple et utile pour l'utilisateur.
+- [ ] Verifier le rendu desktop et mobile de la page avec carte integree.
+- [ ] Documenter les limites restantes avant la vitrine.
+- [ ] Faire un stop humain avec validation Navid + Clement avant Phase 5.
 
 ## Phase 5 - Vitrine React et references visuelles
 
 **Statut :** A faire
+
+Ne pas demarrer avant validation humaine de Phase 4 et Phase 4.5.
 
 - [ ] Construire les sections statiques du site vitrine en React.
 - [ ] Utiliser la charte officielle comme source de verite visuelle.
