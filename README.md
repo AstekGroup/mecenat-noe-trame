@@ -132,6 +132,7 @@ Voir [deploy/README.md](deploy/README.md) pour le guide complet.
 - [CONSTITUTION](CONSTITUTION.md) : règles techniques non négociables.
 - [DECISION](DECISION.md) : décisions d'architecture acceptées.
 - [ROADMAP](ROADMAP.md) : feuille de route active.
+- [ROADMAP_HISTORY](ROADMAP_HISTORY.md) : archive des phases terminées.
 - [DEVPLAN_HISTORY](DEVPLAN_HISTORY.md) : historique du POC initial.
 
 ## Liens

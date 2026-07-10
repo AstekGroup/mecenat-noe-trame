@@ -8,9 +8,13 @@ Avant toute modification, lire dans cet ordre :
 
 1. [`CONSTITUTION.md`](CONSTITUTION.md)
 2. [`DECISION.md`](DECISION.md)
-3. [`ROADMAP.md`](ROADMAP.md)
+3. [`ROADMAP.md`](ROADMAP.md) — obligatoire a chaque session.
 4. [`README.md`](README.md)
 5. Le code concerne par la tache
+
+[`ROADMAP_HISTORY.md`](ROADMAP_HISTORY.md) n'est **pas** lu a chaque session. Le consulter seulement pour :
+- Investiguer une phase terminee, une regression ou une ancienne verification/decision.
+- Archiver une phase entierement terminee (deplacement du detail depuis `ROADMAP.md`).
 
 Si la demande contredit une decision acceptee, arreter et demander une validation humaine avant de coder.
 
@@ -28,7 +32,7 @@ Stack cible :
 
 - Ne pas reintroduire Notum ni une architecture page-builder Next.js.
 - Ne pas inventer de logique i18n ou de traduction.
-- Ne pas commiter de donnees metier, exports de bases, secrets, tokens ou cles API.
+- Ne pas committer de donnees metier, exports de bases, secrets, tokens ou cles API.
 - Ne jamais exposer dans le frontend un token ayant des droits d'ecriture.
 - Les endpoints publics consommes par le frontend doivent rester en lecture seule.
 - La moderation editoriale doit s'appuyer sur Draft/Publish Strapi, sauf decision explicite contraire.
@@ -42,6 +46,14 @@ Stack cible :
 - Preferer les patterns deja presents dans le monorepo.
 - Ne pas reintroduire `apps/map-interactive` : l'ancien POC standalone a ete supprime pour eviter la confusion avec `apps/frontend`.
 - Apres toute modification de schema Strapi future, inclure la regeneration des types dans le meme changement si le depot contient des types generes.
+
+## Politique documentaire team-safe
+
+- `ROADMAP.md` est obligatoire et doit etre a jour a chaque session.
+- `ROADMAP_HISTORY.md` est consulte seulement pour investiguer une regression, une ancienne decision ou archiver une phase terminee.
+- En fin de session partielle, modifier seulement `ROADMAP.md`.
+- Lors de la cloture d'une phase, deplacer son detail complet vers `ROADMAP_HISTORY.md` et laisser un resume avec lien dans `ROADMAP.md`.
+- Les documents suivis par Git doivent rester impersonnels et productisables : aucun nom personnel, chemin local, identifiant d'outil, note de reunion ou contexte prive.
 
 ## Continuite entre agents
 
@@ -59,6 +71,8 @@ Avant de terminer :
 - Cocher une tache uniquement si la verification associee est passee ou si la justification est documentee.
 - Passer le statut d'une phase a `En cours`, `Bloque` ou `Termine` lorsque l'etat reel change.
 - Ajouter une note courte dans `ROADMAP.md` lorsqu'une tache reste incomplete, partielle ou dependante d'un acces externe.
+- Apres une session partielle, mettre a jour seulement `ROADMAP.md`.
+- Mettre a jour `ROADMAP_HISTORY.md` seulement quand une phase complete passe a `Termine` : deplacer le detail complet depuis `ROADMAP.md` et ne conserver qu'un resume avec lien dans `ROADMAP.md`.
 - Mettre a jour `DECISION.md` seulement pour une decision d'architecture durable.
 - Mettre a jour `CONSTITUTION.md` seulement si une regle non negociable change avec validation humaine.
 - Mettre a jour `AGENTS.md` seulement si la methode de travail des agents change.
