@@ -444,8 +444,8 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
 export interface ApiDepartmentDepartment extends Struct.CollectionTypeSchema {
   collectionName: 'departments';
   info: {
-    description: 'Departement francais. La region est derivee du code departement (table DEPT_TO_REGION du backend).';
-    displayName: 'Departement';
+    description: 'D\u00E9partement fran\u00E7ais. La r\u00E9gion est d\u00E9riv\u00E9e du code d\u00E9partement (table DEPT_TO_REGION du backend).';
+    displayName: 'D\u00E9partement';
     pluralName: 'departments';
     singularName: 'department';
   };
@@ -509,11 +509,20 @@ export interface ApiHabitattypeHabitattype extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    label: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetMinMaxLength<{
-        minLength: 1;
-      }>;
+    label: Schema.Attribute.Enumeration<
+      [
+        'Jardin public',
+        'Jardin priv\u00E9',
+        'Autres espaces urbains publics v\u00E9g\u00E9talis\u00E9s',
+        'Exploitation agricole',
+        'Espace Naturel Prot\u00E9g\u00E9',
+        'For\u00EAt priv\u00E9e',
+        'For\u00EAt publique',
+        'Friche (urbaine, agricole, routi\u00E8res ou ferroviaire)',
+        'Cours d\u2019eau et leurs bordures',
+      ]
+    > &
+      Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -562,7 +571,27 @@ export interface ApiPartnerPartner extends Struct.CollectionTypeSchema {
       Schema.Attribute.SetMinMaxLength<{
         minLength: 1;
       }>;
-    profile: Schema.Attribute.String;
+    profile: Schema.Attribute.Enumeration<
+      [
+        'Commune',
+        'Intercommunalit\u00E9',
+        'D\u00E9partement / DDT',
+        'R\u00E9gion / DREAL',
+        'Etablissement scolaire',
+        'Agriculteur.ices',
+        'Coop\u00E9rative agricole',
+        'Syndicat agricole',
+        'Association d\u2019agro\u00E9cologie',
+        'Apiculteur.ices',
+        'Coop\u00E9rative apicole',
+        'Syndicat apicole',
+        'F\u00E9d\u00E9ration de chasse / p\u00EAche',
+        'Association de sensibilisation / pr\u00E9servation de la biodiversit\u00E9',
+        'Association autre',
+        'Citoyen.ne',
+        'Gestionnaires d\u2019espaces naturels prot\u00E9g\u00E9s : ENS, CEN, RNF, Natura 2000',
+      ]
+    >;
     projects: Schema.Attribute.Relation<'oneToMany', 'api::project.project'>;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
@@ -593,7 +622,16 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
   attributes: {
     address: Schema.Attribute.String;
     city: Schema.Attribute.String;
-    consultationType: Schema.Attribute.String;
+    consultationType: Schema.Attribute.Enumeration<
+      [
+        'Atelier',
+        'R\u00E9union de concertation',
+        'Consultation',
+        'Comit\u00E9 de pilotage de projet',
+        'R\u00E9union d\u2019information',
+        'Prise en compte des pollinisateurs dans un PLU / PLUi / SCOT',
+      ]
+    >;
     contactEmail: Schema.Attribute.Email;
     contactPhone: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
@@ -604,9 +642,17 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
       'api::department.department'
     >;
     description: Schema.Attribute.Text;
+    displayContactEmail: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
     extent: Schema.Attribute.String;
     followUpFrequency: Schema.Attribute.String;
-    followUpType: Schema.Attribute.String;
+    followUpType: Schema.Attribute.Enumeration<
+      [
+        'Suivi photographique',
+        'Suivi entomologique en sciences participatives',
+        'Suivi entomologique par inventaire d\u2019experts',
+      ]
+    >;
     habitatTypes: Schema.Attribute.Relation<
       'manyToMany',
       'api::habitattype.habitattype'
@@ -636,6 +682,7 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
       true
     >;
     sensitizationTitle: Schema.Attribute.String;
+    submitterEmail: Schema.Attribute.Email & Schema.Attribute.Private;
     title: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
@@ -673,7 +720,17 @@ export interface ApiProjecttypeProjecttype extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    label: Schema.Attribute.String & Schema.Attribute.Required;
+    label: Schema.Attribute.Enumeration<
+      [
+        'Pratiques raisonn\u00E9es',
+        'Renaturation / Restauration',
+        'Sensibilisation',
+        'Formation',
+        'Consultation / Concertation',
+        'Suivi',
+      ]
+    > &
+      Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -682,12 +739,18 @@ export interface ApiProjecttypeProjecttype extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     projects: Schema.Attribute.Relation<'oneToMany', 'api::project.project'>;
     publishedAt: Schema.Attribute.DateTime;
-    slug: Schema.Attribute.String &
+    slug: Schema.Attribute.Enumeration<
+      [
+        'pratiques-raisonnees',
+        'renaturation-restauration',
+        'sensibilisation',
+        'formation',
+        'consultation',
+        'suivis',
+      ]
+    > &
       Schema.Attribute.Required &
-      Schema.Attribute.Unique &
-      Schema.Attribute.SetMinMaxLength<{
-        minLength: 1;
-      }>;
+      Schema.Attribute.Unique;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

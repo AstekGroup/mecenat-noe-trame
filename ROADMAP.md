@@ -50,11 +50,18 @@ Objectif : transformer la carte d'une experience essentiellement plein ecran en 
 - [x] Ajouter un mode plein ecran seulement si l'integration reste simple et utile pour l'utilisateur. -> Mode non ajoute : la carte integree conserve assez d'espace et toutes ses interactions; un second mode augmenterait inutilement le perimetre.
 - [x] Verifier le rendu desktop et mobile de la page avec carte integree. -> Rendu et navigation valides en desktop et mobile, y compris le panneau mobile.
 - [x] Documenter les limites restantes avant la vitrine. -> Le contenu et la navigation restent volontairement courts et statiques; leur enrichissement appartient a la Phase 5.
+- [x] Recontroler le formulaire Airtable de reference avant la revue humaine. -> Les 19 champs visibles, leurs types et les listes controlees ont ete compares au modele Strapi.
+- [x] Corriger les divergences de saisie Strapi et franciser les libelles du Content Manager. -> Consultation, suivi, pratiques raisonnees, renaturation et profil du porteur sont controles; les libelles editoriaux et l'interface utilisateur sont en francais.
+- [x] Documenter et verifier la correspondance complete Airtable vers Strapi. -> Tableau, choix controles, relations et regles d'exposition documentes dans `DATA_MODEL_AIRTABLE_STRAPI.md`; types generes, builds, tests et verification navigateur valides.
 - [ ] Revue humaine finale avant Phase 5.
 
 **Verification de phase :**
 - Tests frontend : 31 passes, 3 fichiers.
 - Build frontend : OK.
+- Tests backend apres correction du modele : 43 passes, 7 suites.
+- Build backend et build admin Strapi : OK.
+- Generation des types Strapi : OK, 0 erreur.
+- Verification runtime : libelles francais, listes deroulantes conformes, 9 types de milieu controles et donnees synthetiques normalisees via Strapi.
 - Validation desktop et mobile : navigation, contenu, carte integree et footer visibles; cluster, zoom, liste, filtres, corridors, DOM-TOM, selection, popup et detail fonctionnels.
 
 **Blocage restant :** revue humaine finale avant Phase 5. Ne pas demarrer la Phase 5 avant cet accord.

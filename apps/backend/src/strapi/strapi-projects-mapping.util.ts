@@ -73,6 +73,7 @@ export interface StrapiProjectItem {
   longitude: number | null;
   extent: string | null;
   isOngoing: boolean | null;
+  displayContactEmail: boolean | null;
   contactEmail: string | null;
   contactPhone: string | null;
   website: string | null;
@@ -149,7 +150,7 @@ export function strapiProjectToDomain(item: StrapiProjectItem): Project {
 
     owner: item.partner?.name ?? '',
     ownerProfile: item.partner?.profile ?? undefined,
-    contactEmail: item.contactEmail ?? undefined,
+    contactEmail: item.displayContactEmail ? item.contactEmail ?? undefined : undefined,
     contactPhone: item.contactPhone ?? undefined,
     website: item.website ?? undefined,
 

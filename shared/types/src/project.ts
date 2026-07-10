@@ -101,8 +101,8 @@ export const PROJECT_TYPE_LABELS: Record<ProjectType, string> = {
   'renaturation-restauration': 'Renaturation / Restauration',
   sensibilisation: 'Sensibilisation',
   formation: 'Formation',
-  consultation: 'Consultation',
-  suivis: 'Suivis',
+  consultation: 'Consultation / Concertation',
+  suivis: 'Suivi',
 };
 
 export const PROJECT_TYPE_COLORS: Record<ProjectType, string> = {
@@ -115,5 +115,4 @@ export const PROJECT_TYPE_COLORS: Record<ProjectType, string> = {
 };
 
 export { REGIONS };
-
 

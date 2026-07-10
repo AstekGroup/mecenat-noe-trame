@@ -4,8 +4,8 @@ export default {
   info: {
     singularName: 'department',
     pluralName: 'departments',
-    displayName: 'Departement',
-    description: 'Departement francais. La region est derivee du code departement (table DEPT_TO_REGION du backend).',
+    displayName: 'Département',
+    description: 'Département français. La région est dérivée du code département (table DEPT_TO_REGION du backend).',
   },
   options: {
     draftAndPublish: false,

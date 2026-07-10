@@ -14,6 +14,7 @@ describe('strapiProjectToDomain', () => {
     longitude: 2.3522,
     extent: '100 m2',
     isOngoing: true,
+    displayContactEmail: true,
     contactEmail: 'contact@example.org',
     contactPhone: '0102030405',
     website: 'https://example.org',
@@ -30,7 +31,7 @@ describe('strapiProjectToDomain', () => {
     },
     partner: {
       name: 'Noé',
-      profile: 'Association',
+      profile: 'Association autre',
     },
     projectType: {
       slug: 'sensibilisation',
@@ -39,7 +40,7 @@ describe('strapiProjectToDomain', () => {
     },
     habitatTypes: [{ label: 'Prairie' }],
     reasonedPracticeTypes: [{ label: 'Tonte tardive' }],
-    renaturationTypes: [{ label: 'Restauration de prairie' }],
+    renaturationTypes: [{ label: 'Prairie' }],
   };
 
   it('mappe la forme REST Strapi vers le contrat Project', () => {
@@ -52,11 +53,30 @@ describe('strapiProjectToDomain', () => {
       department: 'Paris',
       type: 'sensibilisation',
       owner: 'Noé',
-      ownerProfile: 'Association',
+      ownerProfile: 'Association autre',
+      contactEmail: 'contact@example.org',
       habitatType: ['Prairie'],
       reasonedPracticeTypes: ['Tonte tardive'],
-      renaturationTypes: ['Restauration de prairie'],
+      renaturationTypes: ['Prairie'],
     });
+  });
+
+  it("masque l'adresse de contact sans consentement explicite", () => {
+    const project = strapiProjectToDomain({
+      ...baseItem,
+      displayContactEmail: false,
+    });
+
+    expect(project.contactEmail).toBeUndefined();
+  });
+
+  it("masque aussi l'adresse de contact quand le consentement est absent", () => {
+    const project = strapiProjectToDomain({
+      ...baseItem,
+      displayContactEmail: null,
+    });
+
+    expect(project.contactEmail).toBeUndefined();
   });
 
   it('replie les valeurs métier invalides vers les défauts sûrs', () => {

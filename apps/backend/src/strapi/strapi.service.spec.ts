@@ -24,6 +24,7 @@ describe('StrapiService', () => {
         longitude: null,
         extent: null,
         isOngoing: true,
+        displayContactEmail: false,
         contactEmail: null,
         contactPhone: null,
         website: null,
@@ -40,7 +41,7 @@ describe('StrapiService', () => {
         },
         partner: {
           name: 'Noé',
-          profile: 'Association',
+          profile: 'Association autre',
         },
         projectType: {
           slug: 'formation',

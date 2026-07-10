@@ -20,13 +20,28 @@ export default {
   },
   attributes: {
     slug: {
-      type: 'string',
+      type: 'enumeration',
+      enum: [
+        'pratiques-raisonnees',
+        'renaturation-restauration',
+        'sensibilisation',
+        'formation',
+        'consultation',
+        'suivis',
+      ],
       required: true,
       unique: true,
-      minLength: 1,
     },
     label: {
-      type: 'string',
+      type: 'enumeration',
+      enum: [
+        'Pratiques raisonnées',
+        'Renaturation / Restauration',
+        'Sensibilisation',
+        'Formation',
+        'Consultation / Concertation',
+        'Suivi',
+      ],
       required: true,
     },
     color: {

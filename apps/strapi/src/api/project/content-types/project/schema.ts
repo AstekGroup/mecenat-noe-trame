@@ -86,15 +86,36 @@ export default {
       type: 'string',
     },
     consultationType: {
-      type: 'string',
+      type: 'enumeration',
+      enum: [
+        'Atelier',
+        'Réunion de concertation',
+        'Consultation',
+        'Comité de pilotage de projet',
+        "Réunion d’information",
+        'Prise en compte des pollinisateurs dans un PLU / PLUi / SCOT',
+      ],
     },
     followUpType: {
-      type: 'string',
+      type: 'enumeration',
+      enum: [
+        'Suivi photographique',
+        'Suivi entomologique en sciences participatives',
+        "Suivi entomologique par inventaire d’experts",
+      ],
     },
     followUpFrequency: {
       type: 'string',
     },
     isOngoing: {
+      type: 'boolean',
+      default: false,
+    },
+    submitterEmail: {
+      type: 'email',
+      private: true,
+    },
+    displayContactEmail: {
       type: 'boolean',
       default: false,
     },

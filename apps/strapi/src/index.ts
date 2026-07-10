@@ -1,3 +1,7 @@
+import type { Core } from '@strapi/strapi';
+
+import { configureFrenchContentManager } from './content-manager-labels';
+
 export default {
   /**
    * Application Strapi - point d'entree.
@@ -5,7 +9,7 @@ export default {
    */
   register() {},
 
-  bootstrap(/* { strapi } */) {
-    // Reserve : logique d'initialisation (roles, seed, etc.).
+  async bootstrap({ strapi }: { strapi: Core.Strapi }) {
+    await configureFrenchContentManager(strapi);
   },
 };
