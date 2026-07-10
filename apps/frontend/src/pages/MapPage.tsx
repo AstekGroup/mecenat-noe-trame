@@ -1,11 +1,12 @@
 import { useState, useCallback, useRef } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Project, ProjectType } from '@/types/project';
 import { useProjects } from '@/hooks';
 import { MapView } from '@/components/Map';
 import { Sidebar } from '@/components/Sidebar';
 import { SearchOverlay } from '@/components/Map/SearchOverlay';
-import { Loader2, List, Home, Filter } from 'lucide-react';
+import { Header, Footer } from '@/components/Layout';
+import { Loader2, Filter } from 'lucide-react';
 
 export interface MapViewHandle {
   flyTo: (lng: number, lat: number, zoom?: number) => void;
@@ -95,102 +96,108 @@ export function MapPage() {
   }
 
   return (
-    <div className="h-screen w-screen relative overflow-hidden">
-      <SearchOverlay
-        onFlyTo={handleSearchFlyTo}
-        onSearchFilter={handleSearchFilter}
-        searchValue={filters.search}
-      />
+    <div className="min-h-screen bg-surface-beige-light flex flex-col">
+      <Header />
 
-      <div className="absolute top-4 left-4 z-20 hidden sm:flex items-center gap-2">
-        <Link
-          to="/"
-          className="bg-white shadow-popup rounded-xl p-2.5 hover:bg-surface-beige transition-all border border-primary/5 group"
-          title="Retour à l'accueil"
+      <main className="flex-1 py-8 sm:py-10">
+        <section className="max-w-5xl mx-auto px-4 mb-6" aria-labelledby="map-title">
+          <p className="font-rubik font-semibold text-accent-coral mb-2">Trame pollinisateur</p>
+          <h1 id="map-title" className="font-rubik text-3xl sm:text-4xl font-bold text-primary">
+            Explorer les projets
+          </h1>
+          <p className="mt-3 max-w-3xl text-text-secondary">
+            Recherchez les initiatives, filtrez la carte et découvrez les corridors favorables aux pollinisateurs en France et dans les territoires ultramarins.
+          </p>
+        </section>
+
+        <section
+          aria-label="Carte interactive des projets"
+          className="relative h-[72svh] min-h-[560px] max-h-[820px] overflow-hidden bg-white shadow-popup sm:mx-4 sm:rounded-2xl"
         >
-          <Home className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
-        </Link>
-        <button
-          onClick={() => navigate('/projets')}
-          className="bg-white shadow-popup rounded-xl px-4 py-2.5 flex items-center gap-2 text-sm font-semibold text-primary hover:bg-surface-beige transition-all border border-primary/5 group"
-        >
-          <List className="w-4 h-4 group-hover:scale-110 transition-transform text-accent-magenta" />
-          Voir la liste
-        </button>
-      </div>
+          <SearchOverlay
+            onFlyTo={handleSearchFlyTo}
+            onSearchFilter={handleSearchFilter}
+            searchValue={filters.search}
+          />
 
-      <MapView
-        geojson={geojson}
-        natura2000Data={natura2000Data}
-        corridorsData={corridorsData}
-        parcsNationauxData={parcsNationauxData}
-        parcsNaturelsRegionauxData={parcsNaturelsRegionauxData}
-        reservesNaturellesData={reservesNaturellesData}
-        reservesBiologiquesData={reservesBiologiquesData}
-        showNatura2000={filters.showNatura2000}
-        showCorridors={filters.showCorridors}
-        showParcsNationaux={filters.showParcsNationaux}
-        showParcsNaturelsRegionaux={filters.showParcsNaturelsRegionaux}
-        showReservesNaturelles={filters.showReservesNaturelles}
-        showReservesBiologiques={filters.showReservesBiologiques}
-        showRegions={filters.showRegions}
-        showDepartments={filters.showDepartments}
-        showEPCI={filters.showEPCI}
-        showCommunes={filters.showCommunes}
-        selectedProject={selectedProject}
-        onSelectProject={setSelectedProject}
-        hoveredProject={hoveredProject}
-        onHoverProject={setHoveredProject}
-        onViewProjectDetails={handleViewDetails}
-        onMapFlyToReady={(flyToFn) => { mapFlyToRef.current = flyToFn; }}
-      />
-
-      <div className="hidden sm:block">
-        <Sidebar
-          projects={projects}
-          filters={filters}
-          onUpdateFilters={updateFilters}
-          onToggleRegion={toggleRegion}
-          onToggleType={(type) => toggleType(type as ProjectType)}
-          onResetFilters={resetFilters}
-          selectedProject={selectedProject}
-          onSelectProject={handleSidebarProjectClick}
-          hoveredProject={hoveredProject}
-          onHoverProject={setHoveredProject}
-          stats={stats}
-        />
-      </div>
-
-      {mobileShowSidebar && (
-        <div className="sm:hidden">
-          <Sidebar
-            projects={projects}
-            filters={filters}
-            onUpdateFilters={updateFilters}
-            onToggleRegion={toggleRegion}
-            onToggleType={(type) => toggleType(type as ProjectType)}
-            onResetFilters={resetFilters}
+          <MapView
+            geojson={geojson}
+            natura2000Data={natura2000Data}
+            corridorsData={corridorsData}
+            parcsNationauxData={parcsNationauxData}
+            parcsNaturelsRegionauxData={parcsNaturelsRegionauxData}
+            reservesNaturellesData={reservesNaturellesData}
+            reservesBiologiquesData={reservesBiologiquesData}
+            showNatura2000={filters.showNatura2000}
+            showCorridors={filters.showCorridors}
+            showParcsNationaux={filters.showParcsNationaux}
+            showParcsNaturelsRegionaux={filters.showParcsNaturelsRegionaux}
+            showReservesNaturelles={filters.showReservesNaturelles}
+            showReservesBiologiques={filters.showReservesBiologiques}
+            showRegions={filters.showRegions}
+            showDepartments={filters.showDepartments}
+            showEPCI={filters.showEPCI}
+            showCommunes={filters.showCommunes}
             selectedProject={selectedProject}
-            onSelectProject={(project) => {
-              handleSidebarProjectClick(project);
-              setMobileShowSidebar(false);
-            }}
+            onSelectProject={setSelectedProject}
             hoveredProject={hoveredProject}
             onHoverProject={setHoveredProject}
-            stats={stats}
+            onViewProjectDetails={handleViewDetails}
+            onMapFlyToReady={(flyToFn) => { mapFlyToRef.current = flyToFn; }}
           />
-        </div>
-      )}
 
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 sm:hidden z-30">
-        <button
-          onClick={() => setMobileShowSidebar(!mobileShowSidebar)}
-          className="bg-primary text-white rounded-full px-5 py-3 shadow-popup flex items-center gap-2 font-rubik font-semibold text-sm"
-        >
-          <Filter className="w-4 h-4" />
-          {mobileShowSidebar ? 'Fermer' : 'Filtres & Liste'}
-        </button>
-      </div>
+          <div className="hidden sm:block">
+            <Sidebar
+              projects={projects}
+              filters={filters}
+              onUpdateFilters={updateFilters}
+              onToggleRegion={toggleRegion}
+              onToggleType={(type) => toggleType(type as ProjectType)}
+              onResetFilters={resetFilters}
+              selectedProject={selectedProject}
+              onSelectProject={handleSidebarProjectClick}
+              hoveredProject={hoveredProject}
+              onHoverProject={setHoveredProject}
+              stats={stats}
+            />
+          </div>
+
+          {mobileShowSidebar && (
+            <div id="mobile-sidebar" className="sm:hidden">
+              <Sidebar
+                projects={projects}
+                filters={filters}
+                onUpdateFilters={updateFilters}
+                onToggleRegion={toggleRegion}
+                onToggleType={(type) => toggleType(type as ProjectType)}
+                onResetFilters={resetFilters}
+                selectedProject={selectedProject}
+                onSelectProject={(project) => {
+                  handleSidebarProjectClick(project);
+                  setMobileShowSidebar(false);
+                }}
+                hoveredProject={hoveredProject}
+                onHoverProject={setHoveredProject}
+                stats={stats}
+              />
+            </div>
+          )}
+
+          <div className="absolute bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 sm:hidden z-30">
+            <button
+              onClick={() => setMobileShowSidebar(!mobileShowSidebar)}
+              aria-expanded={mobileShowSidebar}
+              aria-controls="mobile-sidebar"
+              className="bg-primary text-white rounded-full px-5 py-3 shadow-popup flex items-center gap-2 font-rubik font-semibold text-sm"
+            >
+              <Filter className="w-4 h-4" />
+              {mobileShowSidebar ? 'Fermer' : 'Filtres & Liste'}
+            </button>
+          </div>
+        </section>
+      </main>
+
+      <Footer />
     </div>
   );
 }
