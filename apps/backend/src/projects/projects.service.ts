@@ -1,7 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import type { Project } from '@make-map/types';
-import { AirtableService } from '../airtable/airtable.service';
 import { StrapiService } from '../strapi/strapi.service';
 
 interface CachedProjectsData {
@@ -18,17 +16,10 @@ export class ProjectsService {
   private devCache: CachedProjectsData | null = null;
   private readonly CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly airtableService: AirtableService,
-    private readonly strapiService: StrapiService,
-  ) {}
+  constructor(private readonly strapiService: StrapiService) {}
 
   /**
-   * Récupère tous les projets (avec cache TTL).
-   * La source est choisie via la variable d'environnement CMS_SOURCE :
-   * - 'airtable' (défaut) : utilise AirtableService
-   * - 'strapi' : utilise StrapiService (API REST Strapi)
+   * Récupère tous les projets (avec cache TTL) depuis Strapi.
    */
   async findAll(devMode = false): Promise<Project[]> {
     const cached = devMode ? this.devCache : this.cache;
@@ -40,17 +31,9 @@ export class ProjectsService {
       return cached.projects;
     }
 
-    const source =
-      this.configService.get<string>('CMS_SOURCE', 'airtable').toLowerCase();
+    this.logger.log('Cache projets miss, chargement depuis Strapi...');
 
-    this.logger.log(
-      `Cache projets miss, chargement depuis ${source}...`,
-    );
-
-    const projects =
-      source === 'strapi'
-        ? await this.strapiService.fetchProjects(devMode)
-        : await this.airtableService.fetchProjects(devMode);
+    const projects = await this.strapiService.fetchProjects(devMode);
 
     const newCache: CachedProjectsData = { projects, timestamp: Date.now() };
     if (devMode) {

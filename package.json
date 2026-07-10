@@ -21,7 +21,7 @@
     "react",
     "maplibre",
     "nestjs",
-    "airtable"
+    "strapi"
   ],
   "author": "ILAB Innovation Team",
   "packageManager": "pnpm@11.7.0",

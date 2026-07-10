@@ -2,7 +2,9 @@
 
 Carte interactive pour visualiser les projets de renaturation et de préservation de la biodiversité de la [Trame pollinisateur](https://noe.org) (Noé) à travers la France.
 
-**Client** : Noé | **Stack** : React + NestJS + MapLibre GL JS, migration Airtable vers Strapi en cours | **Monorepo** : pnpm + TurboRepo
+**Client** : Noé | **Stack** : React + NestJS + MapLibre GL JS + Strapi | **Monorepo** : pnpm + TurboRepo
+
+Strapi est la source active unique des projets. Le frontend passe toujours par le backend NestJS, qui conserve le géocodage, le cache et les transformations métier.
 
 ## Structure du projet
 
@@ -10,7 +12,7 @@ Carte interactive pour visualiser les projets de renaturation et de préservatio
 make-map/
 ├── apps/
 │   ├── frontend/           # React + Vite (consomme l'API backend)
-│   ├── backend/            # NestJS (proxy Airtable + géocodage)
+│   ├── backend/            # NestJS (adaptation Strapi + géocodage)
 │   └── strapi/             # Strapi v5 (CMS headless, SQLite)
 ├── shared/
 │   └── types/              # @make-map/types (types TypeScript partagés)
@@ -45,18 +47,18 @@ cp apps/frontend/.env.example apps/frontend/.env
 
 | Variable | Où | Description |
 |---|---|---|
-| `AIRTABLE_API_KEY` | backend | Personal Access Token Airtable |
-| `AIRTABLE_BASE_ID` | backend | ID de la base (commence par `app`) |
-| `AIRTABLE_PROJECTS_TABLE_ID` | backend | ID de la table des projets (commence par `tbl`) |
+| `STRAPI_API_URL` | backend | URL de l'API Strapi (`http://localhost:1337`) |
+| `STRAPI_API_TOKEN` | backend | Token Strapi limité à la lecture des contenus nécessaires |
 | `VITE_API_URL` | frontend | URL du backend (`http://localhost:3000`) |
 
 ### Lancer le projet
 
 ```bash
-# Frontend + backend ensemble
-pnpm dev
+# Strapi + backend + frontend ensemble
+pnpm dev:all
 
 # Ou séparément
+pnpm strapi:dev  # Strapi (port 1337)
 pnpm back:dev    # Backend (port 3000)
 pnpm front:dev   # Frontend (port 5173)
 ```
@@ -65,12 +67,12 @@ pnpm front:dev   # Frontend (port 5173)
 
 ### Backend (`apps/backend`)
 
-Proxy sécurisé NestJS pour l'API Airtable. Le token reste côté serveur.
+API NestJS sécurisée entre le frontend et Strapi. Le token Strapi reste côté serveur.
 
 - **API** : `GET /api/projects` · `GET /api/projects/:id` · `GET /api/health` · `GET /api/natura2000`
 - Géocodage via [api-adresse.data.gouv.fr](https://adresse.data.gouv.fr) avec cache permanent
-- Cache TTL 5 min pour les données Airtable
-- `?devMode=true` pour bypasser le filtre de modération en contexte de developpement uniquement. Ce bypass ne doit pas etre reporte sur les endpoints publics Strapi sans protection explicite.
+- Cache TTL 5 min pour les projets Strapi
+- `?devMode=true` reste accepté pour compatibilité, mais n'expose jamais les brouillons Strapi sur l'endpoint public.
 
 ### Frontend (`apps/frontend`)
 
@@ -85,7 +87,7 @@ Application React avec carte interactive MapLibre GL JS.
 
 ### Strapi (`apps/strapi`)
 
-CMS Strapi v5 (TypeScript, SQLite). Installation native minimale. Aucun content-type en Phase 1 — la modélisation des projets, départements et partenaires se fera en Phase 2.
+CMS Strapi v5 (TypeScript, SQLite en local) avec les projets, départements, partenaires et taxonomies utiles à la carte.
 
 ```bash
 pnpm strapi:dev    # Strapi Admin sur http://localhost:1337/admin

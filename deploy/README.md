@@ -10,8 +10,10 @@ Instance Scaleway DEV1-S (2 vCPU, 2 Go RAM, ~11 EUR/mois)
 │   ├── /       -> Frontend Nginx (port 3080)
 │   └── /api/*  -> Backend NestJS (port 8080)
 ├── Frontend Nginx (fichiers statiques React)
-└── Backend NestJS (API Airtable + Geocodage)
+└── Backend NestJS (API Strapi + geocodage)
 ```
+
+Cette composition ne démarre pas Strapi. `STRAPI_API_URL` doit donc désigner une instance Strapi accessible depuis le conteneur backend.
 
 ## Prerequis
 
@@ -44,9 +46,8 @@ ssh root@$IP "curl -fsSL https://get.docker.com | sh"
 
 ```bash
 envmap set --env prod SCW_INSTANCE_IP --prompt    # IP publique de l'instance
-envmap set --env prod AIRTABLE_API_KEY --prompt    # Token Airtable
-envmap set --env prod AIRTABLE_BASE_ID --prompt    # Base ID Airtable
-envmap set --env prod AIRTABLE_TABLE_ID --prompt   # Table ID Airtable
+envmap set --env prod STRAPI_API_URL --prompt      # URL de l'API Strapi
+envmap set --env prod STRAPI_API_TOKEN --prompt    # Token Strapi lecture seule
 envmap set --env prod VITE_MAPTILER_KEY --prompt   # Cle MapTiler
 envmap set --env prod DOMAIN --prompt              # Domaine (ex: map.semaine-ia.fr)
 ```
@@ -99,9 +100,8 @@ Voir `deploy/.env.prod.example` pour la liste complete.
 
 | Variable | Description | Exemple |
 |----------|-------------|---------|
-| `AIRTABLE_API_KEY` | Token Airtable PAT | `pats...` |
-| `AIRTABLE_BASE_ID` | ID de la base Airtable | `app...` |
-| `AIRTABLE_TABLE_ID` | ID de la table Evenements | `tbl...` |
+| `STRAPI_API_URL` | URL Strapi accessible par le backend | `https://cms.example.org` |
+| `STRAPI_API_TOKEN` | Token Strapi lecture seule | `token...` |
 | `VITE_MAPTILER_KEY` | Cle API MapTiler | `abc...` |
 | `DOMAIN` | Nom de domaine | `map.semaine-ia.fr` |
 | `CORS_ORIGIN` | Origines CORS autorisees | `*` |

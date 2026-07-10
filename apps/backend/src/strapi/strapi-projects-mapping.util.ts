@@ -4,12 +4,10 @@
  * La forme native Strapi (REST API v5) est aplatie :
  *   { data: [{ id, documentId, ...fields, department, partner, projectType }] }
  *
- * Ce fichier transforme cette forme en `Project` du contrat partagé @make-map/types,
- * identique à la sortie actuelle de `transformProjectRecord()` pour Airtable.
+ * Ce fichier transforme cette forme en `Project` du contrat partagé @make-map/types.
  *
  * Le géocodage (latitude/longitude/région/département) n'est PAS fait ici :
- * il est appliqué ensuite dans `StrapiService` via `GeocodingService`,
- * exactement comme le fait `AirtableService`.
+ * il est appliqué ensuite dans `StrapiService` via `GeocodingService`.
  */
 
 import type { Project, ProjectType, Region } from '@make-map/types';
@@ -53,10 +51,7 @@ function normalizeRegion(value: string | null | undefined): Region {
 }
 
 function normalizeProjectType(value: string | null | undefined): ProjectType {
-  if (
-    value &&
-    (VALID_PROJECT_TYPES as readonly string[]).includes(value)
-  ) {
+  if (value && (VALID_PROJECT_TYPES as readonly string[]).includes(value)) {
     return value as ProjectType;
   }
   return DEFAULT_PROJECT_TYPE;

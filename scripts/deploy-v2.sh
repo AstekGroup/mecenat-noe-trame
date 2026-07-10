@@ -32,9 +32,8 @@ echo -e "${YELLOW}[1/5] Chargement des secrets...${NC}"
 
 if command -v envmap &> /dev/null && [ -f ".envmap.yaml" ]; then
     SCW_INSTANCE_IP=$(envmap get --env prod SCW_INSTANCE_IP --raw 2>/dev/null | tr -d '\001' || echo "")
-    AIRTABLE_API_KEY=$(envmap get --env prod AIRTABLE_API_KEY --raw 2>/dev/null | tr -d '\001' || echo "")
-    AIRTABLE_BASE_ID=$(envmap get --env prod AIRTABLE_BASE_ID --raw 2>/dev/null | tr -d '\001' || echo "")
-    AIRTABLE_TABLE_ID=$(envmap get --env prod AIRTABLE_TABLE_ID --raw 2>/dev/null | tr -d '\001' || echo "")
+    STRAPI_API_URL=$(envmap get --env prod STRAPI_API_URL --raw 2>/dev/null | tr -d '\001' || echo "")
+    STRAPI_API_TOKEN=$(envmap get --env prod STRAPI_API_TOKEN --raw 2>/dev/null | tr -d '\001' || echo "")
     VITE_MAPTILER_KEY=$(envmap get --env prod VITE_MAPTILER_KEY --raw 2>/dev/null | tr -d '\001' || echo "")
     DOMAIN=$(envmap get --env prod DOMAIN --raw 2>/dev/null | tr -d '\001' || echo "localhost")
 fi
@@ -51,8 +50,13 @@ if [ -z "$SCW_INSTANCE_IP" ]; then
     exit 1
 fi
 
-if [ -z "$AIRTABLE_API_KEY" ]; then
-    echo -e "${RED}Erreur: AIRTABLE_API_KEY non défini${NC}"
+if [ -z "$STRAPI_API_URL" ]; then
+    echo -e "${RED}Erreur: STRAPI_API_URL non défini${NC}"
+    exit 1
+fi
+
+if [ -z "$STRAPI_API_TOKEN" ]; then
+    echo -e "${RED}Erreur: STRAPI_API_TOKEN non défini${NC}"
     exit 1
 fi
 
@@ -97,9 +101,8 @@ echo ""
 echo -e "${YELLOW}[3/5] Configuration des variables d'environnement...${NC}"
 
 $SSH_CMD "cat > ${REMOTE_DIR}/deploy/.env.prod << 'ENVEOF'
-AIRTABLE_API_KEY=${AIRTABLE_API_KEY}
-AIRTABLE_BASE_ID=${AIRTABLE_BASE_ID}
-AIRTABLE_TABLE_ID=${AIRTABLE_TABLE_ID}
+STRAPI_API_URL=${STRAPI_API_URL}
+STRAPI_API_TOKEN=${STRAPI_API_TOKEN}
 VITE_MAPTILER_KEY=${VITE_MAPTILER_KEY}
 DOMAIN=${DOMAIN:-localhost}
 CORS_ORIGIN=*
@@ -149,11 +152,11 @@ echo ""
 
 if [ "${DOMAIN}" != "localhost" ] && [ -n "${DOMAIN}" ]; then
     echo -e "  Frontend: ${BLUE}https://${DOMAIN}${NC}"
-    echo -e "  API:      ${BLUE}https://${DOMAIN}/api/events${NC}"
+    echo -e "  API:      ${BLUE}https://${DOMAIN}/api/projects${NC}"
     echo -e "  Health:   ${BLUE}https://${DOMAIN}/api/health${NC}"
 else
     echo -e "  Frontend: ${BLUE}http://${SCW_INSTANCE_IP}${NC}"
-    echo -e "  API:      ${BLUE}http://${SCW_INSTANCE_IP}/api/events${NC}"
+    echo -e "  API:      ${BLUE}http://${SCW_INSTANCE_IP}/api/projects${NC}"
     echo -e "  Health:   ${BLUE}http://${SCW_INSTANCE_IP}/api/health${NC}"
 fi
 

@@ -1,15 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConfigService } from '@nestjs/config';
 import { ProjectsService } from './projects.service';
-import { AirtableService } from '../airtable/airtable.service';
 import { StrapiService } from '../strapi/strapi.service';
 import type { Project } from '@make-map/types';
 
 describe('ProjectsService', () => {
   let service: ProjectsService;
-  let airtableService: AirtableService;
   let strapiService: StrapiService;
-  let cmsSource: string;
 
   const mockProject: Project = {
     id: 'rec1',
@@ -26,39 +22,30 @@ describe('ProjectsService', () => {
     owner: 'Porteur Test',
   };
 
+  const mockDevProject: Project = {
+    ...mockProject,
+    id: 'rec2',
+    title: 'Projet Dev',
+  };
+
   beforeEach(async () => {
-    cmsSource = 'airtable';
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ProjectsService,
         {
-          provide: ConfigService,
-          useValue: {
-            get: jest
-              .fn()
-              .mockImplementation((key: string, defaultValue?: string) => {
-                if (key === 'CMS_SOURCE') return cmsSource ?? defaultValue;
-                return undefined;
-              }),
-          },
-        },
-        {
-          provide: AirtableService,
-          useValue: {
-            fetchProjects: jest.fn().mockResolvedValue([mockProject]),
-          },
-        },
-        {
           provide: StrapiService,
           useValue: {
-            fetchProjects: jest.fn().mockResolvedValue([mockProject]),
+            fetchProjects: jest
+              .fn()
+              .mockImplementation((devMode: boolean) =>
+                Promise.resolve(devMode ? [mockDevProject] : [mockProject]),
+              ),
           },
         },
       ],
     }).compile();
 
     service = module.get<ProjectsService>(ProjectsService);
-    airtableService = module.get<AirtableService>(AirtableService);
     strapiService = module.get<StrapiService>(StrapiService);
   });
 
@@ -67,20 +54,11 @@ describe('ProjectsService', () => {
   });
 
   describe('findAll', () => {
-    it("devrait appeler airtableService.fetchProjects au premier appel (source par défaut)", async () => {
-      const result = await service.findAll();
-      expect(result).toEqual([mockProject]);
-      expect(airtableService.fetchProjects).toHaveBeenCalledWith(false);
-    });
-
-    it('devrait appeler strapiService.fetchProjects si CMS_SOURCE=strapi', async () => {
-      cmsSource = 'strapi';
-
+    it('devrait charger les projets depuis Strapi au premier appel', async () => {
       const result = await service.findAll();
 
       expect(result).toEqual([mockProject]);
       expect(strapiService.fetchProjects).toHaveBeenCalledWith(false);
-      expect(airtableService.fetchProjects).not.toHaveBeenCalled();
     });
 
     it('devrait utiliser le cache lors du deuxième appel', async () => {
@@ -88,16 +66,18 @@ describe('ProjectsService', () => {
       const result = await service.findAll();
 
       expect(result).toEqual([mockProject]);
-      expect(airtableService.fetchProjects).toHaveBeenCalledTimes(1);
+      expect(strapiService.fetchProjects).toHaveBeenCalledTimes(1);
     });
 
     it('devrait avoir des caches séparés pour prod et devMode', async () => {
-      await service.findAll(false); // prod
-      await service.findAll(true); // dev
+      const prodResult = await service.findAll(false);
+      const devResult = await service.findAll(true);
 
-      expect(airtableService.fetchProjects).toHaveBeenCalledTimes(2);
-      expect(airtableService.fetchProjects).toHaveBeenCalledWith(false);
-      expect(airtableService.fetchProjects).toHaveBeenCalledWith(true);
+      expect(prodResult).toEqual([mockProject]);
+      expect(devResult).toEqual([mockDevProject]);
+      expect(strapiService.fetchProjects).toHaveBeenCalledTimes(2);
+      expect(strapiService.fetchProjects).toHaveBeenCalledWith(false);
+      expect(strapiService.fetchProjects).toHaveBeenCalledWith(true);
     });
   });
 
@@ -114,12 +94,22 @@ describe('ProjectsService', () => {
   });
 
   describe('invalidateCache', () => {
-    it('devrait forcer un nouvel appel à Airtable après invalidation', async () => {
+    it('devrait forcer un nouvel appel à Strapi après invalidation', async () => {
       await service.findAll();
       service.invalidateCache();
       await service.findAll();
 
-      expect(airtableService.fetchProjects).toHaveBeenCalledTimes(2);
+      expect(strapiService.fetchProjects).toHaveBeenCalledTimes(2);
+    });
+
+    it('devrait invalider à la fois le cache prod et dev', async () => {
+      await service.findAll(false);
+      await service.findAll(true);
+      service.invalidateCache();
+      await service.findAll(false);
+      await service.findAll(true);
+
+      expect(strapiService.fetchProjects).toHaveBeenCalledTimes(4);
     });
   });
 });

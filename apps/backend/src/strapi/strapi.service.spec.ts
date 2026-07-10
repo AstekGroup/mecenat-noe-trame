@@ -7,6 +7,7 @@ import type { StrapiProjectsResponse } from './strapi-projects-mapping.util';
 describe('StrapiService', () => {
   let service: StrapiService;
   let geocodingService: GeocodingService;
+  let strapiToken: string | undefined;
   const requestedUrls: string[] = [];
 
   const strapiResponse: StrapiProjectsResponse = {
@@ -63,6 +64,7 @@ describe('StrapiService', () => {
 
   beforeEach(async () => {
     requestedUrls.length = 0;
+    strapiToken = 'test-token';
     global.fetch = jest.fn().mockImplementation((url: URL | string) => {
       requestedUrls.push(url.toString());
       return Promise.resolve({
@@ -79,7 +81,7 @@ describe('StrapiService', () => {
           useValue: {
             get: jest.fn((key: string) => {
               if (key === 'STRAPI_API_URL') return 'http://localhost:1337/';
-              if (key === 'STRAPI_API_TOKEN') return 'test-token';
+              if (key === 'STRAPI_API_TOKEN') return strapiToken;
               return undefined;
             }),
           },
@@ -140,5 +142,14 @@ describe('StrapiService', () => {
     expect(requestedUrls[0]).toContain('/api/projects');
     expect(requestedUrls[0]).toContain('populate=*');
     expect(requestedUrls[0]).not.toContain('status=draft');
+  });
+
+  it('échoue sans appeler Strapi quand le token lecture seule est absent', async () => {
+    strapiToken = undefined;
+
+    await expect(service.fetchProjects()).rejects.toThrow(
+      'STRAPI_API_TOKEN manquant',
+    );
+    expect(global.fetch).not.toHaveBeenCalled();
   });
 });

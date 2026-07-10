@@ -182,7 +182,7 @@ export function MapPage() {
         </div>
       )}
 
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 sm:hidden z-10">
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 sm:hidden z-30">
         <button
           onClick={() => setMobileShowSidebar(!mobileShowSidebar)}
           className="bg-primary text-white rounded-full px-5 py-3 shadow-popup flex items-center gap-2 font-rubik font-semibold text-sm"
