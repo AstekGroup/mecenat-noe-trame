@@ -23,10 +23,11 @@ cp .env.example .env
 ```env
 STRAPI_API_URL=http://localhost:1337
 STRAPI_API_TOKEN=votre_token_strapi_lecture_seule
+PROJECT_CACHE_INVALIDATION_SECRET=un_secret_serveur_long_et_aleatoire
 PORT=3000
 ```
 
-Le token doit être limité aux permissions `find` et `findOne` des content-types nécessaires. Aucun token d'écriture ne doit être transmis au frontend.
+Le token doit être limité aux permissions `find` et `findOne` des content-types nécessaires. Le secret d'invalidation est partagé uniquement avec Strapi, qui appelle `POST /api/projects/cache/invalidate` après une mutation éditoriale. Aucun token d'écriture ne doit être transmis au frontend.
 
 ## Développement
 
@@ -44,7 +45,7 @@ pnpm dev
 src/
 ├── strapi/                 # Appel REST, pagination et adaptation vers Project[]
 ├── geocoding/              # API BAN et cache mémoire
-├── projects/               # Endpoints publics et cache TTL de 5 minutes
+├── projects/               # Endpoints publics, cache TTL et invalidation signée
 ├── corridors/              # GeoJSON local indépendant des projets Strapi
 ├── natura2000/
 ├── environmental-layers/
@@ -56,5 +57,6 @@ src/
 
 - Le frontend consomme uniquement les endpoints GET du backend.
 - Le token Strapi reste dans l'environnement backend.
+- L'endpoint d'invalidation ne modifie aucune donnée et reste fermé sans secret serveur valide.
 - Seuls les projets publiés sont servis par l'endpoint public.
 - Les écritures passent par Strapi Admin ou une route serveur explicitement protégée.

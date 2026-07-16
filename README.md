@@ -49,6 +49,8 @@ cp apps/frontend/.env.example apps/frontend/.env
 |---|---|---|
 | `STRAPI_API_URL` | backend | URL de l'API Strapi (`http://localhost:1337`) |
 | `STRAPI_API_TOKEN` | backend | Token Strapi limité à la lecture des contenus nécessaires |
+| `BACKEND_API_URL` | Strapi | URL interne du backend utilisée pour invalider le cache projets |
+| `PROJECT_CACHE_INVALIDATION_SECRET` | backend + Strapi | Secret serveur partagé pour authentifier cette invalidation |
 | `VITE_API_URL` | frontend | URL du backend (`http://localhost:3000`) |
 
 ### Lancer le projet
@@ -71,7 +73,7 @@ API NestJS sécurisée entre le frontend et Strapi. Le token Strapi reste côté
 
 - **API** : `GET /api/projects` · `GET /api/projects/:id` · `GET /api/health` · `GET /api/natura2000`
 - Géocodage via [api-adresse.data.gouv.fr](https://adresse.data.gouv.fr) avec cache permanent
-- Cache TTL 5 min pour les projets Strapi
+- Cache TTL 5 min avec invalidation immédiate après mutation éditoriale Strapi
 - `?devMode=true` reste accepté pour compatibilité, mais n'expose jamais les brouillons Strapi sur l'endpoint public.
 
 ### Frontend (`apps/frontend`)
@@ -107,6 +109,8 @@ cp apps/strapi/.env.example apps/strapi/.env
 | `ADMIN_JWT_SECRET` | Secret JWT admin |
 | `TRANSFER_TOKEN_SALT` | Sel pour les tokens de transfert |
 | `STRAPI_DISABLE_NPS` | Désactiver le programme d'amélioration Strapi |
+| `BACKEND_API_URL` | URL interne du backend pour l'invalidation du cache projets |
+| `PROJECT_CACHE_INVALIDATION_SECRET` | Même secret serveur que dans le backend |
 
 **Fichiers ignorés par Git :** `.env`, `data/` (SQLite), `dist/`, `.cache/`, `.strapi/`, `public/uploads/`.
 

@@ -34,6 +34,7 @@ if command -v envmap &> /dev/null && [ -f ".envmap.yaml" ]; then
     SCW_INSTANCE_IP=$(envmap get --env prod SCW_INSTANCE_IP --raw 2>/dev/null | tr -d '\001' || echo "")
     STRAPI_API_URL=$(envmap get --env prod STRAPI_API_URL --raw 2>/dev/null | tr -d '\001' || echo "")
     STRAPI_API_TOKEN=$(envmap get --env prod STRAPI_API_TOKEN --raw 2>/dev/null | tr -d '\001' || echo "")
+    PROJECT_CACHE_INVALIDATION_SECRET=$(envmap get --env prod PROJECT_CACHE_INVALIDATION_SECRET --raw 2>/dev/null | tr -d '\001' || echo "")
     VITE_MAPTILER_KEY=$(envmap get --env prod VITE_MAPTILER_KEY --raw 2>/dev/null | tr -d '\001' || echo "")
     DOMAIN=$(envmap get --env prod DOMAIN --raw 2>/dev/null | tr -d '\001' || echo "localhost")
 fi
@@ -57,6 +58,11 @@ fi
 
 if [ -z "$STRAPI_API_TOKEN" ]; then
     echo -e "${RED}Erreur: STRAPI_API_TOKEN non défini${NC}"
+    exit 1
+fi
+
+if [ -z "$PROJECT_CACHE_INVALIDATION_SECRET" ]; then
+    echo -e "${RED}Erreur: PROJECT_CACHE_INVALIDATION_SECRET non défini${NC}"
     exit 1
 fi
 
@@ -103,6 +109,7 @@ echo -e "${YELLOW}[3/5] Configuration des variables d'environnement...${NC}"
 $SSH_CMD "cat > ${REMOTE_DIR}/deploy/.env.prod << 'ENVEOF'
 STRAPI_API_URL=${STRAPI_API_URL}
 STRAPI_API_TOKEN=${STRAPI_API_TOKEN}
+PROJECT_CACHE_INVALIDATION_SECRET=${PROJECT_CACHE_INVALIDATION_SECRET}
 VITE_MAPTILER_KEY=${VITE_MAPTILER_KEY}
 DOMAIN=${DOMAIN:-localhost}
 CORS_ORIGIN=*

@@ -5,7 +5,7 @@ import type { Project } from '@make-map/types';
 
 describe('ProjectsService', () => {
   let service: ProjectsService;
-  let strapiService: StrapiService;
+  let fetchProjectsMock: jest.Mock;
 
   const mockProject: Project = {
     id: 'rec1',
@@ -29,24 +29,24 @@ describe('ProjectsService', () => {
   };
 
   beforeEach(async () => {
+    fetchProjectsMock = jest
+      .fn()
+      .mockImplementation((devMode: boolean) =>
+        Promise.resolve(devMode ? [mockDevProject] : [mockProject]),
+      );
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ProjectsService,
         {
           provide: StrapiService,
           useValue: {
-            fetchProjects: jest
-              .fn()
-              .mockImplementation((devMode: boolean) =>
-                Promise.resolve(devMode ? [mockDevProject] : [mockProject]),
-              ),
+            fetchProjects: fetchProjectsMock,
           },
         },
       ],
     }).compile();
 
     service = module.get<ProjectsService>(ProjectsService);
-    strapiService = module.get<StrapiService>(StrapiService);
   });
 
   it('devrait être défini', () => {
@@ -58,7 +58,7 @@ describe('ProjectsService', () => {
       const result = await service.findAll();
 
       expect(result).toEqual([mockProject]);
-      expect(strapiService.fetchProjects).toHaveBeenCalledWith(false);
+      expect(fetchProjectsMock).toHaveBeenCalledWith(false);
     });
 
     it('devrait utiliser le cache lors du deuxième appel', async () => {
@@ -66,7 +66,7 @@ describe('ProjectsService', () => {
       const result = await service.findAll();
 
       expect(result).toEqual([mockProject]);
-      expect(strapiService.fetchProjects).toHaveBeenCalledTimes(1);
+      expect(fetchProjectsMock).toHaveBeenCalledTimes(1);
     });
 
     it('devrait avoir des caches séparés pour prod et devMode', async () => {
@@ -75,9 +75,9 @@ describe('ProjectsService', () => {
 
       expect(prodResult).toEqual([mockProject]);
       expect(devResult).toEqual([mockDevProject]);
-      expect(strapiService.fetchProjects).toHaveBeenCalledTimes(2);
-      expect(strapiService.fetchProjects).toHaveBeenCalledWith(false);
-      expect(strapiService.fetchProjects).toHaveBeenCalledWith(true);
+      expect(fetchProjectsMock).toHaveBeenCalledTimes(2);
+      expect(fetchProjectsMock).toHaveBeenCalledWith(false);
+      expect(fetchProjectsMock).toHaveBeenCalledWith(true);
     });
   });
 
@@ -99,7 +99,7 @@ describe('ProjectsService', () => {
       service.invalidateCache();
       await service.findAll();
 
-      expect(strapiService.fetchProjects).toHaveBeenCalledTimes(2);
+      expect(fetchProjectsMock).toHaveBeenCalledTimes(2);
     });
 
     it('devrait invalider à la fois le cache prod et dev', async () => {
@@ -109,7 +109,31 @@ describe('ProjectsService', () => {
       await service.findAll(false);
       await service.findAll(true);
 
-      expect(strapiService.fetchProjects).toHaveBeenCalledTimes(4);
+      expect(fetchProjectsMock).toHaveBeenCalledTimes(4);
+    });
+
+    it('ne remet pas en cache un résultat commencé avant l’invalidation', async () => {
+      let resolveFirstFetch: ((projects: Project[]) => void) | undefined;
+      const staleProject = { ...mockProject, title: 'Projet périmé' };
+      const freshProject = { ...mockProject, title: 'Projet à jour' };
+      fetchProjectsMock
+        .mockReset()
+        .mockImplementationOnce(
+          () =>
+            new Promise<Project[]>((resolve) => {
+              resolveFirstFetch = resolve;
+            }),
+        )
+        .mockResolvedValueOnce([freshProject]);
+
+      const pendingProjects = service.findAll();
+      service.invalidateCache();
+      resolveFirstFetch?.([staleProject]);
+
+      await expect(pendingProjects).resolves.toEqual([freshProject]);
+      expect(fetchProjectsMock).toHaveBeenCalledTimes(2);
+      await expect(service.findAll()).resolves.toEqual([freshProject]);
+      expect(fetchProjectsMock).toHaveBeenCalledTimes(2);
     });
   });
 });

@@ -6,8 +6,8 @@ import type { StrapiProjectsResponse } from './strapi-projects-mapping.util';
 
 describe('StrapiService', () => {
   let service: StrapiService;
-  let geocodingService: GeocodingService;
   let strapiToken: string | undefined;
+  let batchGeocodeMock: jest.Mock;
   const requestedUrls: string[] = [];
 
   const strapiResponse: StrapiProjectsResponse = {
@@ -74,6 +74,19 @@ describe('StrapiService', () => {
   beforeEach(async () => {
     requestedUrls.length = 0;
     strapiToken = 'test-token';
+    batchGeocodeMock = jest.fn().mockResolvedValue(
+      new Map([
+        [
+          'project-doc-1',
+          {
+            latitude: 48.8566,
+            longitude: 2.3522,
+            region: 'Île-de-France',
+            department: 'Paris',
+          },
+        ],
+      ]),
+    );
     global.fetch = jest.fn().mockImplementation((url: URL | string) => {
       requestedUrls.push(url.toString());
       return Promise.resolve({
@@ -98,26 +111,13 @@ describe('StrapiService', () => {
         {
           provide: GeocodingService,
           useValue: {
-            batchGeocode: jest.fn().mockResolvedValue(
-              new Map([
-                [
-                  'project-doc-1',
-                  {
-                    latitude: 48.8566,
-                    longitude: 2.3522,
-                    region: 'Île-de-France',
-                    department: 'Paris',
-                  },
-                ],
-              ]),
-            ),
+            batchGeocode: batchGeocodeMock,
           },
         },
       ],
     }).compile();
 
     service = module.get<StrapiService>(StrapiService);
-    geocodingService = module.get<GeocodingService>(GeocodingService);
   });
 
   afterEach(() => {
@@ -135,7 +135,7 @@ describe('StrapiService', () => {
       longitude: 2.3522,
       region: 'Île-de-France',
     });
-    expect(geocodingService.batchGeocode).toHaveBeenCalledWith([
+    expect(batchGeocodeMock).toHaveBeenCalledWith([
       {
         id: 'project-doc-1',
         address: '1 rue Test',
@@ -160,5 +160,55 @@ describe('StrapiService', () => {
       'STRAPI_API_TOKEN manquant',
     );
     expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it('récupère durablement une seconde page Strapi de 100 + 1 projets', async () => {
+    const baseItem = strapiResponse.data[0];
+    const firstPage = Array.from({ length: 100 }, (_, index) => ({
+      ...baseItem,
+      id: index + 1,
+      documentId: `project-doc-${index + 1}`,
+      title: `Projet ${index + 1}`,
+    }));
+    const secondPage = [
+      {
+        ...baseItem,
+        id: 101,
+        documentId: 'project-doc-101',
+        title: 'Projet 101',
+      },
+    ];
+
+    global.fetch = jest.fn().mockImplementation((url: URL | string) => {
+      requestedUrls.push(url.toString());
+      const requestedPage = new URL(url.toString()).searchParams.get(
+        'pagination[page]',
+      );
+      const data = requestedPage === '1' ? firstPage : secondPage;
+
+      return Promise.resolve({
+        ok: true,
+        json: jest.fn().mockResolvedValue({
+          data,
+          meta: {
+            pagination: {
+              page: Number(requestedPage),
+              pageSize: 100,
+              pageCount: 2,
+              total: 101,
+            },
+          },
+        }),
+      });
+    });
+
+    const projects = await service.fetchProjects();
+
+    expect(projects).toHaveLength(101);
+    expect(projects.at(-1)?.id).toBe('project-doc-101');
+    expect(global.fetch).toHaveBeenCalledTimes(2);
+    expect(requestedUrls[0]).toContain('pagination%5Bpage%5D=1');
+    expect(requestedUrls[1]).toContain('pagination%5Bpage%5D=2');
+    expect(requestedUrls[0]).toContain('pagination%5BpageSize%5D=100');
   });
 });

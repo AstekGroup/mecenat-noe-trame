@@ -1,6 +1,7 @@
 import type { Core } from '@strapi/strapi';
 
 import { configureFrenchContentManager } from './content-manager-labels';
+import { registerProjectCacheInvalidation } from './project-cache-invalidation';
 
 export default {
   /**
@@ -16,6 +17,7 @@ export default {
         isResizable: true,
       },
     });
+    registerProjectCacheInvalidation(strapi);
   },
 
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {

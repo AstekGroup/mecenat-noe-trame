@@ -48,6 +48,7 @@ ssh root@$IP "curl -fsSL https://get.docker.com | sh"
 envmap set --env prod SCW_INSTANCE_IP --prompt    # IP publique de l'instance
 envmap set --env prod STRAPI_API_URL --prompt      # URL de l'API Strapi
 envmap set --env prod STRAPI_API_TOKEN --prompt    # Token Strapi lecture seule
+envmap set --env prod PROJECT_CACHE_INVALIDATION_SECRET --prompt # Secret partage avec Strapi
 envmap set --env prod VITE_MAPTILER_KEY --prompt   # Cle MapTiler
 envmap set --env prod DOMAIN --prompt              # Domaine (ex: map.semaine-ia.fr)
 ```
@@ -102,9 +103,12 @@ Voir `deploy/.env.prod.example` pour la liste complete.
 |----------|-------------|---------|
 | `STRAPI_API_URL` | URL Strapi accessible par le backend | `https://cms.example.org` |
 | `STRAPI_API_TOKEN` | Token Strapi lecture seule | `token...` |
+| `PROJECT_CACHE_INVALIDATION_SECRET` | Secret serveur partage avec Strapi pour invalider le cache | `secret long...` |
 | `VITE_MAPTILER_KEY` | Cle API MapTiler | `abc...` |
 | `DOMAIN` | Nom de domaine | `map.semaine-ia.fr` |
 | `CORS_ORIGIN` | Origines CORS autorisees | `*` |
+
+L'instance Strapi doit recevoir le meme `PROJECT_CACHE_INVALIDATION_SECRET` ainsi que `BACKEND_API_URL`, l'URL HTTPS du backend. Sans ces deux variables, les mutations editoriales restent possibles mais Strapi journalise que l'invalidation immediate est desactivee; le TTL backend reste alors le filet de securite.
 
 ## Cout
 
