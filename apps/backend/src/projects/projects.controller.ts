@@ -1,11 +1,18 @@
 import {
   Controller,
   Get,
+  Headers,
+  HttpCode,
+  HttpStatus,
   Param,
+  Post,
   Query,
   NotFoundException,
   Logger,
+  UnauthorizedException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { timingSafeEqual } from 'crypto';
 import type { Project } from '@make-map/types';
 import { ProjectsService } from './projects.service';
 
@@ -13,7 +20,31 @@ import { ProjectsService } from './projects.service';
 export class ProjectsController {
   private readonly logger = new Logger(ProjectsController.name);
 
-  constructor(private readonly projectsService: ProjectsService) {}
+  constructor(
+    private readonly projectsService: ProjectsService,
+    private readonly configService: ConfigService,
+  ) {}
+
+  /**
+   * Invalidation serveur déclenchée par Strapi après une mutation éditoriale.
+   * Cette route ne modifie aucune donnée et exige un secret partagé côté serveur.
+   */
+  @Post('cache/invalidate')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  invalidateCache(@Headers('authorization') authorization?: string): void {
+    const expectedSecret = this.configService.get<string>(
+      'PROJECT_CACHE_INVALIDATION_SECRET',
+    );
+    const providedSecret = authorization?.startsWith('Bearer ')
+      ? authorization.slice('Bearer '.length)
+      : '';
+
+    if (!this.secretsMatch(providedSecret, expectedSecret)) {
+      throw new UnauthorizedException('Secret d’invalidation invalide');
+    }
+
+    this.projectsService.invalidateCache();
+  }
 
   /**
    * GET /api/projects
@@ -43,5 +74,16 @@ export class ProjectsController {
       throw new NotFoundException(`Projet ${id} non trouvé`);
     }
     return project;
+  }
+
+  private secretsMatch(provided: string, expected?: string): boolean {
+    if (!provided || !expected) return false;
+
+    const providedBuffer = Buffer.from(provided);
+    const expectedBuffer = Buffer.from(expected);
+    return (
+      providedBuffer.length === expectedBuffer.length &&
+      timingSafeEqual(providedBuffer, expectedBuffer)
+    );
   }
 }

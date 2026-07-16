@@ -12,7 +12,6 @@ export interface ProjectFilters {
   showParcsNationaux: boolean;
   showParcsNaturelsRegionaux: boolean;
   showReservesNaturelles: boolean;
-  showReservesBiologiques: boolean;
   showRegions: boolean;
   showDepartments: boolean;
   showEPCI: boolean;
@@ -29,7 +28,6 @@ const initialFilters: ProjectFilters = {
   showParcsNationaux: false,
   showParcsNaturelsRegionaux: false,
   showReservesNaturelles: false,
-  showReservesBiologiques: false,
   showRegions: false,
   showDepartments: false,
   showEPCI: false,
@@ -43,7 +41,6 @@ export function useProjects() {
   const [parcsNationauxData, setParcsNationauxData] = useState<any>(null);
   const [parcsNaturelsRegionauxData, setParcsNaturelsRegionauxData] = useState<any>(null);
   const [reservesNaturellesData, setReservesNaturellesData] = useState<any>(null);
-  const [reservesBiologiquesData, setReservesBiologiquesData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [filters, setFilters] = useState<ProjectFilters>(initialFilters);
@@ -146,21 +143,6 @@ export function useProjects() {
       });
     }
   }, [filters.showReservesNaturelles, reservesNaturellesData]);
-
-  // Charger les Réserves Biologiques (optionnel si pas de source directe facile)
-  useEffect(() => {
-    if (filters.showReservesBiologiques && !reservesBiologiquesData) {
-      import('@/services/api').then(async ({ fetchEnvironmentalLayer }) => {
-        try {
-          const data = await fetchEnvironmentalLayer('reserves-biologiques');
-          setReservesBiologiquesData(data);
-        } catch (err) {
-          // Si RB n'est pas dispo, on ignore ou on log discretement
-          console.warn('[useProjects] Réserves Biologiques non disponibles');
-        }
-      });
-    }
-  }, [filters.showReservesBiologiques, reservesBiologiquesData]);
 
   // Filtrer les projets
   const filteredProjects = useMemo(() => {
@@ -270,7 +252,6 @@ export function useProjects() {
     parcsNationauxData,
     parcsNaturelsRegionauxData,
     reservesNaturellesData,
-    reservesBiologiquesData,
     loading,
     error,
     filters,

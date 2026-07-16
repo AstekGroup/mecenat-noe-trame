@@ -12,7 +12,7 @@ export default {
   },
   pluginOptions: {
     'content-manager': {
-      visible: true,
+      visible: false,
     },
     'content-type-builder': {
       visible: true,
@@ -25,7 +25,26 @@ export default {
       minLength: 1,
     },
     profile: {
-      type: 'string',
+      type: 'enumeration',
+      enum: [
+        'Commune',
+        'Intercommunalité',
+        'Département / DDT',
+        'Région / DREAL',
+        'Etablissement scolaire',
+        'Agriculteur.ices',
+        'Coopérative agricole',
+        'Syndicat agricole',
+        'Association d’agroécologie',
+        'Apiculteur.ices',
+        'Coopérative apicole',
+        'Syndicat apicole',
+        'Fédération de chasse / pêche',
+        'Association de sensibilisation / préservation de la biodiversité',
+        'Association autre',
+        'Citoyen.ne',
+        'Gestionnaires d’espaces naturels protégés : ENS, CEN, RNF, Natura 2000',
+      ],
     },
     projects: {
       type: 'relation',

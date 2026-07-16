@@ -22,15 +22,44 @@ interface BanSuggestion {
  * - Zoom automatique sur la ville/département sélectionné
  * - Bouton de géolocalisation
  */
-export function SearchOverlay({ onFlyTo, onSearchFilter }: SearchOverlayProps) {
-  const [query, setQuery] = useState('');
+export function SearchOverlay({ onFlyTo, onSearchFilter, searchValue }: SearchOverlayProps) {
+  const [query, setQuery] = useState(searchValue);
   const [suggestions, setSuggestions] = useState<BanSuggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isGeolocating, setIsGeolocating] = useState(false);
   const [geoError, setGeoError] = useState<string | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const requestAbortRef = useRef<AbortController | null>(null);
+  const queryRef = useRef(searchValue);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const cancelAutocomplete = useCallback(() => {
+    setSuggestions([]);
+    setShowSuggestions(false);
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+      debounceRef.current = null;
+    }
+    requestAbortRef.current?.abort();
+    requestAbortRef.current = null;
+  }, []);
+
+  useEffect(() => {
+    if (queryRef.current === searchValue) return;
+
+    queryRef.current = searchValue;
+    setQuery(searchValue);
+    cancelAutocomplete();
+  }, [cancelAutocomplete, searchValue]);
+
+  useEffect(
+    () => () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      requestAbortRef.current?.abort();
+    },
+    [],
+  );
 
   // Fermer les suggestions quand on clique en dehors
   useEffect(() => {
@@ -50,6 +79,10 @@ export function SearchOverlay({ onFlyTo, onSearchFilter }: SearchOverlayProps) {
       return;
     }
 
+    requestAbortRef.current?.abort();
+    const controller = new AbortController();
+    requestAbortRef.current = controller;
+
     try {
       const url = new URL('https://api-adresse.data.gouv.fr/search/');
       url.searchParams.set('q', q);
@@ -60,7 +93,9 @@ export function SearchOverlay({ onFlyTo, onSearchFilter }: SearchOverlayProps) {
         url.searchParams.set('postcode', q);
       }
 
-      const response = await fetch(url.toString());
+      const response = await fetch(url.toString(), {
+        signal: controller.signal,
+      });
       if (!response.ok) return;
 
       const data = await response.json();
@@ -73,22 +108,32 @@ export function SearchOverlay({ onFlyTo, onSearchFilter }: SearchOverlayProps) {
         type: f.properties.type,
       }));
 
-      setSuggestions(results);
-      setShowSuggestions(results.length > 0);
+      if (!controller.signal.aborted) {
+        setSuggestions(results);
+        setShowSuggestions(results.length > 0);
+      }
     } catch {
       // Silencieux en cas d'erreur réseau
+    } finally {
+      if (requestAbortRef.current === controller) {
+        requestAbortRef.current = null;
+      }
     }
   }, []);
 
   // Debounce la recherche
   const handleInputChange = useCallback((value: string) => {
+    queryRef.current = value;
     setQuery(value);
     
     // Aussi filtrer la liste des événements en temps réel
     onSearchFilter(value);
 
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => searchBAN(value), 300);
+    debounceRef.current = setTimeout(() => {
+      debounceRef.current = null;
+      void searchBAN(value);
+    }, 300);
   }, [searchBAN, onSearchFilter]);
 
   // Sélection d'une suggestion -> zoom sur la carte
@@ -102,6 +147,7 @@ export function SearchOverlay({ onFlyTo, onSearchFilter }: SearchOverlayProps) {
     if (suggestion.type === 'housenumber') zoom = 17;
 
     onFlyTo(lng, lat, zoom);
+    queryRef.current = suggestion.label;
     setQuery(suggestion.label);
     setShowSuggestions(false);
     onSearchFilter(suggestion.city || suggestion.label);
@@ -130,7 +176,9 @@ export function SearchOverlay({ onFlyTo, onSearchFilter }: SearchOverlayProps) {
       (position) => {
         onFlyTo(position.coords.longitude, position.coords.latitude, 13);
         setIsGeolocating(false);
+        queryRef.current = '';
         setQuery('');
+        cancelAutocomplete();
         onSearchFilter('');
       },
       (error) => {
@@ -152,16 +200,16 @@ export function SearchOverlay({ onFlyTo, onSearchFilter }: SearchOverlayProps) {
       },
       { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
     );
-  }, [onFlyTo, onSearchFilter]);
+  }, [cancelAutocomplete, onFlyTo, onSearchFilter]);
 
   // Clear
   const handleClear = useCallback(() => {
+    queryRef.current = '';
     setQuery('');
-    setSuggestions([]);
-    setShowSuggestions(false);
+    cancelAutocomplete();
     onSearchFilter('');
     inputRef.current?.focus();
-  }, [onSearchFilter]);
+  }, [cancelAutocomplete, onSearchFilter]);
 
   return (
     <div ref={containerRef} className="absolute top-4 left-1/2 -translate-x-1/2 z-20 w-[90%] max-w-lg">

@@ -35,7 +35,7 @@ services:
       - "3080"
 
   # ============================================================
-  # Backend - NestJS API (Airtable proxy + Geocoding)
+  # Backend - NestJS API (Strapi + geocodage)
   # ============================================================
   backend:
     build:
@@ -45,9 +45,9 @@ services:
     expose:
       - "8080"
     environment:
-      - AIRTABLE_API_KEY=${AIRTABLE_API_KEY}
-      - AIRTABLE_BASE_ID=${AIRTABLE_BASE_ID}
-      - AIRTABLE_TABLE_ID=${AIRTABLE_TABLE_ID}
+      - STRAPI_API_URL=${STRAPI_API_URL}
+      - STRAPI_API_TOKEN=${STRAPI_API_TOKEN}
+      - PROJECT_CACHE_INVALIDATION_SECRET=${PROJECT_CACHE_INVALIDATION_SECRET}
       - PORT=8080
       - NODE_ENV=production
       - CORS_ORIGIN=${CORS_ORIGIN:-*}

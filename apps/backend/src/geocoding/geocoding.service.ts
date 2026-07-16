@@ -211,7 +211,7 @@ export class GeocodingService {
       const result: GeocodingResult = {
         latitude,
         longitude,
-        region: parts[2] || 'Inconnue',
+        region: parts[2] || this.getRegionFromPostalCode(postalCode),
         department: parts[1] || 'Inconnu',
         cityCode: feature.properties.citycode,
       };

@@ -77,6 +77,24 @@ describe('GeocodingService', () => {
       expect(result!.region).toBe('Auvergne-Rhône-Alpes');
     });
 
+    it('dérive la région DOM du code postal quand le contexte BAN ne la répète pas', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () =>
+          makeBanResponse(-61.5331, 16.2411, '971, Guadeloupe'),
+      });
+
+      const result = await service.geocodeAddress(
+        'Place de la Victoire',
+        '97110',
+        'Pointe-à-Pitre',
+      );
+
+      expect(result).not.toBeNull();
+      expect(result!.region).toBe('Guadeloupe');
+      expect(result!.department).toBe('Guadeloupe');
+    });
+
     it('retourne le résultat depuis le cache au 2ème appel', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,

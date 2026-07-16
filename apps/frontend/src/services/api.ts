@@ -1,13 +1,13 @@
 /**
  * Service API - Appels HTTP vers le backend NestJS.
  * 
- * Le frontend ne connaît plus Airtable ni le géocodage.
- * Tout passe par le backend qui sécurise le token et le cache.
+ * Le frontend ne connaît ni le CMS ni le géocodage.
+ * Tout passe par le backend qui protège le token Strapi et gère le cache.
  */
 
 import { Project, ProjectsGeoJSON, GeoJSONProject } from '@/types/project';
 
-// En prod : VITE_API_URL vide = chemins relatifs (/api/events), proxiés par Caddy
+// En prod : VITE_API_URL vide = chemins relatifs (/api/projects), proxiés par Caddy
 // En dev  : VITE_API_URL = http://localhost:3000
 const API_BASE = import.meta.env.VITE_API_URL ?? '';
 

@@ -12,7 +12,7 @@ export default {
   },
   pluginOptions: {
     'content-manager': {
-      visible: true,
+      visible: false,
     },
     'content-type-builder': {
       visible: true,
@@ -20,9 +20,19 @@ export default {
   },
   attributes: {
     label: {
-      type: 'string',
+      type: 'enumeration',
+      enum: [
+        'Jardin public',
+        'Jardin privé',
+        'Autres espaces urbains publics végétalisés',
+        'Exploitation agricole',
+        'Espace Naturel Protégé',
+        'Forêt privée',
+        'Forêt publique',
+        'Friche (urbaine, agricole, routières ou ferroviaire)',
+        'Cours d’eau et leurs bordures',
+      ],
       required: true,
-      minLength: 1,
     },
     projects: {
       type: 'relation',

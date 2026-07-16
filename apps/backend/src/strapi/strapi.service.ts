@@ -19,7 +19,7 @@ export class StrapiService {
 
   /**
    * Récupère et transforme tous les projets depuis l'API REST Strapi.
-   * Inclut le géocodage des adresses (même pipeline que AirtableService).
+   * Inclut le géocodage des adresses via GeocodingService.
    *
    * @param devMode - conservé pour compatibilité avec ProjectsService.
    *                  Il n'active pas les brouillons côté Strapi : le endpoint
@@ -32,22 +32,18 @@ export class StrapiService {
       );
     }
 
-    this.logger.log(
-      'Chargement des projets publiés depuis Strapi...',
-    );
+    this.logger.log('Chargement des projets publiés depuis Strapi...');
 
     // 1. Récupérer les entrées paginées depuis l'API REST Strapi
     const items = await this.fetchProjectItems();
-    this.logger.log(
-      `${items.length} projets récupérés depuis l'API Strapi`,
-    );
+    this.logger.log(`${items.length} projets récupérés depuis l'API Strapi`);
 
     // 2. Transformer sans géocodage
     const partialProjects: Project[] = items.map((item) =>
       strapiProjectToDomain(item),
     );
 
-    // 3. Préparer le batch geocoding (même logique que AirtableService)
+    // 3. Préparer le batch geocoding
     const itemsToGeocode = partialProjects
       .filter((p) => (p.address || p.city) && p.postalCode)
       .map((p) => ({
@@ -65,7 +61,7 @@ export class StrapiService {
     const geocodingResults =
       await this.geocodingService.batchGeocode(itemsToGeocode);
 
-    // 5. Fusionner les résultats (même logique que AirtableService)
+    // 5. Fusionner les coordonnées géocodées dans les projets
     const projects: Project[] = partialProjects.map((project) => {
       const geo = geocodingResults.get(project.id);
       if (geo) {
@@ -98,7 +94,13 @@ export class StrapiService {
 
     if (!strapiUrl) {
       throw new Error(
-        'STRAPI_API_URL manquant. Vérifiez la variable d\'environnement.',
+        "STRAPI_API_URL manquant. Vérifiez la variable d'environnement.",
+      );
+    }
+
+    if (!strapiToken) {
+      throw new Error(
+        "STRAPI_API_TOKEN manquant. L'API projets doit utiliser un token Strapi en lecture seule.",
       );
     }
 
@@ -117,9 +119,7 @@ export class StrapiService {
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
       };
-      if (strapiToken) {
-        headers['Authorization'] = `Bearer ${strapiToken}`;
-      }
+      headers['Authorization'] = `Bearer ${strapiToken}`;
 
       const response = await fetch(url.toString(), { headers });
 

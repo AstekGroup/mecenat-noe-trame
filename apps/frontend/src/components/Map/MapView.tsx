@@ -19,13 +19,11 @@ interface MapViewProps {
   parcsNationauxData?: any;
   parcsNaturelsRegionauxData?: any;
   reservesNaturellesData?: any;
-  reservesBiologiquesData?: any;
   showNatura2000?: boolean;
   showCorridors?: boolean;
   showParcsNationaux?: boolean;
   showParcsNaturelsRegionaux?: boolean;
   showReservesNaturelles?: boolean;
-  showReservesBiologiques?: boolean;
   showRegions?: boolean;
   showDepartments?: boolean;
   showEPCI?: boolean;
@@ -45,13 +43,11 @@ export function MapView({
   parcsNationauxData,
   parcsNaturelsRegionauxData,
   reservesNaturellesData,
-  reservesBiologiquesData,
   showNatura2000 = false,
   showCorridors = false,
   showParcsNationaux = false,
   showParcsNaturelsRegionaux = false,
   showReservesNaturelles = false,
-  showReservesBiologiques = false,
   showRegions = false,
   showDepartments = false,
   showEPCI = false,
@@ -224,28 +220,6 @@ export function MapView({
               type="line"
               paint={{
                 'line-color': '#3e2723',
-                'line-width': 1,
-              }}
-            />
-          </Source>
-        )}
-
-        {/* Couche Réserves Biologiques */}
-        {showReservesBiologiques && reservesBiologiquesData && (
-          <Source id="reservesBiologiques" type="geojson" data={reservesBiologiquesData}>
-            <Layer
-              id="reservesBiologiques-fill"
-              type="fill"
-              paint={{
-                'fill-color': '#0097a7', // Cyan foncé
-                'fill-opacity': 0.4,
-              }}
-            />
-            <Layer
-              id="reservesBiologiques-outline"
-              type="line"
-              paint={{
-                'line-color': '#006064',
                 'line-width': 1,
               }}
             />

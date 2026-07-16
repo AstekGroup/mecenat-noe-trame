@@ -6,10 +6,9 @@ envs:
     provider: local-dev
     prefix: make-map/prod/
     keys:
-      # Backend (Airtable)
-      - AIRTABLE_API_KEY
-      - AIRTABLE_BASE_ID
-      - AIRTABLE_TABLE_ID
+      # Backend (Strapi, lecture seule)
+      - STRAPI_API_URL
+      - STRAPI_API_TOKEN
       # Frontend
       - VITE_API_URL
       - VITE_MAPTILER_KEY
