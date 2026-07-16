@@ -54,17 +54,19 @@ Objectif : transformer la carte d'une experience essentiellement plein ecran en 
 - [x] Corriger les divergences de saisie Strapi et franciser les libelles du Content Manager. -> Les libelles visibles reprennent ceux de la table Airtable; consultation, suivi, pratiques raisonnees, renaturation et profil du porteur sont controles; `ownerName`, `latitude` et `longitude` sont masques de la saisie et de la liste normales via `config.attributes.{field}.hidden` (Strapi 5.50) tout en restant dans le schema, l'API, le mapper et le contrat carte.
 - [x] Documenter et verifier la correspondance complete Airtable vers Strapi. -> Tableau, choix controles, relations et regles d'exposition documentes dans `DATA_MODEL_AIRTABLE_STRAPI.md`; types generes, builds, tests et verification navigateur valides.
 - [x] Aligner le modele Strapi avec les champs controles du formulaire Airtable en conservant la compatibilite historique. -> Champs directs et listes controlees valides dans Strapi Admin, persistence et Draft/Publish verifies, mapper direct-sur-historique valide, contrat public et carte desktop/mobile controles.
+- [x] Corriger et rejouer la campagne d'acceptation pre-Phase 5 : invalidation du cache, securite et projection des calques, pagination 101, e2e backend et regressions frontend. -> Invalidation signee apres mutation des projets et contenus lies, course concurrente couverte, allow-list stricte, WGS84 valide, calque sans source explicite, pagination 100 + 1 et correctifs frontend verifies.
 - [ ] Revue humaine finale avant Phase 5.
 
 **Verification de phase :**
-- Tests frontend : 31 passes, 3 fichiers.
+- Tests frontend : 38 passes, 5 fichiers.
 - Build frontend : OK.
-- Tests backend : 57 passes, 7 suites (mapper Strapi et service inclus).
+- Tests backend : 68 passes, 8 suites; 4 tests e2e API passes.
 - Build backend et build admin Strapi : OK, 0 erreur TypeScript.
 - Generation des types Strapi : OK, 0 erreur.
 - Verification runtime : libelles francais, listes deroulantes conformes, 9 types de milieu controles et donnees synthetiques normalisees via Strapi.
 - Validation desktop et mobile : navigation, contenu, carte integree et footer visibles; cluster, zoom, liste, filtres, corridors, DOM-TOM, selection, popup et detail fonctionnels.
 - Alignement modele : 21 champs Airtable et sept listes controlees verifies en lecture; champs directs ajoutes; listes de cases lisibles, francisees et placees cote a cote; persistence de `[]`, publication et isolation des brouillons validees dans Strapi Admin; `ownerName`, collections et champs historiques masques de l'edition normale mais conserves pour `populate=*`; mapper, consentement e-mail et contrat public valides via `/api/projects`; carte, liste, detail, couches et controles verifies sur desktop et mobile.
+- Acceptation pre-Phase 5 : cycle brouillon/publication/depublication rejoue sur une base isolee; cache invalide immediatement; 20 contenus Strapi/backend/liste et 19 points carte reconcilies; 8 corridors inchanges; traversal rejetee; Natura 2000 et calques environnementaux controles sur desktop et mobile; aucune donnee synthetique suivie par Git.
 
 **Blocage restant :** revue humaine finale avant Phase 5. Ne pas demarrer la Phase 5 avant cet accord.
 
