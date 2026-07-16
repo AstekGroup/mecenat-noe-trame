@@ -1,3 +1,25 @@
+interface CustomFieldDescriptor {
+  name: string;
+  type: 'json';
+  intlLabel: {
+    id: string;
+    defaultMessage: string;
+  };
+  intlDescription: {
+    id: string;
+    defaultMessage: string;
+  };
+  components: {
+    Input: () => Promise<{ default: unknown }>;
+  };
+}
+
+interface AdminApp {
+  customFields: {
+    register: (descriptor: CustomFieldDescriptor) => void;
+  };
+}
+
 export default {
   config: {
     locales: ['fr'],
@@ -21,6 +43,24 @@ export default {
         'tours.profile.notification.success.reset': 'Visite guidée relancée',
       },
     },
+  },
+  register(app: AdminApp) {
+    app.customFields.register({
+      name: 'checkbox-list',
+      type: 'json',
+      intlLabel: {
+        id: 'custom-fields.checkbox-list.label',
+        defaultMessage: 'Liste de cases à cocher',
+      },
+      intlDescription: {
+        id: 'custom-fields.checkbox-list.description',
+        defaultMessage:
+          'Champ JSON affiché comme une liste de cases à cocher, avec des choix configurables.',
+      },
+      components: {
+        Input: async () => import('./components/CheckboxListInput'),
+      },
+    });
   },
   bootstrap() {},
 };

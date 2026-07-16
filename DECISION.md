@@ -82,3 +82,18 @@ L'application `apps/map-interactive` correspondait au POC standalone initial et 
 La validation Phase 3 a prouve que Strapi peut alimenter le backend NestJS en conservant le contrat `Project[]` attendu par la carte. Le projet ne doit pas conserver durablement un mode double Airtable/Strapi via une variable de choix de source.
 
 **Consequence :** la Phase 4 doit retirer Airtable du chemin runtime actif des projets, faire de Strapi la source par defaut et unique pour `/api/projects`, puis valider humainement la carte. Le frontend continue de passer par le backend, qui conserve le geocodage, la transformation metier et la protection des tokens. Les references Airtable peuvent rester seulement comme historique, audit ou support temporaire de comparaison pendant le nettoyage.
+
+## D010 - Transition additive vers la saisie directe des projets dans Strapi
+
+**Statut :** Acceptee
+**Date :** 2026-07-16
+
+La saisie des projets dans Strapi doit reproduire les champs contrôlés du formulaire Airtable sans casser le contrat `Project[]` existant. Les champs directs sont ajoutés à côté des structures historiques (relations `Partner`, `ProjectType`, `HabitatType`, composants répétables et texte `extent`). Le backend préfère les valeurs directes et se replie sur les valeurs historiques quand les directes ne sont pas définies.
+
+**Consequence :**
+- Les champs directs `projectTypeSelection`, `ownerProfile`, `habitatTypeSelection`, `reasonedPracticeSelections`, `renaturationSelections`, `extentValue` et `extentUnit` sont disponibles pour les éditeurs.
+- `ownerName` reste disponible dans le schéma et l'API pour le contrat historique `owner`, mais il est masqué de la saisie courante car la table Airtable de référence ne contient plus de champ équivalent.
+- Les champs historiques correspondants restent dans le schéma Strapi et dans la réponse `populate=*` pour compatibilité lecture.
+- Les collections historiques `Partner`, `ProjectType` et `HabitatType` restent fonctionnelles mais sont masquées de la navigation normale du Content Manager.
+- Le mapper NestJS applique la précédence directe-sur-historique et conserve le gate `displayContactEmail`.
+- Aucune suppression ou mutation des champs historiques n’est autorisée avant une migration de données validée humainement.

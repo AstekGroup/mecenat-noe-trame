@@ -87,7 +87,7 @@ Application React avec carte interactive MapLibre GL JS.
 
 ### Strapi (`apps/strapi`)
 
-CMS Strapi v5 (TypeScript, SQLite en local) avec les projets, départements, partenaires et taxonomies utiles à la carte.
+CMS Strapi v5 (TypeScript, SQLite en local) avec les projets, départements, partenaires et taxonomies utiles à la carte. La saisie éditoriale s'appuie sur des champs directs alignés au formulaire Airtable, tout en conservant les structures historiques pour la compatibilité lecture.
 
 ```bash
 pnpm strapi:dev    # Strapi Admin sur http://localhost:1337/admin

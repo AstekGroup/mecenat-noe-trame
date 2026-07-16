@@ -50,19 +50,21 @@ Objectif : transformer la carte d'une experience essentiellement plein ecran en 
 - [x] Ajouter un mode plein ecran seulement si l'integration reste simple et utile pour l'utilisateur. -> Mode non ajoute : la carte integree conserve assez d'espace et toutes ses interactions; un second mode augmenterait inutilement le perimetre.
 - [x] Verifier le rendu desktop et mobile de la page avec carte integree. -> Rendu et navigation valides en desktop et mobile, y compris le panneau mobile.
 - [x] Documenter les limites restantes avant la vitrine. -> Le contenu et la navigation restent volontairement courts et statiques; leur enrichissement appartient a la Phase 5.
-- [x] Recontroler le formulaire Airtable de reference avant la revue humaine. -> Les 19 champs visibles, leurs types et les listes controlees ont ete compares au modele Strapi.
-- [x] Corriger les divergences de saisie Strapi et franciser les libelles du Content Manager. -> Consultation, suivi, pratiques raisonnees, renaturation et profil du porteur sont controles; les libelles editoriaux et l'interface utilisateur sont en francais.
+- [x] Recontroler le formulaire Airtable de reference avant la revue humaine. -> Les 21 champs de la table `Projets`, leurs types et les sept listes controlees ont ete verifies en lecture et compares au modele Strapi.
+- [x] Corriger les divergences de saisie Strapi et franciser les libelles du Content Manager. -> Les libelles visibles reprennent ceux de la table Airtable; consultation, suivi, pratiques raisonnees, renaturation et profil du porteur sont controles; `ownerName`, `latitude` et `longitude` sont masques de la saisie et de la liste normales via `config.attributes.{field}.hidden` (Strapi 5.50) tout en restant dans le schema, l'API, le mapper et le contrat carte.
 - [x] Documenter et verifier la correspondance complete Airtable vers Strapi. -> Tableau, choix controles, relations et regles d'exposition documentes dans `DATA_MODEL_AIRTABLE_STRAPI.md`; types generes, builds, tests et verification navigateur valides.
+- [x] Aligner le modele Strapi avec les champs controles du formulaire Airtable en conservant la compatibilite historique. -> Champs directs et listes controlees valides dans Strapi Admin, persistence et Draft/Publish verifies, mapper direct-sur-historique valide, contrat public et carte desktop/mobile controles.
 - [ ] Revue humaine finale avant Phase 5.
 
 **Verification de phase :**
 - Tests frontend : 31 passes, 3 fichiers.
 - Build frontend : OK.
-- Tests backend apres correction du modele : 43 passes, 7 suites.
-- Build backend et build admin Strapi : OK.
+- Tests backend : 57 passes, 7 suites (mapper Strapi et service inclus).
+- Build backend et build admin Strapi : OK, 0 erreur TypeScript.
 - Generation des types Strapi : OK, 0 erreur.
 - Verification runtime : libelles francais, listes deroulantes conformes, 9 types de milieu controles et donnees synthetiques normalisees via Strapi.
 - Validation desktop et mobile : navigation, contenu, carte integree et footer visibles; cluster, zoom, liste, filtres, corridors, DOM-TOM, selection, popup et detail fonctionnels.
+- Alignement modele : 21 champs Airtable et sept listes controlees verifies en lecture; champs directs ajoutes; listes de cases lisibles, francisees et placees cote a cote; persistence de `[]`, publication et isolation des brouillons validees dans Strapi Admin; `ownerName`, collections et champs historiques masques de l'edition normale mais conserves pour `populate=*`; mapper, consentement e-mail et contrat public valides via `/api/projects`; carte, liste, detail, couches et controles verifies sur desktop et mobile.
 
 **Blocage restant :** revue humaine finale avant Phase 5. Ne pas demarrer la Phase 5 avant cet accord.
 

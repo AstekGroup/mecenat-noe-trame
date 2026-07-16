@@ -499,7 +499,7 @@ export interface ApiHabitattypeHabitattype extends Struct.CollectionTypeSchema {
   };
   pluginOptions: {
     'content-manager': {
-      visible: true;
+      visible: false;
     };
     'content-type-builder': {
       visible: true;
@@ -550,7 +550,7 @@ export interface ApiPartnerPartner extends Struct.CollectionTypeSchema {
   };
   pluginOptions: {
     'content-manager': {
-      visible: true;
+      visible: false;
     };
     'content-type-builder': {
       visible: true;
@@ -645,6 +645,14 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
     displayContactEmail: Schema.Attribute.Boolean &
       Schema.Attribute.DefaultTo<false>;
     extent: Schema.Attribute.String;
+    extentUnit: Schema.Attribute.Enumeration<['m\u00B2', 'ha']>;
+    extentValue: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
     followUpFrequency: Schema.Attribute.String;
     followUpType: Schema.Attribute.Enumeration<
       [
@@ -657,6 +665,19 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
       'manyToMany',
       'api::habitattype.habitattype'
     >;
+    habitatTypeSelection: Schema.Attribute.Enumeration<
+      [
+        'Jardin public',
+        'Jardin priv\u00E9',
+        'Autres espaces urbains publics v\u00E9g\u00E9talis\u00E9s',
+        'Exploitation agricole',
+        'Espace Naturel Prot\u00E9g\u00E9',
+        'For\u00EAt priv\u00E9e',
+        'For\u00EAt publique',
+        'Friche (urbaine, agricole, routi\u00E8res ou ferroviaire)',
+        'Cours d\u2019eau et leurs bordures',
+      ]
+    >;
     isOngoing: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     latitude: Schema.Attribute.Float;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
@@ -666,17 +687,79 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     longitude: Schema.Attribute.Float;
+    ownerName: Schema.Attribute.String;
+    ownerProfile: Schema.Attribute.Enumeration<
+      [
+        'Commune',
+        'Intercommunalit\u00E9',
+        'D\u00E9partement / DDT',
+        'R\u00E9gion / DREAL',
+        'Etablissement scolaire',
+        'Agriculteur.ices',
+        'Coop\u00E9rative agricole',
+        'Syndicat agricole',
+        'Association d\u2019agro\u00E9cologie',
+        'Apiculteur.ices',
+        'Coop\u00E9rative apicole',
+        'Syndicat apicole',
+        'F\u00E9d\u00E9ration de chasse / p\u00EAche',
+        'Association de sensibilisation / pr\u00E9servation de la biodiversit\u00E9',
+        'Association autre',
+        'Citoyen.ne',
+        'Gestionnaires d\u2019espaces naturels prot\u00E9g\u00E9s : ENS, CEN, RNF, Natura 2000',
+      ]
+    >;
     partner: Schema.Attribute.Relation<'manyToOne', 'api::partner.partner'>;
     postalCode: Schema.Attribute.String;
     projectType: Schema.Attribute.Relation<
       'manyToOne',
       'api::projecttype.projecttype'
     >;
+    projectTypeSelection: Schema.Attribute.Enumeration<
+      [
+        'Sensibilisation',
+        'Renaturation / Restauration',
+        'Pratiques raisonn\u00E9es',
+        'Formation',
+        'Consultation / Concertation',
+        'Suivi',
+      ]
+    >;
     publishedAt: Schema.Attribute.DateTime;
+    reasonedPracticeSelections: Schema.Attribute.JSON &
+      Schema.Attribute.CustomField<
+        'global::checkbox-list',
+        {
+          choices: [
+            'Taille de haies',
+            'Tonte tardive',
+            'R\u00E9duction de pesticides',
+            'Retrait complet de pesticides',
+            'R\u00E9duction de l\u2019\u00E9clairage nocturne artificiel',
+            'Changement de mat\u00E9riel',
+            'Non retournement de prairie',
+          ];
+        }
+      >;
     reasonedPracticeTypes: Schema.Attribute.Component<
       'project.practice-type',
       true
     >;
+    renaturationSelections: Schema.Attribute.JSON &
+      Schema.Attribute.CustomField<
+        'global::checkbox-list',
+        {
+          choices: [
+            'Prairie',
+            'Lisi\u00E8re',
+            'Rang\u00E9e d\u2019arbres',
+            'Haies',
+            'Bords de routes',
+            'Bords de champs',
+            'D\u00E9simperm\u00E9abilisation',
+          ];
+        }
+      >;
     renaturationTypes: Schema.Attribute.Component<
       'project.renaturation-type',
       true
@@ -709,7 +792,7 @@ export interface ApiProjecttypeProjecttype extends Struct.CollectionTypeSchema {
   };
   pluginOptions: {
     'content-manager': {
-      visible: true;
+      visible: false;
     };
     'content-type-builder': {
       visible: true;

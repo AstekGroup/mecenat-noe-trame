@@ -7,10 +7,20 @@ interface FieldMetadata {
   list?: Record<string, unknown>;
 }
 
+interface LayoutField {
+  name: string;
+  size: number;
+}
+
+interface ContentManagerLayouts {
+  edit: LayoutField[][];
+  list: string[];
+}
+
 interface ContentManagerConfiguration {
   settings: Record<string, unknown>;
   metadatas: Record<string, FieldMetadata>;
-  layouts: Record<string, unknown>;
+  layouts: ContentManagerLayouts;
   options?: Record<string, unknown>;
 }
 
@@ -34,21 +44,29 @@ const CONTENT_TYPE_LABELS: Record<string, FieldLabels> = {
     latitude: 'Latitude',
     longitude: 'Longitude',
     department: 'Département',
-    partner: 'Porteur du projet',
-    projectType: 'Type de projet',
-    habitatTypes: 'Type de milieu',
-    extent: 'Emprise',
-    reasonedPracticeTypes: 'Types de pratiques raisonnées',
-    renaturationTypes: 'Types de renaturation / restauration',
-    sensitizationTitle: 'Titre de l’action de sensibilisation',
+    partner: 'Porteur du projet (historique)',
+    projectType: 'Type de projet (historique)',
+    projectTypeSelection: "Type d'action",
+    habitatTypes: 'Type de milieu (historique)',
+    habitatTypeSelection: 'Type de milieu',
+    extent: 'Emprise (historique)',
+    extentValue: 'Emprise (valeur)',
+    extentUnit: 'Unité de l’emprise',
+    reasonedPracticeTypes: 'Pratiques raisonnées (historique)',
+    reasonedPracticeSelections: 'Type de pratiques raisonnées',
+    renaturationTypes: 'Renaturation / restauration (historique)',
+    renaturationSelections: 'Type de renaturation',
+    ownerName: 'Nom du porteur',
+    ownerProfile: 'Profil du porteur de projet',
+    sensitizationTitle: 'Titre de la sensibilisation',
     trainingTitle: 'Titre de la formation',
-    consultationType: 'Type de consultation / concertation',
+    consultationType: 'Type de consultation',
     followUpType: 'Type de suivi',
-    followUpFrequency: 'Fréquence du suivi',
+    followUpFrequency: 'Fréquence de suivi',
     isOngoing: 'Projet en cours',
-    submitterEmail: 'Adresse e-mail du déclarant',
-    displayContactEmail: 'Afficher un e-mail de contact public',
-    contactEmail: 'Adresse e-mail de contact',
+    submitterEmail: 'Email porteur',
+    displayContactEmail: 'Autorisation email public',
+    contactEmail: 'Email de contact',
     contactPhone: 'Téléphone de contact',
     website: 'Site web',
   },
@@ -84,9 +102,50 @@ const COMPONENT_LABELS: Record<string, FieldLabels> = {
   },
 };
 
+const SIDE_BY_SIDE_EDIT_FIELDS: Record<string, [string, string]> = {
+  'api::project.project': [
+    'reasonedPracticeSelections',
+    'renaturationSelections',
+  ],
+};
+
+function placeFieldsSideBySide(
+  editLayout: LayoutField[][],
+  fieldNames: [string, string],
+): LayoutField[][] {
+  const fieldsToPair = new Set(fieldNames);
+  const cleanedLayout: LayoutField[][] = [];
+  let insertionIndex: number | undefined;
+
+  for (const row of editLayout) {
+    const containsPairedField = row.some((field) => fieldsToPair.has(field.name));
+    if (containsPairedField && insertionIndex === undefined) {
+      insertionIndex = cleanedLayout.length;
+    }
+
+    const remainingFields = row.filter((field) => !fieldsToPair.has(field.name));
+    if (remainingFields.length > 0) {
+      cleanedLayout.push(remainingFields);
+    }
+  }
+
+  if (insertionIndex === undefined) {
+    return editLayout;
+  }
+
+  cleanedLayout.splice(
+    insertionIndex,
+    0,
+    fieldNames.map((name) => ({ name, size: 6 })),
+  );
+
+  return cleanedLayout;
+}
+
 function withFrenchLabels(
   configuration: ContentManagerConfiguration,
   labels: FieldLabels,
+  uid: string,
 ): ContentManagerConfiguration {
   const metadatas = { ...configuration.metadatas };
 
@@ -102,7 +161,15 @@ function withFrenchLabels(
   return {
     settings: configuration.settings,
     metadatas,
-    layouts: configuration.layouts,
+    layouts: SIDE_BY_SIDE_EDIT_FIELDS[uid]
+      ? {
+          ...configuration.layouts,
+          edit: placeFieldsSideBySide(
+            configuration.layouts.edit,
+            SIDE_BY_SIDE_EDIT_FIELDS[uid],
+          ),
+        }
+      : configuration.layouts,
     ...(configuration.options ? { options: configuration.options } : {}),
   };
 }
@@ -119,7 +186,10 @@ async function configureModels(
     }
 
     const configuration = await service.findConfiguration(model);
-    await service.updateConfiguration(model, withFrenchLabels(configuration, labels));
+    await service.updateConfiguration(
+      model,
+      withFrenchLabels(configuration, labels, uid),
+    );
   }
 }
 
