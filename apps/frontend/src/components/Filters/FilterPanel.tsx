@@ -44,6 +44,9 @@ export function FilterPanel({
     filters.types.length > 0 ||
     filters.showNatura2000 ||
     !filters.showCorridors || // Show reset if corridors is hidden (since it's default)
+    filters.showParcsNationaux ||
+    filters.showParcsNaturelsRegionaux ||
+    filters.showReservesNaturelles ||
     filters.showRegions ||
     filters.showDepartments ||
     filters.showEPCI ||
@@ -125,7 +128,7 @@ export function FilterPanel({
         <FilterAccordion
           title="Calques"
           icon={<Layers className="w-4 h-4" />}
-          defaultOpen={filters.showCorridors || filters.showNatura2000 || filters.showParcsNationaux || filters.showParcsNaturelsRegionaux || filters.showReservesNaturelles || filters.showReservesBiologiques || filters.showRegions || filters.showDepartments || filters.showEPCI || filters.showCommunes}
+          defaultOpen={filters.showCorridors || filters.showNatura2000 || filters.showParcsNationaux || filters.showParcsNaturelsRegionaux || filters.showReservesNaturelles || filters.showRegions || filters.showDepartments || filters.showEPCI || filters.showCommunes}
         >
           <div className="space-y-2">
             <label className="flex items-center gap-3 cursor-pointer group">
@@ -180,17 +183,20 @@ export function FilterPanel({
                   </span>
                 </label>
 
-                <label className="flex items-center gap-3 cursor-pointer group">
+                <div
+                  className="flex items-start gap-3 text-text-secondary/70"
+                  aria-disabled="true"
+                >
                   <input
                     type="checkbox"
-                    checked={filters.showReservesBiologiques}
-                    onChange={() => onUpdateFilters({ showReservesBiologiques: !filters.showReservesBiologiques })}
-                    className="w-4 h-4 text-accent-coral border-primary/30 rounded focus:ring-accent-coral"
+                    disabled
+                    className="w-4 h-4 border-primary/20 rounded mt-0.5"
                   />
-                  <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">
+                  <span className="text-sm">
                     Réserves Biologiques
+                    <span className="block text-xs">Données non disponibles</span>
                   </span>
-                </label>
+                </div>
 
                 <label className="flex items-center gap-3 cursor-pointer group">
                   <input

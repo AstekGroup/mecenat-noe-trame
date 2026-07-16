@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Info, MapPin, Mail, Globe } from 'lucide-react';
+import { ArrowLeft, Info, MapPin, Mail, Globe, Phone } from 'lucide-react';
 import { useProjects } from '@/hooks';
 import { 
   PROJECT_TYPE_LABELS, 
@@ -227,7 +227,7 @@ export function ProjectDetailPage() {
           )}
 
           {/* Contact */}
-          {(project.contactEmail || project.website) && (
+          {(project.contactEmail || project.contactPhone || project.website) && (
             <div className="p-6 md:p-8 border-b border-primary/10">
               <h2 className="font-rubik font-semibold text-lg text-primary mb-4">
                 Contact & Liens
@@ -240,6 +240,15 @@ export function ProjectDetailPage() {
                   >
                     <Mail className="w-5 h-5 text-accent-coral" />
                     {project.contactEmail}
+                  </a>
+                )}
+                {project.contactPhone && (
+                  <a
+                    href={`tel:${project.contactPhone}`}
+                    className="flex items-center gap-3 text-text-secondary hover:text-primary transition-colors"
+                  >
+                    <Phone className="w-5 h-5 text-accent-coral" />
+                    {project.contactPhone}
                   </a>
                 )}
                 {project.website && (

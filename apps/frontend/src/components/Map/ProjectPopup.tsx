@@ -1,5 +1,5 @@
 import { Project, PROJECT_TYPE_LABELS } from '@/types/project';
-import { MapPin, User, Mail, Eye } from 'lucide-react';
+import { MapPin, User, Mail, Eye, Phone } from 'lucide-react';
 import { TYPE_ICONS } from './ProjectMarker';
 
 interface ProjectPopupProps {
@@ -56,6 +56,16 @@ export function ProjectPopup({ project, onClose, onViewDetails }: ProjectPopupPr
             <User className="w-4 h-4 text-accent-coral" />
             <span className="text-text-secondary">{project.owner}</span>
           </div>
+        )}
+
+        {project.contactPhone && (
+          <a
+            href={`tel:${project.contactPhone}`}
+            className="flex items-center gap-2 text-sm text-text-secondary hover:text-primary transition-colors"
+          >
+            <Phone className="w-4 h-4 text-accent-coral" />
+            {project.contactPhone}
+          </a>
         )}
 
         {/* Informations spécifiques au type */}

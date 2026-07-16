@@ -215,7 +215,7 @@ export function ProjectFiltersBar({
           badge={filters.regions.length || undefined}
         >
           <div className="p-2 space-y-1 max-h-[250px] overflow-y-auto scrollbar-thin">
-            {REGIONS.filter(r => !['Guadeloupe', 'Martinique', 'Guyane', 'La Réunion', 'Mayotte'].includes(r)).map((region) => (
+            {REGIONS.map((region) => (
               <label
                 key={region}
                 className="flex items-center gap-2 px-3 py-2 rounded-md text-sm cursor-pointer hover:bg-primary/5 transition-colors"
